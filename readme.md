@@ -1,8 +1,4 @@
-# Three.js Journey
-
-## Setup
-Download [Node.js](https://nodejs.org/en/download/).
-Run this followed commands:
+# personal-website-3D
 
 ``` bash
 # Install dependencies (only the first time)
