@@ -19,16 +19,19 @@ const canvas = document.querySelector("canvas.webgl");
 const scene = new THREE.Scene();
 const sceneRTT = new THREE.Scene();
 
+const rtTexture = new THREE.WebGLRenderTarget(512, 512, {
+  format: THREE.RGBFormat,
+});
 
-
-const rtTexture = new THREE.WebGLRenderTarget( 512, 512, { format: THREE.RGBFormat } );
-
-const planelikeGeometry = new THREE.BoxGeometry( 1, 1, 1 );
-const plane = new THREE.Mesh( planelikeGeometry, new THREE.MeshBasicMaterial( { map: rtTexture.texture } ) );
+const planelikeGeometry = new THREE.BoxGeometry(1, 1, 1);
+const plane = new THREE.Mesh(
+  planelikeGeometry,
+  new THREE.MeshBasicMaterial({ map: rtTexture.texture })
+);
 // const plane = new THREE.Mesh( planelikeGeometry, new THREE.MeshBasicMaterial( { color: 'red' } ) );
 
 // plane.position.set(0,100,-500);
-// scene.add(plane);
+scene.add(plane);
 
 /**
  * Textures
@@ -40,11 +43,35 @@ const flagTexture = textureLoader.load("/textures/flag-french.jpg");
  * Test mesh
  */
 // Geometry
-const backGround = new THREE.Mesh(new THREE.PlaneGeometry(2, 2, 1, 1), new THREE.MeshBasicMaterial({ color: 'red' }))
-backGround.position.set(0,0,-0.01)
-sceneRTT.add(backGround)
+const backGround = new THREE.Mesh(
+  new THREE.PlaneGeometry(1, 1, 1, 1),
+  new THREE.MeshBasicMaterial({ color: "red" })
+);
+backGround.position.set(0.5, -0.5, -0.01);
+sceneRTT.add(backGround);
 
-sceneRTT.add( new THREE.AxesHelper( 1 ));
+function makeWork(){
+
+  const height = 0.05
+
+  const m = new THREE.Mesh(
+    new THREE.PlaneGeometry(1, 1, 1, 1),
+    new THREE.MeshBasicMaterial({ color: "blue" })
+  );
+  m.position.set(0.5, -height/2, -0.01);
+  
+  const word = new THREE.Group().add(m);
+  m.scale.y = height
+  word.scale.x = 0.5
+  // word.position.y -= 0.1
+  
+  sceneRTT.add(word);
+}
+makeWork()
+
+
+// sceneRTT.add(new THREE.AxesHelper(1));
+
 // scene.add(backGround)
 
 // Material
@@ -52,7 +79,6 @@ sceneRTT.add( new THREE.AxesHelper( 1 ));
 // Mesh
 // const mesh = new THREE.Mesh(geometry, material);
 // sceneRTT.add(mesh);
-
 
 /**
  * Sizes
@@ -89,17 +115,8 @@ const camera = new THREE.PerspectiveCamera(
 camera.position.set(0.25, -0.25, 1);
 scene.add(camera);
 
-const cameraRTT = new  THREE.OrthographicCamera( sizes.width * 0.01 / (- 2), sizes.width * 0.01 / 2, sizes.height * 0.01 / 2, sizes.height* 0.01 / (- 2), 1, 1000 );
-// cameraRTT.position.set(0, 0, 0);
-// sceneRTT.add(cameraRTT);
-
-// const cameraRTT = new THREE.PerspectiveCamera(
-//   75,
-//   sizes.width / sizes.height,
-//   0.1,
-//   100
-// );
-// cameraRTT.position.set(0.25, -0.25, 1);
+const cameraRTT = new THREE.OrthographicCamera(-0.5, 1.5, 0.5, -1.5, 1, 3);
+sceneRTT.add(cameraRTT);
 cameraRTT.position.set(0, 0, 1);
 
 // Controls
@@ -128,25 +145,23 @@ const tick = () => {
   controls.update();
   // const elapsedTime = clock.getElapsedTime()
 
-  
   // Render first scene into texture
 
-  renderer.setRenderTarget( rtTexture );
+  renderer.setRenderTarget(rtTexture);
   renderer.clear();
-  renderer.render( sceneRTT, cameraRTT );
+  renderer.render(sceneRTT, cameraRTT);
 
   // Render full screen quad with generated texture
 
-  
   // renderer.clear();
   // renderer.render( sceneScreen, cameraRTT );
 
   // Render second scene to screen
   // (using first scene as regular texture)
 
-  renderer.setRenderTarget( null );
+  renderer.setRenderTarget(null);
   // renderer.render( scene, camera );
-  renderer.render( sceneRTT, cameraRTT );
+  renderer.render(sceneRTT, cameraRTT);
 
   // Call tick again on the next frame
   window.requestAnimationFrame(tick);
