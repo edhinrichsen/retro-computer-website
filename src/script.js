@@ -17,6 +17,18 @@ const canvas = document.querySelector("canvas.webgl");
 
 // Scene
 const scene = new THREE.Scene();
+const sceneRTT = new THREE.Scene();
+
+
+
+const rtTexture = new THREE.WebGLRenderTarget( 512, 512, { format: THREE.RGBFormat } );
+
+const planelikeGeometry = new THREE.BoxGeometry( 1, 1, 1 );
+const plane = new THREE.Mesh( planelikeGeometry, new THREE.MeshBasicMaterial( { map: rtTexture.texture } ) );
+// const plane = new THREE.Mesh( planelikeGeometry, new THREE.MeshBasicMaterial( { color: 'red' } ) );
+
+// plane.position.set(0,100,-500);
+scene.add(plane);
 
 /**
  * Textures
@@ -139,7 +151,7 @@ console.log(new THREE.Vector4(0.7, 0.7));
 
 // Mesh
 const mesh = new THREE.Mesh(geometry, material);
-scene.add(mesh);
+sceneRTT.add(mesh);
 
 /**
  * Sizes
@@ -176,6 +188,15 @@ const camera = new THREE.PerspectiveCamera(
 camera.position.set(0.25, -0.25, 1);
 scene.add(camera);
 
+const cameraRTT = new THREE.PerspectiveCamera(
+  75,
+  sizes.width / sizes.height,
+  0.1,
+  100
+);
+cameraRTT.position.set(0.25, -0.25, 1);
+sceneRTT.add(cameraRTT);
+
 // Controls
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
@@ -205,7 +226,24 @@ const tick = () => {
   material.uniforms.uTime.value = elapsedTime;
 
   // Render
-  renderer.render(scene, camera);
+  
+  // Render first scene into texture
+
+  renderer.setRenderTarget( rtTexture );
+  renderer.clear();
+  renderer.render( sceneRTT, cameraRTT );
+
+  // Render full screen quad with generated texture
+
+  
+  // renderer.clear();
+  // renderer.render( sceneScreen, cameraRTT );
+
+  // Render second scene to screen
+  // (using first scene as regular texture)
+
+  renderer.setRenderTarget( null );
+  renderer.render( scene, camera );
 
   // Call tick again on the next frame
   window.requestAnimationFrame(tick);
