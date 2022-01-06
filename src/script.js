@@ -48,26 +48,50 @@ const backGround = new THREE.Mesh(
   new THREE.MeshBasicMaterial({ color: "red" })
 );
 backGround.position.set(0.5, -0.5, -0.01);
-sceneRTT.add(backGround);
+// sceneRTT.add(backGround);
 
-function makeWork(){
+const colors = ["#568ca1","#4fc1ff","#4ec9b0","#d4d4d4","#9cdcfe","#ce9178","#dcdcaa","#b5cea8","#6a9955","#569cd6","#c586c0"]
+function makeWork(x,y){
 
   const height = 0.05
+  const minWidth = 0.05
+  const maxWidth = 0.3
+  const margin = 0.05
+
+  const width = (Math.random() * maxWidth) + minWidth
+
+  const color = colors[Math.floor(Math.random() * colors.length)]
+
+  if (width + x > 1 ){
+    y +=  margin*2
+    x = 0
+  }
+  if (Math.random() > 0.9 && y > 0){
+    y +=  margin*4
+    x = 0
+  }
 
   const m = new THREE.Mesh(
     new THREE.PlaneGeometry(1, 1, 1, 1),
-    new THREE.MeshBasicMaterial({ color: "blue" })
+    new THREE.MeshBasicMaterial({ color: color })
   );
   m.position.set(0.5, -height/2, -0.01);
   
   const word = new THREE.Group().add(m);
   m.scale.y = height
-  word.scale.x = 0.5
-  // word.position.y -= 0.1
+  word.scale.x = width
+  word.position.x = x
+  word.position.y = -y
   
   sceneRTT.add(word);
+  
+  return [width + margin + x, y]
 }
-makeWork()
+
+let n = [0,0]
+for (let i = 0; i < 20; i++){
+  n = makeWork(n[0],n[1])
+}
 
 
 // sceneRTT.add(new THREE.AxesHelper(1));
