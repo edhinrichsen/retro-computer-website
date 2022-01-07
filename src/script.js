@@ -50,49 +50,61 @@ const backGround = new THREE.Mesh(
 backGround.position.set(0.5, -0.5, -0.01);
 // sceneRTT.add(backGround);
 
-const colors = ["#568ca1","#4fc1ff","#4ec9b0","#d4d4d4","#9cdcfe","#ce9178","#dcdcaa","#b5cea8","#6a9955","#569cd6","#c586c0"]
-function makeWork(x,y){
+const colors = [
+  "#568ca1",
+  "#4fc1ff",
+  "#4ec9b0",
+  "#d4d4d4",
+  "#9cdcfe",
+  "#ce9178",
+  "#dcdcaa",
+  "#b5cea8",
+  "#6a9955",
+  "#569cd6",
+  "#c586c0",
+];
+const words = [];
+function makeWork(x, y) {
+  const height = 0.05;
+  const minWidth = 0.05;
+  const maxWidth = 0.3;
+  const margin = 0.05;
 
-  const height = 0.05
-  const minWidth = 0.05
-  const maxWidth = 0.3
-  const margin = 0.05
+  const width = Math.random() * maxWidth + minWidth;
 
-  const width = (Math.random() * maxWidth) + minWidth
+  const color = colors[Math.floor(Math.random() * colors.length)];
 
-  const color = colors[Math.floor(Math.random() * colors.length)]
-
-  if (width + x > 1 ){
-    y +=  margin*2
-    x = 0
+  if (width + x > 1) {
+    y += margin * 2;
+    x = 0;
   }
-  if (Math.random() > 0.9 && y > 0){
-    y +=  margin*4
-    x = 0
+  if (Math.random() > 0.9 && y > 0) {
+    y += margin * 4;
+    x = 0;
   }
 
   const m = new THREE.Mesh(
     new THREE.PlaneGeometry(1, 1, 1, 1),
     new THREE.MeshBasicMaterial({ color: color })
   );
-  m.position.set(0.5, -height/2, -0.01);
-  
+  m.position.set(0.5, -height / 2, -0.01);
+
   const word = new THREE.Group().add(m);
-  m.scale.y = height
-  word.scale.x = width
-  word.position.x = x
-  word.position.y = -y
-  
+  m.scale.y = height;
+  word.scale.x = 0;
+  word.position.x = x;
+  word.position.y = -y;
+
+  words.push({ word: word, width: width });
   sceneRTT.add(word);
-  
-  return [width + margin + x, y]
+
+  return [width + margin + x, y];
 }
 
-let n = [0,0]
-for (let i = 0; i < 20; i++){
-  n = makeWork(n[0],n[1])
+let n = [0, 0];
+for (let i = 0; i < 30; i++) {
+  n = makeWork(n[0], n[1]);
 }
-
 
 // sceneRTT.add(new THREE.AxesHelper(1));
 
@@ -169,6 +181,11 @@ const tick = () => {
   controls.update();
   // const elapsedTime = clock.getElapsedTime()
 
+  if (words.length > 0) {
+    if (words[0].word.scale.x < words[0].width) words[0].word.scale.x += 0.01;
+    else words.shift()
+  }
+
   // Render first scene into texture
 
   renderer.setRenderTarget(rtTexture);
@@ -184,7 +201,7 @@ const tick = () => {
   // (using first scene as regular texture)
 
   renderer.setRenderTarget(null);
-  // renderer.render( scene, camera );
+  // renderer.render(scene, camera);
   renderer.render(sceneRTT, cameraRTT);
 
   // Call tick again on the next frame
