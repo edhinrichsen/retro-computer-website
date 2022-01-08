@@ -64,15 +64,19 @@ const colors = [
   "#c586c0",
 ];
 const words = [];
-function makeWork(x, y) {
+const wordsToAnm = [];
+function makeWork(props) {
   const height = 0.05;
   const minWidth = 0.05;
   const maxWidth = 0.3;
   const margin = 0.05;
 
-  const width = Math.random() * maxWidth + minWidth;
+  let x = props.x || 0;
+  let y = props.y || 0;
+  const width = props.width || Math.random() * maxWidth + minWidth;
 
-  const color = colors[Math.floor(Math.random() * colors.length)];
+  const color =
+    props.color || colors[Math.floor(Math.random() * colors.length)];
 
   if (width + x > 1) {
     y += margin * 2;
@@ -91,20 +95,29 @@ function makeWork(x, y) {
 
   const word = new THREE.Group().add(m);
   m.scale.y = height;
-  word.scale.x = 0;
   word.position.x = x;
   word.position.y = -y;
 
-  words.push({ word: word, width: width });
+  if (props.anm) {
+    word.scale.x = 0;
+    words.push({ word: word, width: width });
+    wordsToAnm.push({ word: word, width: width });
+  } else {
+    word.scale.x = width;
+  }
   sceneRTT.add(word);
 
-  return [width + margin + x, y];
+  return [width + margin + x, y, word];
 }
 
 let n = [0, 0];
 for (let i = 0; i < 30; i++) {
-  n = makeWork(n[0], n[1]);
+  n = makeWork({ x: n[0], y: n[1], anm: true });
 }
+
+const [_x, _y, bat] = makeWork({ x: 0.4, y: 0.9, width: 0.2, color: "red" });
+bat.scale.x = 0.2;
+console.log(bat);
 
 // sceneRTT.add(new THREE.AxesHelper(1));
 
@@ -173,26 +186,37 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
  * Animate
  */
 
-let time = Date.now()
+let time = Date.now();
 const DeltaTime = () => {
-    const currentTime = Date.now()
-    const deltaTime = currentTime - time 
-    time = currentTime
-    return deltaTime/1000
-}
+  const currentTime = Date.now();
+  const deltaTime = currentTime - time;
+  time = currentTime;
+  return deltaTime / 1000;
+};
 
+const mouse = { x: 0, y: 0 };
+document.addEventListener("mousemove", (event) => {
+  mouse.x = event.clientX;
+  mouse.y = event.clientY;
+});
 
 const tick = () => {
-
   // Update controls
   controls.update();
-  const deltaTime = DeltaTime()
+  const deltaTime = DeltaTime();
   // const elapsedTime = clock.getElapsedTime()
 
-  if (words.length > 0) {
-    if (words[0].word.scale.x < words[0].width) words[0].word.scale.x += 0.5*deltaTime;
-    else words.shift()
+  if (wordsToAnm.length > 0) {
+    if (wordsToAnm[0].word.scale.x < wordsToAnm[0].width)
+      wordsToAnm[0].word.scale.x += 0.5 * deltaTime;
+    else wordsToAnm.shift();
   }
+
+  let batPos = mouse.x / window.innerWidth / 0.8 - 0.1 - 0.1;
+  console.log(batPos);
+  if (batPos < 0) batPos = 0;
+  if (batPos > 0.8) batPos = 0.8;
+  bat.position.x = batPos;
 
   // Render first scene into texture
 
@@ -209,8 +233,8 @@ const tick = () => {
   // (using first scene as regular texture)
 
   renderer.setRenderTarget(null);
-  renderer.render(scene, camera);
-  // renderer.render(sceneRTT, cameraRTT);
+  // renderer.render(scene, camera);
+  renderer.render(sceneRTT, cameraRTT);
 
   // Call tick again on the next frame
   window.requestAnimationFrame(tick);
