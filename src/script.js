@@ -151,7 +151,7 @@ const camera = new THREE.PerspectiveCamera(
 camera.position.set(0.25, -0.25, 1);
 scene.add(camera);
 
-const cameraRTT = new THREE.OrthographicCamera(-0.5, 1.5, 0.5, -1.5, 1, 3);
+const cameraRTT = new THREE.OrthographicCamera(-0.1, 1.1, 0.1, -1.1, 1, 3);
 sceneRTT.add(cameraRTT);
 cameraRTT.position.set(0, 0, 1);
 
@@ -172,17 +172,25 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 /**
  * Animate
  */
-const clock = new THREE.Clock();
+
+let time = Date.now()
+const DeltaTime = () => {
+    const currentTime = Date.now()
+    const deltaTime = currentTime - time 
+    time = currentTime
+    return deltaTime/1000
+}
+
 
 const tick = () => {
-  const elapsedTime = clock.getElapsedTime();
 
   // Update controls
   controls.update();
+  const deltaTime = DeltaTime()
   // const elapsedTime = clock.getElapsedTime()
 
   if (words.length > 0) {
-    if (words[0].word.scale.x < words[0].width) words[0].word.scale.x += 0.01;
+    if (words[0].word.scale.x < words[0].width) words[0].word.scale.x += 0.5*deltaTime;
     else words.shift()
   }
 
@@ -201,8 +209,8 @@ const tick = () => {
   // (using first scene as regular texture)
 
   renderer.setRenderTarget(null);
-  // renderer.render(scene, camera);
-  renderer.render(sceneRTT, cameraRTT);
+  renderer.render(scene, camera);
+  // renderer.render(sceneRTT, cameraRTT);
 
   // Call tick again on the next frame
   window.requestAnimationFrame(tick);
