@@ -5,20 +5,19 @@ import * as dat from "lil-gui";
 import testVertexShader from "./shaders/test/vertex.vert";
 import testFragmentShader from "./shaders/test/fragment.frag";
 import { Uniform } from "three";
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 // import { BloomPass } from 'three/examples/jsm/postprocessing/BloomPass.js';
 
 /**
  * Base
  */
 // Debug
-const gui = new dat.GUI();
+// const gui = new dat.GUI();
 
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
-
 
 // Scene
 const scene = new THREE.Scene();
@@ -26,7 +25,7 @@ const sceneRTT = new THREE.Scene();
 /**
  * Sizes
  */
- const sizes = {
+const sizes = {
   width: window.innerWidth,
   height: window.innerHeight,
 };
@@ -57,31 +56,27 @@ controls.enableDamping = true;
  * Renderer
  */
 
- const rtTexture = new THREE.WebGLRenderTarget(512, 512, {
+const rtTexture = new THREE.WebGLRenderTarget(512, 512, {
   format: THREE.RGBFormat,
 });
 
- const renderer = new THREE.WebGLRenderer({
+const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
 });
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 // renderer.render(sceneRTT, cameraRTT);
 
-const composer = new EffectComposer( renderer, rtTexture );
-composer.renderToScreen = false
+const composer = new EffectComposer(renderer, rtTexture);
+// composer.renderToScreen = false
 
 // render(sceneRTT, cameraRTT);
-const renderPass = new RenderPass( sceneRTT, cameraRTT );
-composer.addPass( renderPass );
+const renderPass = new RenderPass(sceneRTT, cameraRTT);
+composer.addPass(renderPass);
 
 // const bloomPass = new BloomPass()
-const bloomPass = new UnrealBloomPass( new THREE.Vector2( 512, 512 ), 1, 0.4, 0 );
-composer.addPass( bloomPass );
-
-
-
-
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(512, 512), 1, 0.4, 0);
+composer.addPass(bloomPass);
 
 window.addEventListener("resize", () => {
   // Update sizes
@@ -96,9 +91,6 @@ window.addEventListener("resize", () => {
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
-
-
-
 
 const planelikeGeometry = new THREE.BoxGeometry(1, 1, 1);
 const plane = new THREE.Mesh(
@@ -141,20 +133,20 @@ backGround.position.set(0.5, -0.5, -0.01);
 //   "#569cd6",
 //   "#c586c0",
 // ];
-const colors = [
-  "#42db82",
-];
+// const colors = ["#42db82"];
+const colors = ["#f99021"];
 const words = [];
 const wordsToAnm = [];
 function makeWord(props) {
   const height = 0.05;
-  const minWidth = 0.05;
-  const maxWidth = 0.3;
+  const minWidth = 1;
+  const maxWidth = 6;
   const margin = 0.05;
 
   let x = props.x || 0;
   let y = props.y || 0;
-  const width = props.width || Math.random() * maxWidth + minWidth;
+  const width =
+    props.width || margin * (Math.floor(Math.random() * maxWidth) + minWidth);
 
   const color =
     props.color || colors[Math.floor(Math.random() * colors.length)];
@@ -210,23 +202,15 @@ console.log(bat);
 // const mesh = new THREE.Mesh(geometry, material);
 // sceneRTT.add(mesh);
 
-
-
-
-
-
-
-
-
 /**
  * Animate
  */
 
-let time = Date.now();
+let dtime = Date.now();
 const DeltaTime = () => {
   const currentTime = Date.now();
-  const deltaTime = currentTime - time;
-  time = currentTime;
+  const deltaTime = currentTime - dtime;
+  dtime = currentTime;
   return deltaTime / 1000;
 };
 
@@ -236,16 +220,22 @@ document.addEventListener("mousemove", (event) => {
   mouse.y = event.clientY;
 });
 
+let time = 0;
 const tick = () => {
   // Update controls
   controls.update();
   const deltaTime = DeltaTime();
+  time += deltaTime*12;
+  // console.log(time)
   // const elapsedTime = clock.getElapsedTime()
 
   if (wordsToAnm.length > 0) {
     if (wordsToAnm[0].word.scale.x < wordsToAnm[0].width)
-      wordsToAnm[0].word.scale.x += 0.5 * deltaTime;
-    else wordsToAnm.shift();
+      wordsToAnm[0].word.scale.x = 0.05 * Math.floor(time);
+    else {
+      wordsToAnm.shift();
+      time = 0;
+    }
   }
 
   let batPos = mouse.x / window.innerWidth / 0.8 - 0.1 - 0.1;
@@ -261,7 +251,6 @@ const tick = () => {
   // renderer.render(sceneRTT, cameraRTT);
   composer.render();
   // plane.material =  new THREE.MeshBasicMaterial({ map: composer.readBuffer.texture })
-  
 
   // Render full screen quad with generated texture
 
@@ -274,9 +263,8 @@ const tick = () => {
   renderer.setRenderTarget(null);
   renderer.render(scene, camera);
   // renderer.render(sceneRTT, cameraRTT);
-  // composer.render();
+  composer.render();
   // console.log(composer.writeBuffer.texture)
-  
 
   // Call tick again on the next frame
   window.requestAnimationFrame(tick);
