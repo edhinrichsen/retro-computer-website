@@ -9,7 +9,10 @@ import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 // import { BloomPass } from 'three/examples/jsm/postprocessing/BloomPass.js';
-
+import { DotScreenPass } from 'three/examples/jsm/postprocessing/DotScreenPass.js'
+import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass.js'
+import { RGBShiftShader } from 'three/examples/jsm/shaders/RGBShiftShader.js'
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 /**
  * Base
  */
@@ -77,6 +80,9 @@ composer.addPass(renderPass);
 // const bloomPass = new BloomPass()
 const bloomPass = new UnrealBloomPass(new THREE.Vector2(512, 512), 1, 0.4, 0);
 composer.addPass(bloomPass);
+// const dotScreenPass = new DotScreenPass()
+// const rgbShiftShader = new ShaderPass(RGBShiftShader)
+// composer.addPass(rgbShiftShader)
 
 window.addEventListener("resize", () => {
   // Update sizes
@@ -188,9 +194,9 @@ for (let i = 0; i < 30; i++) {
   n = makeWord({ x: n[0], y: n[1], anm: true });
 }
 
-const [_x, _y, bat] = makeWord({ x: 0.4, y: 0.9, width: 0.2, color: "red" });
-bat.scale.x = 0.2;
-console.log(bat);
+// const [_x, _y, bat] = makeWord({ x: 0.4, y: 0.9, width: 0.2, color: "red" });
+// bat.scale.x = 0.2;
+// console.log(bat);
 
 // sceneRTT.add(new THREE.AxesHelper(1));
 
@@ -206,13 +212,6 @@ console.log(bat);
  * Animate
  */
 
-let dtime = Date.now();
-const DeltaTime = () => {
-  const currentTime = Date.now();
-  const deltaTime = currentTime - dtime;
-  dtime = currentTime;
-  return deltaTime / 1000;
-};
 
 const mouse = { x: 0, y: 0 };
 document.addEventListener("mousemove", (event) => {
@@ -225,7 +224,6 @@ const tick = () => {
   // Update controls
   controls.update();
   const deltaTime = DeltaTime();
-  time += deltaTime*12;
   // console.log(time)
   // const elapsedTime = clock.getElapsedTime()
 
@@ -238,11 +236,11 @@ const tick = () => {
     }
   }
 
-  let batPos = mouse.x / window.innerWidth / 0.8 - 0.1 - 0.1;
-  console.log(batPos);
-  if (batPos < 0) batPos = 0;
-  if (batPos > 0.8) batPos = 0.8;
-  bat.position.x = batPos;
+  // let batPos = mouse.x / window.innerWidth / 0.8 - 0.1 - 0.1;
+  // console.log(batPos);
+  // if (batPos < 0) batPos = 0;
+  // if (batPos > 0.8) batPos = 0.8;
+  // bat.position.x = batPos;
 
   // Render first scene into texture
 
