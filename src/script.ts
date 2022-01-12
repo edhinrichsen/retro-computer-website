@@ -1,18 +1,22 @@
 import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import * as dat from "lil-gui";
-import testVertexShader from "./shaders/test/vertex.vert";
-import testFragmentShader from "./shaders/test/fragment.frag";
+// import * as dat from "lil-gui";
+// import testVertexShader from "./shaders/test/vertex.vert";
+// import testFragmentShader from "./shaders/test/fragment.frag";
 import { Uniform } from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 // import { BloomPass } from 'three/examples/jsm/postprocessing/BloomPass.js';
-import { DotScreenPass } from 'three/examples/jsm/postprocessing/DotScreenPass.js'
-import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass.js'
-import { RGBShiftShader } from 'three/examples/jsm/shaders/RGBShiftShader.js'
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+import { DotScreenPass } from "three/examples/jsm/postprocessing/DotScreenPass.js";
+import { GlitchPass } from "three/examples/jsm/postprocessing/GlitchPass.js";
+import { RGBShiftShader } from "three/examples/jsm/shaders/RGBShiftShader.js";
+import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
+import DeltaTime from "./DeltaTime";
+import { ExternalsPlugin } from "webpack";
+
+
 /**
  * Base
  */
@@ -20,7 +24,8 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 // const gui = new dat.GUI();
 
 // Canvas
-const canvas = document.querySelector("canvas.webgl");
+const canvas: any = document.querySelector("canvas.webgl");
+if (!canvas) console.error("no canvas");
 
 // Scene
 const scene = new THREE.Scene();
@@ -142,8 +147,14 @@ backGround.position.set(0.5, -0.5, -0.01);
 // const colors = ["#42db82"];
 const colors = ["#f99021"];
 const words = [];
-const wordsToAnm = [];
-function makeWord(props) {
+const wordsToAnm: { word: THREE.Group; width: number }[] = [];
+function makeWord(props: {
+  x?: number;
+  y?: number;
+  width?: number;
+  color?: THREE.ColorRepresentation;
+  anm?: boolean;
+}): [number,number,THREE.Group] {
   const height = 0.05;
   const minWidth = 1;
   const maxWidth = 6;
@@ -189,7 +200,7 @@ function makeWord(props) {
   return [width + margin + x, y, word];
 }
 
-let n = [0, 0];
+let n: [number,number,any] | [number,number] = [0, 0];
 for (let i = 0; i < 30; i++) {
   n = makeWord({ x: n[0], y: n[1], anm: true });
 }
@@ -212,7 +223,6 @@ for (let i = 0; i < 30; i++) {
  * Animate
  */
 
-
 const mouse = { x: 0, y: 0 };
 document.addEventListener("mousemove", (event) => {
   mouse.x = event.clientX;
@@ -234,6 +244,7 @@ const tick = () => {
       wordsToAnm.shift();
       time = 0;
     }
+    time += deltaTime *12
   }
 
   // let batPos = mouse.x / window.innerWidth / 0.8 - 0.1 - 0.1;
@@ -248,6 +259,7 @@ const tick = () => {
   // renderer.clear();
   // renderer.render(sceneRTT, cameraRTT);
   composer.render();
+  
   // plane.material =  new THREE.MeshBasicMaterial({ map: composer.readBuffer.texture })
 
   // Render full screen quad with generated texture
@@ -268,4 +280,5 @@ const tick = () => {
   window.requestAnimationFrame(tick);
 };
 
-tick();
+window.onload = tick;
+
