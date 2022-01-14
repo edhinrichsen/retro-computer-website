@@ -129,7 +129,7 @@ export const initWebGL = () => {
     screenTick();
 
     renderer.setRenderTarget(null);
-    // renderer.render(scene, camera);
+    renderer.render(scene, camera);
 
     // composer.render()
     // renderer.render(sceneRTT, cameraRTT);

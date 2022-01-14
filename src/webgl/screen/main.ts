@@ -23,13 +23,13 @@ export const initScreen = (
   sceneRTT.add(cameraRTT);
   cameraRTT.position.set(0, 0, 1);
 
-  const rtTexture = new THREE.WebGLRenderTarget(128, 128, {
+  const rtTexture = new THREE.WebGLRenderTarget(512, 512, {
     format: THREE.RGBFormat,
   });
 
   // const renderer = new THREE.WebGLRenderer();
   const composer = new EffectComposer(renderer, rtTexture);
-  // composer.renderToScreen = false;
+  composer.renderToScreen = false;
 
   // renderer.render(sceneRTT, cameraRTT);
   const renderPass = new RenderPass(sceneRTT, cameraRTT);
@@ -46,7 +46,7 @@ export const initScreen = (
     uniforms: {
       tDiffuse: { value: null },
       uTime: { value: 1 },
-      uProgress: { value: 1.2 }
+      uProgress: { value: 1.2 },
     },
     vertexShader: noiseVertexShader,
     fragmentShader: noiseFragmentShader,
@@ -140,7 +140,6 @@ export const initScreen = (
   // bat.scale.x = 0.2;
   // console.log(bat);
 
-
   const mouse = { x: 0, y: 0 };
   document.addEventListener("mousemove", (event) => {
     mouse.x = event.clientX;
@@ -150,6 +149,9 @@ export const initScreen = (
   const clock = new THREE.Clock();
   let time = 0;
   let uProgress = 1.2;
+
+  let newDeltaTime = 0;
+
   const tick = () => {
     // Update controls
 
@@ -157,12 +159,14 @@ export const initScreen = (
     // console.log(time)
     const elapsedTime = clock.getElapsedTime();
 
+    newDeltaTime += deltaTime;
+
     // @ts-ignore
     noiseShader.material.uniforms.uTime.value = elapsedTime;
     noiseShader.material.uniforms.uProgress.value = uProgress;
 
     uProgress -= deltaTime * 0.2;
-    if (uProgress<0) uProgress = 1.2;
+    if (uProgress < 0) uProgress = 1.2;
 
     if (wordsToAnm.length > 0) {
       if (wordsToAnm[0].word.scale.x < wordsToAnm[0].width)
@@ -185,7 +189,12 @@ export const initScreen = (
     // renderer.setRenderTarget(rtTexture);
     // renderer.clear();
     // renderer.render(sceneRTT, cameraRTT);
+
     composer.render();
+    // if (newDeltaTime >= 0.1) {
+    //   composer.render();
+    //   newDeltaTime = 0;
+    // }
 
     // plane.material =  new THREE.MeshBasicMaterial({ map: composer.readBuffer.texture })
 
@@ -198,5 +207,6 @@ export const initScreen = (
     // (using first scene as regular texture)
   };
 
+  composer.readBuffer.texture.magFilter = THREE.NearestFilter;
   return [tick, composer.readBuffer.texture];
 };
