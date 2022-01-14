@@ -217,5 +217,12 @@ export const initScreen = (
 
   // composer.readBuffer.texture.magFilter = THREE.NearestFilter;
   noiseMat.uniforms.tDiffuse.value = composer.readBuffer.texture;
-  return [tick, noiseMat];
+
+  const textureLoader = new THREE.TextureLoader()
+  const matcapTexture = textureLoader.load('/textures/matcaps/screen-reflection.png')
+
+  const matcapMaterial = new THREE.MeshMatcapMaterial()
+  matcapMaterial.matcap = matcapTexture
+
+  return [tick, matcapMaterial as any];
 };
