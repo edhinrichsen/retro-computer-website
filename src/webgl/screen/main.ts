@@ -47,6 +47,7 @@ export const initScreen = (
       tDiffuse: { value: null },
       uTime: { value: 1 },
       uRand: { value: 0.2 },
+      uProgress: { value: 1 }
     },
     vertexShader: noiseVertexShader,
     fragmentShader: noiseFragmentShader,
@@ -142,6 +143,7 @@ export const initScreen = (
 
   const clock = new THREE.Clock();
   let time = 0;
+  let uProgress = 1;
   const tick = () => {
     // Update controls
 
@@ -151,6 +153,10 @@ export const initScreen = (
 
     // @ts-ignore
     noiseShader.material.uniforms.uTime.value = elapsedTime;
+    noiseShader.material.uniforms.uProgress.value = uProgress;
+
+    uProgress -= deltaTime * 0.2;
+    if (uProgress<0) uProgress = 1;
 
     if (wordsToAnm.length > 0) {
       if (wordsToAnm[0].word.scale.x < wordsToAnm[0].width)
