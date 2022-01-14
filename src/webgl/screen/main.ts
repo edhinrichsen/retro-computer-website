@@ -41,9 +41,12 @@ export const initScreen = (
   // const rgbShiftShader = new ShaderPass(RGBShiftShader)
   // composer.addPass(rgbShiftShader)
 
+  const textureLoader = new THREE.TextureLoader()
+  const matcapTexture = textureLoader.load('/textures/matcaps/screen-reflection.png')
+
   const noiseMat = new THREE.ShaderMaterial({
     uniforms: {
-      tDiffuse: { value: null },
+      uDiffuse: { value: null },
       uTime: { value: 1 },
       uProgress: { value: 1.2 },
     },
@@ -216,13 +219,14 @@ export const initScreen = (
   };
 
   // composer.readBuffer.texture.magFilter = THREE.NearestFilter;
-  noiseMat.uniforms.tDiffuse.value = composer.readBuffer.texture;
+  noiseMat.uniforms.uDiffuse.value = composer.readBuffer.texture;
 
-  const textureLoader = new THREE.TextureLoader()
-  const matcapTexture = textureLoader.load('/textures/matcaps/screen-reflection.png')
+  // const textureLoader = new THREE.TextureLoader()
+  // const matcapTexture = textureLoader.load('/textures/matcaps/screen-reflection.png')
 
   const matcapMaterial = new THREE.MeshMatcapMaterial()
   matcapMaterial.matcap = matcapTexture
+  console.log(matcapMaterial)
 
   return [tick, matcapMaterial as any];
 };
