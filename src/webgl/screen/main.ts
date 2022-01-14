@@ -23,7 +23,7 @@ export const initScreen = (
   sceneRTT.add(cameraRTT);
   cameraRTT.position.set(0, 0, 1);
 
-  const rtTexture = new THREE.WebGLRenderTarget(512, 512, {
+  const rtTexture = new THREE.WebGLRenderTarget(128, 128, {
     format: THREE.RGBFormat,
   });
 
@@ -47,7 +47,7 @@ export const initScreen = (
       tDiffuse: { value: null },
       uTime: { value: 1 },
       uRand: { value: 0.2 },
-      uProgress: { value: 1 }
+      uProgress: { value: 1.2 }
     },
     vertexShader: noiseVertexShader,
     fragmentShader: noiseFragmentShader,
@@ -141,9 +141,16 @@ export const initScreen = (
   // bat.scale.x = 0.2;
   // console.log(bat);
 
+
+  const mouse = { x: 0, y: 0 };
+  document.addEventListener("mousemove", (event) => {
+    mouse.x = event.clientX;
+    mouse.y = event.clientY;
+  });
+
   const clock = new THREE.Clock();
   let time = 0;
-  let uProgress = 1;
+  let uProgress = 1.2;
   const tick = () => {
     // Update controls
 
@@ -156,7 +163,7 @@ export const initScreen = (
     noiseShader.material.uniforms.uProgress.value = uProgress;
 
     uProgress -= deltaTime * 0.2;
-    if (uProgress<0) uProgress = 1;
+    if (uProgress<0) uProgress = 1.2;
 
     if (wordsToAnm.length > 0) {
       if (wordsToAnm[0].word.scale.x < wordsToAnm[0].width)

@@ -120,11 +120,7 @@ export const initWebGL = () => {
    * Animate
    */
 
-  const mouse = { x: 0, y: 0 };
-  document.addEventListener("mousemove", (event) => {
-    mouse.x = event.clientX;
-    mouse.y = event.clientY;
-  });
+
 
   const tick = () => {
     // Update controls
