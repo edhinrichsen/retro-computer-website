@@ -229,5 +229,7 @@ export const initScreen = (
   matcapMaterial.matcap = matcapTexture
   console.log(matcapMaterial)
 
-  return [tick, matcapMaterial as any];
+  const nMaterial = new THREE.MeshNormalMaterial()
+
+  return [tick, nMaterial as any];
 };
