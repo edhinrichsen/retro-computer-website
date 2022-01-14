@@ -231,5 +231,5 @@ export const initScreen = (
 
   const nMaterial = new THREE.MeshNormalMaterial()
 
-  return [tick, nMaterial as any];
+  return [tick, noiseMat as any];
 };

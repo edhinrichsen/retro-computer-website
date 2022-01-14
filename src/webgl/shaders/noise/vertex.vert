@@ -6,7 +6,11 @@ varying vec3 vNormal;
 void main()
 {
     vUv = uv;
-    vNormal = normal;
+    
+    vec3 objectNormal = vec3( normal );
+    vec3 transformedNormal = objectNormal;
+    transformedNormal = normalMatrix * transformedNormal;
+    vNormal = normalize( transformedNormal );
     vec3 transformed = vec3( position );
     vec4 mvPosition = vec4( transformed, 1.0 );
     vViewPosition = - mvPosition.xyz;

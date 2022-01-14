@@ -51,11 +51,14 @@ void main()
 	vec3 y = cross( viewDir, x );
 	vec2 uv = vec2( dot( x, normal ), dot( y, normal ) ) * 0.495 + 0.5; // 0.495 to remove artifacts caused by undersized matcap disks
 
-   vec4 matcapColor = texture2D( uMatcap, uv ) * 0.1;
+   vec4 matcapColor = texture2D( uMatcap, uv ) * 0.05;
 
     // gl_FragColor = matcapColor;
 
     gl_FragColor = matcapColor + color  +  (vec4(r,r,r,0) * (p.a + NOISE_STRENGTH)) + squareWave(vUv.y);
+    // gl_FragColor = matcapColor;
+
+    // gl_FragColor = vec4(normalize( vNormal ), 1);
             // if (vUv.y > sin(uTime) && vUv.y < sin(uTime) + 0.1 ) {
             //     gl_FragColor += vec4(0.1,0.1,0.1,0);
             // }
