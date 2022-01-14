@@ -79,7 +79,7 @@ export const initWebGL = () => {
   const planelikeGeometry = new THREE.BoxGeometry(1, 1, 1);
   const plane = new THREE.Mesh(
     planelikeGeometry,
-    new THREE.MeshBasicMaterial({ map: texture }),
+    texture,
     // new THREE.MeshBasicMaterial({ color: 'red' })
   );
 

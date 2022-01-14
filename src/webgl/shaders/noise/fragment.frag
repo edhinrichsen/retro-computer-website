@@ -3,7 +3,7 @@
 #define LINE_SIZE 100.0
 #define LINE_STRENGTH 0.02
 
-#define NOISE_STRENGTH 0.0
+#define NOISE_STRENGTH 0.15
 
 uniform sampler2D tDiffuse;
 uniform float uTime;

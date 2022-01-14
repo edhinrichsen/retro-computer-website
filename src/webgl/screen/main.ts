@@ -16,14 +16,14 @@ import { Vector3 } from "three";
 
 export const initScreen = (
   renderer: THREE.WebGLRenderer
-): [() => void, THREE.Texture] => {
+): [() => void, THREE.ShaderMaterial] => {
   const sceneRTT = new THREE.Scene();
 
   const cameraRTT = new THREE.OrthographicCamera(-0.1, 1.1, 0.1, -1.1, 1, 3);
   sceneRTT.add(cameraRTT);
   cameraRTT.position.set(0, 0, 1);
 
-  const rtTexture = new THREE.WebGLRenderTarget(512, 512, {
+  const rtTexture = new THREE.WebGLRenderTarget(128, 128, {
     format: THREE.RGBFormat,
   });
 
@@ -36,13 +36,12 @@ export const initScreen = (
   composer.addPass(renderPass);
 
   // const bloomPass = new BloomPass()
-  const bloomPass = new UnrealBloomPass(new THREE.Vector2(512, 512), 1, 0.4, 0);
-  composer.addPass(bloomPass);
+
   // const dotScreenPass = new DotScreenPass()
   // const rgbShiftShader = new ShaderPass(RGBShiftShader)
   // composer.addPass(rgbShiftShader)
 
-  const NoiseShader = {
+  const noiseMat = new THREE.ShaderMaterial({
     uniforms: {
       tDiffuse: { value: null },
       uTime: { value: 1 },
@@ -50,9 +49,18 @@ export const initScreen = (
     },
     vertexShader: noiseVertexShader,
     fragmentShader: noiseFragmentShader,
-  };
-  const noiseShader = new ShaderPass(NoiseShader);
-  composer.addPass(noiseShader);
+  });
+
+  // composer.addPass(noiseShader);
+
+  const bloomPass = new UnrealBloomPass(
+    new THREE.Vector2(1024, 1024),
+    1,
+    0.4,
+    0
+  );
+  composer.addPass(bloomPass);
+  // composer.addPass(bloomPass);
 
   // Geometry
   const backGround = new THREE.Mesh(
@@ -162,8 +170,8 @@ export const initScreen = (
     newDeltaTime += deltaTime;
 
     // @ts-ignore
-    noiseShader.material.uniforms.uTime.value = elapsedTime;
-    noiseShader.material.uniforms.uProgress.value = uProgress;
+    noiseMat.uniforms.uTime.value = elapsedTime;
+    noiseMat.uniforms.uProgress.value = uProgress;
 
     uProgress -= deltaTime * 0.2;
     if (uProgress < 0) uProgress = 1.2;
@@ -207,6 +215,7 @@ export const initScreen = (
     // (using first scene as regular texture)
   };
 
-  composer.readBuffer.texture.magFilter = THREE.NearestFilter;
-  return [tick, composer.readBuffer.texture];
+  // composer.readBuffer.texture.magFilter = THREE.NearestFilter;
+  noiseMat.uniforms.tDiffuse.value = composer.readBuffer.texture;
+  return [tick, noiseMat];
 };
