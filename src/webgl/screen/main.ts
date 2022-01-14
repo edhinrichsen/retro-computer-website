@@ -47,6 +47,7 @@ export const initScreen = (
   const noiseMat = new THREE.ShaderMaterial({
     uniforms: {
       uDiffuse: { value: null },
+      uMatcap: {value: matcapTexture},
       uTime: { value: 1 },
       uProgress: { value: 1.2 },
     },
