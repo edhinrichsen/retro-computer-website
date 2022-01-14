@@ -42,7 +42,7 @@ export const initWebGL = () => {
     0.1,
     100
   );
-  camera.position.set(0.25, -0.25, 1);
+  camera.position.set(0, 0, 1.25);
   scene.add(camera);
 
   // Controls
@@ -133,7 +133,7 @@ export const initWebGL = () => {
     screenTick();
 
     renderer.setRenderTarget(null);
-    renderer.render(scene, camera);
+    // renderer.render(scene, camera);
 
     // composer.render()
     // renderer.render(sceneRTT, cameraRTT);

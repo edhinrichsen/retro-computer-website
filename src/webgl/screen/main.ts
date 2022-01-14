@@ -8,8 +8,15 @@ import { DotScreenPass } from "three/examples/jsm/postprocessing/DotScreenPass.j
 import { GlitchPass } from "three/examples/jsm/postprocessing/GlitchPass.js";
 import { RGBShiftShader } from "three/examples/jsm/shaders/RGBShiftShader.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
+// @ts-ignore
+import noiseVertexShader from "../shaders/noise/vertex.vert";
+// @ts-ignore
+import noiseFragmentShader from "../shaders/noise/fragment.frag";
+import { Vector3 } from "three";
 
-export const initScreen= (renderer: THREE.WebGLRenderer): [()=>void,THREE.Texture]  => {
+export const initScreen = (
+  renderer: THREE.WebGLRenderer
+): [() => void, THREE.Texture] => {
   const sceneRTT = new THREE.Scene();
 
   const cameraRTT = new THREE.OrthographicCamera(-0.1, 1.1, 0.1, -1.1, 1, 3);
@@ -22,7 +29,7 @@ export const initScreen= (renderer: THREE.WebGLRenderer): [()=>void,THREE.Textur
 
   // const renderer = new THREE.WebGLRenderer();
   const composer = new EffectComposer(renderer, rtTexture);
-  composer.renderToScreen = false
+  // composer.renderToScreen = false;
 
   // renderer.render(sceneRTT, cameraRTT);
   const renderPass = new RenderPass(sceneRTT, cameraRTT);
@@ -34,6 +41,18 @@ export const initScreen= (renderer: THREE.WebGLRenderer): [()=>void,THREE.Textur
   // const dotScreenPass = new DotScreenPass()
   // const rgbShiftShader = new ShaderPass(RGBShiftShader)
   // composer.addPass(rgbShiftShader)
+
+  const NoiseShader = {
+    uniforms: {
+      tDiffuse: { value: null },
+      uTime: { value: 1 },
+      uRand: { value: 0.2 },
+    },
+    vertexShader: noiseVertexShader,
+    fragmentShader: noiseFragmentShader,
+  };
+  const noiseShader = new ShaderPass(NoiseShader);
+  composer.addPass(noiseShader);
 
   // Geometry
   const backGround = new THREE.Mesh(
@@ -121,13 +140,17 @@ export const initScreen= (renderer: THREE.WebGLRenderer): [()=>void,THREE.Textur
   // bat.scale.x = 0.2;
   // console.log(bat);
 
+  const clock = new THREE.Clock();
   let time = 0;
   const tick = () => {
     // Update controls
 
     const deltaTime = DeltaTime();
     // console.log(time)
-    // const elapsedTime = clock.getElapsedTime()
+    const elapsedTime = clock.getElapsedTime();
+
+    // @ts-ignore
+    noiseShader.material.uniforms.uTime.value = elapsedTime;
 
     if (wordsToAnm.length > 0) {
       if (wordsToAnm[0].word.scale.x < wordsToAnm[0].width)
@@ -162,9 +185,6 @@ export const initScreen= (renderer: THREE.WebGLRenderer): [()=>void,THREE.Textur
     // Render second scene to screen
     // (using first scene as regular texture)
   };
-
-
-
 
   return [tick, composer.readBuffer.texture];
 };
