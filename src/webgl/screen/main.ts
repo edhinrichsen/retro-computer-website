@@ -54,7 +54,7 @@ export const initScreen = (
   // composer.addPass(noiseShader);
 
   const bloomPass = new UnrealBloomPass(
-    new THREE.Vector2(1024, 1024),
+    new THREE.Vector2(128, 128),
     1,
     0.4,
     0
