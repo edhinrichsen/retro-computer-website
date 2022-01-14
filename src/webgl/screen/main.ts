@@ -23,7 +23,7 @@ export const initScreen = (
   sceneRTT.add(cameraRTT);
   cameraRTT.position.set(0, 0, 1);
 
-  const rtTexture = new THREE.WebGLRenderTarget(128, 128, {
+  const rtTexture = new THREE.WebGLRenderTarget(256, 256, {
     format: THREE.RGBFormat,
   });
 
