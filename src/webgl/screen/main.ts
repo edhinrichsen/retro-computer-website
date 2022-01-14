@@ -46,7 +46,6 @@ export const initScreen = (
     uniforms: {
       tDiffuse: { value: null },
       uTime: { value: 1 },
-      uRand: { value: 0.2 },
       uProgress: { value: 1.2 }
     },
     vertexShader: noiseVertexShader,
