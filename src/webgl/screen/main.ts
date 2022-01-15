@@ -86,7 +86,7 @@ fontLoader.load(
         console.log('loaded')
         font = _font;
         let n: [number, number, any] | [number, number] = [0, 0];
-        const ws = 'edward:~$'
+        const ws = 'edward:~$ cd home'
         for (let w of ws) {
           n = makeWord({char: w, x: n[0], y: n[1], anm: true });
         }
@@ -122,11 +122,11 @@ fontLoader.load(
   }): [number, number, THREE.Group] {
 
 
-    const height = 0.05;
-    const width = 0.02;
-    const minWidth = 1;
-    const maxWidth = 6;
-    const margin = 0.05;
+    const size = 0.04
+    const height = size;
+    const width = size;
+    const leading = height * 2;
+    const tracking = width * 0.4;
 
     let x = props.x || 0;
     let y = props.y || 0;
@@ -134,7 +134,7 @@ fontLoader.load(
     const color = '#f99021'
 
     if (width + x > 1) {
-      y += margin * 2;
+      y += leading;
       x = 0;
     }
     // if (Math.random() > 0.9 && y > 0) {
@@ -153,8 +153,8 @@ fontLoader.load(
       props.char,
       {
           font: font as any,
-          size: 0.05,
-          height: 0.001,
+          size: size,
+          height: 0.0001,
           curveSegments: 12,
           bevelEnabled: false,
       }
@@ -162,7 +162,7 @@ fontLoader.load(
   )
   const textMaterial = new THREE.MeshBasicMaterial({color: color})
   const text = new THREE.Mesh(textGeometry, textMaterial)
-  text.position.set(0,-0.05,-0.01)
+  text.position.set(0,-height,-0.01)
   sceneRTT.add(text)
 
 
@@ -181,7 +181,7 @@ fontLoader.load(
     // }
     sceneRTT.add(word);
 
-    return [width + margin + x, y, word];
+    return [width + tracking + x, y, word];
   }
 
 
