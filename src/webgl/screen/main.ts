@@ -13,7 +13,7 @@ import noiseVertexShader from "../shaders/noise/vertex.vert";
 // @ts-ignore
 import noiseFragmentShader from "../shaders/noise/fragment.frag";
 import { Vector3 } from "three";
-import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
+import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
 import { camera } from "../main";
 
@@ -78,29 +78,19 @@ export const initScreen = (
  * Fonts
  */
 const fontLoader = new FontLoader()
-let font;
+let font: Font | undefined = undefined;
 fontLoader.load(
     '/fonts/public-pixel.json',
     (_font) =>
     {
         console.log('loaded')
         font = _font;
-        const textGeometry = new TextGeometry(
-          'Hello Three.js',
-            //  'I Love Mr Tigs',
-          {
-              font: font,
-              size: 0.05,
-              height: 0.001,
-              curveSegments: 12,
-              bevelEnabled: false,
-          }
-      
-      )
-      const textMaterial = new THREE.MeshBasicMaterial({color: '#fff'})
-      const text = new THREE.Mesh(textGeometry, textMaterial)
-      text.position.set(0,-0.1,-0.01)
-      sceneRTT.add(text)
+        let n: [number, number, any] | [number, number] = [0, 0];
+        const ws = 'edward:~$'
+        for (let w of ws) {
+          n = makeWord({char: w, x: n[0], y: n[1], anm: true });
+        }
+        
     }
 )
 
@@ -123,61 +113,79 @@ fontLoader.load(
   const words = [];
   const wordsToAnm: { word: THREE.Group; width: number }[] = [];
   function makeWord(props: {
+    char: string,
     x?: number;
     y?: number;
     width?: number;
     color?: THREE.ColorRepresentation;
     anm?: boolean;
   }): [number, number, THREE.Group] {
+
+
     const height = 0.05;
+    const width = 0.02;
     const minWidth = 1;
     const maxWidth = 6;
     const margin = 0.05;
 
     let x = props.x || 0;
     let y = props.y || 0;
-    const width =
-      props.width || margin * (Math.floor(Math.random() * maxWidth) + minWidth);
 
-    const color =
-      props.color || colors[Math.floor(Math.random() * colors.length)];
+    const color = '#f99021'
 
     if (width + x > 1) {
       y += margin * 2;
       x = 0;
     }
-    if (Math.random() > 0.9 && y > 0) {
-      y += margin * 4;
-      x = 0;
-    }
+    // if (Math.random() > 0.9 && y > 0) {
+    //   y += margin * 4;
+    //   x = 0;
+    // }
 
     const m = new THREE.Mesh(
       new THREE.PlaneGeometry(1, 1, 1, 1),
       new THREE.MeshBasicMaterial({ color: color })
     );
     m.position.set(0.5, -height / 2, -0.01);
+    m.scale.x = 0.05;
 
-    const word = new THREE.Group().add(m);
+    const textGeometry = new TextGeometry(
+      props.char,
+      {
+          font: font as any,
+          size: 0.05,
+          height: 0.001,
+          curveSegments: 12,
+          bevelEnabled: false,
+      }
+  
+  )
+  const textMaterial = new THREE.MeshBasicMaterial({color: color})
+  const text = new THREE.Mesh(textGeometry, textMaterial)
+  text.position.set(0,-0.05,-0.01)
+  sceneRTT.add(text)
+
+
+
+    const word = new THREE.Group().add(text);
     m.scale.y = height;
     word.position.x = x;
     word.position.y = -y;
 
-    if (props.anm) {
-      word.scale.x = 0;
-      words.push({ word: word, width: width });
-      wordsToAnm.push({ word: word, width: width });
-    } else {
-      word.scale.x = width;
-    }
+    // if (props.anm) {
+    //   word.scale.x = 1;
+    //   words.push({ word: word, width: width });
+    //   wordsToAnm.push({ word: word, width: width });
+    // } else {
+    //   word.scale.x = width;
+    // }
     sceneRTT.add(word);
 
     return [width + margin + x, y, word];
   }
 
-  // let n: [number, number, any] | [number, number] = [0, 0];
-  // for (let i = 0; i < 30; i++) {
-  //   n = makeWord({ x: n[0], y: n[1], anm: true });
-  // }
+
+
 
   // const [_x, _y, bat] = makeWord({ x: 0.4, y: 0.9, width: 0.2, color: "red" });
   // bat.scale.x = 0.2;
