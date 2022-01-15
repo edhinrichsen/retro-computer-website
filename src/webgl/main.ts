@@ -15,8 +15,11 @@ import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import DeltaTime from "../DeltaTime";
 import { ExternalsPlugin } from "webpack";
 import { initScreen } from "./screen/main";
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
 
-export const initWebGL = () => {
+let camera: any;
+const initWebGL = () => {
   /**
    * Sizes
    */
@@ -36,7 +39,7 @@ export const initWebGL = () => {
    * Camera
    */
   // Base camera
-  const camera = new THREE.PerspectiveCamera(
+  camera = new THREE.PerspectiveCamera(
     75,
     sizes.width / sizes.height,
     0.1,
@@ -102,6 +105,10 @@ export const initWebGL = () => {
   const textureLoader = new THREE.TextureLoader();
   const flagTexture = textureLoader.load("/textures/flag-french.jpg");
 
+
+
+
+
   /**
    * Test mesh
    */
@@ -140,6 +147,8 @@ export const initWebGL = () => {
 
   window.onload = tick;
 };
+
+export {initWebGL,camera}
 
 /**
  * Base

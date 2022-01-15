@@ -13,6 +13,9 @@ import noiseVertexShader from "../shaders/noise/vertex.vert";
 // @ts-ignore
 import noiseFragmentShader from "../shaders/noise/fragment.frag";
 import { Vector3 } from "three";
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
+import { camera } from "../main";
 
 export const initScreen = (
   renderer: THREE.WebGLRenderer
@@ -69,6 +72,38 @@ export const initScreen = (
   );
   backGround.position.set(0.5, -0.5, -0.01);
   // sceneRTT.add(backGround);
+
+
+      /**
+ * Fonts
+ */
+const fontLoader = new FontLoader()
+let font;
+fontLoader.load(
+    '/fonts/public-pixel.json',
+    (_font) =>
+    {
+        console.log('loaded')
+        font = _font;
+        const textGeometry = new TextGeometry(
+          'Hello Three.js',
+            //  'I Love Mr Tigs',
+          {
+              font: font,
+              size: 0.05,
+              height: 0.001,
+              curveSegments: 12,
+              bevelEnabled: false,
+          }
+      
+      )
+      const textMaterial = new THREE.MeshBasicMaterial({color: '#fff'})
+      const text = new THREE.Mesh(textGeometry, textMaterial)
+      text.position.set(0,-0.1,-0.01)
+      sceneRTT.add(text)
+    }
+)
+
 
   // const colors = [
   //   "#568ca1",
@@ -139,10 +174,10 @@ export const initScreen = (
     return [width + margin + x, y, word];
   }
 
-  let n: [number, number, any] | [number, number] = [0, 0];
-  for (let i = 0; i < 30; i++) {
-    n = makeWord({ x: n[0], y: n[1], anm: true });
-  }
+  // let n: [number, number, any] | [number, number] = [0, 0];
+  // for (let i = 0; i < 30; i++) {
+  //   n = makeWord({ x: n[0], y: n[1], anm: true });
+  // }
 
   // const [_x, _y, bat] = makeWord({ x: 0.4, y: 0.9, width: 0.2, color: "red" });
   // bat.scale.x = 0.2;
