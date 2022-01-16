@@ -70,12 +70,12 @@ export function screenRenderEngine(
   const cubeTextureLoader = new THREE.CubeTextureLoader();
 
   const environmentMapTexture = cubeTextureLoader.load([
-    "/textures/environmentMaps/1/px.jpg",
-    "/textures/environmentMaps/1/nx.jpg",
-    "/textures/environmentMaps/1/py.jpg",
-    "/textures/environmentMaps/1/ny.jpg",
-    "/textures/environmentMaps/1/pz.jpg",
-    "/textures/environmentMaps/1/nz.jpg",
+    '/textures/environmentMaps/4/px.png',
+    '/textures/environmentMaps/4/nx.png',
+    '/textures/environmentMaps/4/py.png',
+    '/textures/environmentMaps/4/ny.png',
+    '/textures/environmentMaps/4/pz.png',
+    '/textures/environmentMaps/4/nz.png'
   ]);
 
   const shaderToScreen = new ShaderToScreen(
@@ -94,10 +94,10 @@ export function screenRenderEngine(
 
   const material = new THREE.MeshStandardMaterial();
   material.metalness = 0;
-  material.roughness = 0;
+  material.roughness = 0.1;
   material.envMap = environmentMapTexture;
   material.map = shaderToScreen.outputTexture.texture;
-  material.color.set("#fff");
+  // material.color.set("#fff");
 
   
 
