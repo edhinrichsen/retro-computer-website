@@ -204,7 +204,7 @@ export const initScreen = (
 
   let newDeltaTime = 0;
 
-  const rtTextureLag = initLag(composer.readBuffer, 512, 128);
+  const rtTextureLag = initLag(composer.readBuffer, 512 * 1.33, 512);
   const tick = () => {
     // Update controls
 

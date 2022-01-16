@@ -20,7 +20,7 @@ function initLag(buffer: THREE.WebGLRenderTarget, width: number, height: number)
   sceneRTT.add(cameraRTT);
   cameraRTT.position.set(0, 0, 1);
   const plane = new THREE.Mesh(
-    new THREE.PlaneGeometry(0.9 * aspect, 0.9, 1, 1),
+    new THREE.PlaneGeometry(1 * aspect, 1, 1, 1),
     new THREE.MeshBasicMaterial({map: buffer.texture})
     // new THREE.MeshBasicMaterial({ color: 'red' })
   );
@@ -31,7 +31,7 @@ function initLag(buffer: THREE.WebGLRenderTarget, width: number, height: number)
   sceneRTT.add(new THREE.AxesHelper(0));
 
 
-  rtTexture = new THREE.WebGLRenderTarget(512, 512, {
+  rtTexture = new THREE.WebGLRenderTarget(width, height, {
     format: THREE.RGBFormat,
   });
 
