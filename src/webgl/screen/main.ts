@@ -1,15 +1,10 @@
 import * as THREE from "three";
 import DeltaTime from "../../DeltaTime";
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
-import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
-import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
-// @ts-ignore
-import vertexShader from "../shaders/vertex.vert";
-// @ts-ignore
-import noiseFragmentShader from "../shaders/noise.frag";
+
 import { Font, FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import { Lag } from "./lag";
+import { screenRenderEngine } from "./renderEngine";
 
 const textColor = "#f99021";
 
@@ -18,34 +13,7 @@ export const initScreen = (
 ): [() => void, THREE.ShaderMaterial] => {
   const sceneRTT = new THREE.Scene();
 
-  const cameraRTT = new THREE.OrthographicCamera(-0.1, 1.496, 0.1, -1.1, 1, 3);
-  sceneRTT.add(cameraRTT);
-  cameraRTT.position.set(0, 0, 1);
-
-  const rtTexture = new THREE.WebGLRenderTarget(512 * 1.33, 512, {
-    format: THREE.RGBFormat,
-  });
-
-  const composer = new EffectComposer(renderer, rtTexture);
-  composer.renderToScreen = false;
-
-  const renderPass = new RenderPass(sceneRTT, cameraRTT);
-  composer.addPass(renderPass);
-
-
-  const noiseMat = new THREE.ShaderMaterial({
-    uniforms: {
-      uDiffuse: { value: null },
-      uTime: { value: 1 },
-      uProgress: { value: 1.2 },
-    },
-    vertexShader: vertexShader,
-    fragmentShader: noiseFragmentShader,
-  });
-
-  const bloomPass = new UnrealBloomPass(new THREE.Vector2(128, 128), 1, 0.4, 0);
-  composer.addPass(bloomPass);
-
+  
   // Geometry
   const backGround = new THREE.Mesh(
     new THREE.PlaneGeometry(1, 1, 1, 1),
@@ -150,37 +118,32 @@ export const initScreen = (
 
   let newDeltaTime = 0;
 
-  const lag = new Lag(composer.readBuffer, 512 * 1.33, 512);
+  const [screenRender, noiseMat] = screenRenderEngine(renderer,sceneRTT)
 
   const tick = () => {
     // Update controls
 
-    const deltaTime = DeltaTime();
+    
     // console.log(time)
     const elapsedTime = clock.getElapsedTime();
 
-    // if (Math.floor(elapsedTime * 2) % 2 == 0) {
+    if (Math.floor(elapsedTime * 2) % 2 == 0) {
       
-    //   caret.visible = false;
-    // } else {
-    //   caret.visible = true;
-    //   // lag.needUpdate = true;
-    // }
+      caret.visible = false;
+    } else {
+      caret.visible = true;
+    }
     // if (caretLastVisible != caret.visible) {
     //   lag.needUpdate = true;
     //   caret.position.y += -0.03
     // }
     // caretLastVisible = caret.visible
 
-    caret.position.y += -0.5 * deltaTime;
+    // caret.position.y += -0.5 * deltaTime;
 
-    newDeltaTime += deltaTime;
+    // newDeltaTime += deltaTime;
 
-    noiseMat.uniforms.uTime.value = elapsedTime;
-    noiseMat.uniforms.uProgress.value = uProgress;
-
-    uProgress -= deltaTime * 0.2;
-    if (uProgress < 0) uProgress = 1.2;
+    
 
     if (wordsToAnm.length > 0) {
       if (wordsToAnm[0].word.scale.x < wordsToAnm[0].width)
@@ -191,13 +154,14 @@ export const initScreen = (
       }
     }
 
-    lag.render(renderer);
-    composer.render();
+    screenRender()
+
+    
   };
 
   // composer.readBuffer.texture.magFilter = THREE.NearestFilter;
 
-  noiseMat.uniforms.uDiffuse.value = lag.outputTexture.texture;
+  
 
   return [tick, noiseMat];
 };
