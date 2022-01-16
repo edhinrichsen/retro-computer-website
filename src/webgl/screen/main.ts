@@ -16,8 +16,11 @@ import { Vector3 } from "three";
 import { Font, FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import { camera } from "../main";
+import { renderLag } from "./lag";
 
 const textColor = "#f99021";
+
+let lastFrame: THREE.Texture | undefined = undefined;
 
 export const initScreen = (
   renderer: THREE.WebGLRenderer
@@ -50,7 +53,8 @@ export const initScreen = (
 
   const noiseMat = new THREE.ShaderMaterial({
     uniforms: {
-      tDiffuse: { value: null },
+      uDiffuse: { value: null },
+      uLastFrame: { value: null },
       uTime: { value: 1 },
       uProgress: { value: 1.2 },
     },
@@ -62,7 +66,18 @@ export const initScreen = (
 
   const bloomPass = new UnrealBloomPass(new THREE.Vector2(128, 128), 1, 0.4, 0);
   composer.addPass(bloomPass);
-  // composer.addPass(bloomPass);
+
+  // const s = new ShaderPass({
+  //   uniforms: {
+  //     uDiffuse: { value: null },
+  //     uLastFrame: { value: null },
+  //     uTime: { value: 1 },
+  //     uProgress: { value: 1.2 },
+  //   },
+  //   vertexShader: noiseVertexShader,
+  //   fragmentShader: noiseFragmentShader,
+  // });
+  // composer.addPass(s);
 
   // Geometry
   const backGround = new THREE.Mesh(
@@ -91,8 +106,7 @@ export const initScreen = (
     for (let w of ws) {
       n = makeWord({ char: w, x: n[0], y: n[1], anm: true });
     }
-    caret.position.set(n[0]+0.02, n[1]-0.015, 0);
-    
+    caret.position.set(n[0] + 0.02, n[1] - 0.015, 0);
   });
 
   // const colors = [
@@ -197,7 +211,7 @@ export const initScreen = (
     // console.log(time)
     const elapsedTime = clock.getElapsedTime();
 
-    if (Math.floor(elapsedTime*2) % 2 == 0){
+    if (Math.floor(elapsedTime * 2) % 2 == 0) {
       caret.visible = false;
     } else {
       caret.visible = true;
@@ -235,10 +249,15 @@ export const initScreen = (
     // renderer.render(sceneRTT, cameraRTT);
 
     composer.render();
+
+    // lastFrame = renderLag(composer.readBuffer.texture).texture;
+    // noiseMat.uniforms.uDiffuse.value = lastFrame;
     // if (newDeltaTime >= 0.1) {
     //   composer.render();
     //   newDeltaTime = 0;
     // }
+
+    // renderLag(composer.readBuffer.texture);
 
     // plane.material =  new THREE.MeshBasicMaterial({ map: composer.readBuffer.texture })
 
@@ -252,6 +271,13 @@ export const initScreen = (
   };
 
   // composer.readBuffer.texture.magFilter = THREE.NearestFilter;
-  noiseMat.uniforms.tDiffuse.value = composer.readBuffer.texture;
+
+  if (!lastFrame) lastFrame = composer.readBuffer.texture;
+
+  
+  // noiseMat.uniforms.uDiffuse.value = renderLag(composer.readBuffer.texture).texture;
+  // noiseMat.uniforms.uLastFrame.value = lastFrame;
+  // lastFrame = composer.readBuffer.texture;
+
   return [tick, noiseMat];
 };

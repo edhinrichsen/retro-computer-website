@@ -15,11 +15,14 @@ import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import DeltaTime from "../DeltaTime";
 import { ExternalsPlugin } from "webpack";
 import { initScreen } from "./screen/main";
-import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
-import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
+import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
+import { initLag, renderLag } from "./screen/lag";
 
 let camera: any;
 const initWebGL = () => {
+
+  
   /**
    * Sizes
    */
@@ -31,6 +34,7 @@ const initWebGL = () => {
   // Canvas
   const canvas: any = document.querySelector("canvas.webgl");
   if (!canvas) console.error("no canvas");
+
 
   // Scene
   const scene = new THREE.Scene();
@@ -82,10 +86,10 @@ const initWebGL = () => {
   const planelikeGeometry = new THREE.BoxGeometry(1, 1, 1);
   const plane = new THREE.Mesh(
     planelikeGeometry,
-    texture,
-    // new THREE.MeshBasicMaterial({ color: 'red' })
+    // texture
+    new THREE.MeshBasicMaterial({ color: 'blue' })
   );
-  plane.scale.x = 1.33
+  plane.scale.x = 1.33;
 
   // console.log(screenMap)
   // const planelikeGeometry = new THREE.BoxGeometry(1, 1, 1);
@@ -106,10 +110,6 @@ const initWebGL = () => {
   const textureLoader = new THREE.TextureLoader();
   const flagTexture = textureLoader.load("/textures/flag-french.jpg");
 
-
-
-
-
   /**
    * Test mesh
    */
@@ -128,16 +128,29 @@ const initWebGL = () => {
    * Animate
    */
 
-
-
+  const XXrtTexture = new THREE.WebGLRenderTarget(512, 512, {
+    format: THREE.RGBFormat,
+  });
+   const [sceneRTT, cameraRTT, rtTexture] = initLag(512, 128, canvas);
+   console.log(sceneRTT, cameraRTT)
   const tick = () => {
     // Update controls
     controls.update();
 
     screenTick();
 
+    // plane.material.map = renderLag()
+
+    renderer.setRenderTarget(XXrtTexture);
+    renderer.render(sceneRTT, cameraRTT);
+
+    plane.material.map = XXrtTexture.texture
+
     renderer.setRenderTarget(null);
     renderer.render(scene, camera);
+
+    
+
 
     // composer.render()
     // renderer.render(sceneRTT, cameraRTT);
@@ -149,7 +162,7 @@ const initWebGL = () => {
   window.onload = tick;
 };
 
-export {initWebGL,camera}
+export { initWebGL, camera };
 
 /**
  * Base

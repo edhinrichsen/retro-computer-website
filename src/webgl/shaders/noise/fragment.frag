@@ -5,7 +5,8 @@
 
 #define NOISE_STRENGTH 0.15
 
-uniform sampler2D tDiffuse;
+uniform sampler2D uDiffuse;
+uniform sampler2D uLastFrame;
 uniform float uTime;
 uniform float uProgress;
 varying vec2 vUv;
@@ -32,7 +33,7 @@ vec4 progress(){
 
 void main()
         {
-            vec4 color = texture2D(tDiffuse, vUv);
+            vec4 color = texture2D(uDiffuse, vUv) + texture2D(uLastFrame, vUv);
             float r = rand(vUv*uTime);
             // color.rgb + uTint;
             // gl_FragColor = color;
@@ -40,6 +41,8 @@ void main()
             
             vec4 p = progress();
             gl_FragColor = color  +  (vec4(r,r,r,0) * (p.a + NOISE_STRENGTH)) + squareWave(vUv.y);
+
+            // gl_FragColor = texture2D(uDiffuse, vUv);
 
             // if (vUv.y > sin(uTime) && vUv.y < sin(uTime) + 0.1 ) {
             //     gl_FragColor += vec4(0.1,0.1,0.1,0);
