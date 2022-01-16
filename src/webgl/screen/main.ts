@@ -203,8 +203,10 @@ export const initScreen = (
 
   let newDeltaTime = 0;
 
-  const lag = new Lag(composer.readBuffer, 512 * 1.33, 512)
+  const lag = new Lag(composer.readBuffer, 512 * 1.33, 512);
   // const rtTextureLag = new Lag(composer.readBuffer, 512 * 1.33, 512).rtTexture;
+
+  let caretLastVisible = true;
   const tick = () => {
     // Update controls
 
@@ -212,11 +214,20 @@ export const initScreen = (
     // console.log(time)
     const elapsedTime = clock.getElapsedTime();
 
-    if (Math.floor(elapsedTime * 2) % 2 == 0) {
-      caret.visible = false;
-    } else {
-      caret.visible = true;
-    }
+    // if (Math.floor(elapsedTime * 2) % 2 == 0) {
+      
+    //   caret.visible = false;
+    // } else {
+    //   caret.visible = true;
+    //   // lag.needUpdate = true;
+    // }
+    // if (caretLastVisible != caret.visible) {
+    //   lag.needUpdate = true;
+    //   caret.position.y += -0.03
+    // }
+    // caretLastVisible = caret.visible
+
+    caret.position.y += -0.5 * deltaTime;
 
     newDeltaTime += deltaTime;
 
@@ -234,7 +245,6 @@ export const initScreen = (
         wordsToAnm.shift();
         time = 0;
       }
-      time += deltaTime * 12;
     }
 
     // let batPos = mouse.x / window.innerWidth / 0.8 - 0.1 - 0.1;
@@ -273,8 +283,6 @@ export const initScreen = (
 
   // composer.readBuffer.texture.magFilter = THREE.NearestFilter;
 
-
-  
   noiseMat.uniforms.uDiffuse.value = lag.outputTexture.texture;
   // noiseMat.uniforms.uLastFrame.value = lastFrame;
   // lastFrame = composer.readBuffer.texture;

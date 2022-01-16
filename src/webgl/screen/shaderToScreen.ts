@@ -11,7 +11,6 @@ class ShaderToScreen {
   outputTexture: THREE.WebGLRenderTarget;
   shader: THREE.ShaderMaterial;
   constructor(
-    buffer: THREE.WebGLRenderTarget,
     shader: THREE.ShaderMaterialParameters,
     width: number,
     height: number
@@ -35,7 +34,7 @@ class ShaderToScreen {
     });
 
     this.shader = new THREE.ShaderMaterial(shader);
-    this.shader.uniforms.uDiffuse.value = buffer.texture;
+    // this.shader.uniforms.uDiffuse.value = buffer.texture;
 
     const plane = new THREE.Mesh(
       new THREE.PlaneGeometry(1 * aspect, 1, 1, 1),
