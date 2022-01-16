@@ -85,6 +85,7 @@ const initWebGL = () => {
     texture,
     // new THREE.MeshBasicMaterial({ color: 'red' })
   );
+  plane.scale.x = 1.33
 
   // console.log(screenMap)
   // const planelikeGeometry = new THREE.BoxGeometry(1, 1, 1);

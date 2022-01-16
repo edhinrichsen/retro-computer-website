@@ -22,11 +22,11 @@ export const initScreen = (
 ): [() => void, THREE.ShaderMaterial] => {
   const sceneRTT = new THREE.Scene();
 
-  const cameraRTT = new THREE.OrthographicCamera(-0.1, 1.1, 0.1, -1.1, 1, 3);
+  const cameraRTT = new THREE.OrthographicCamera(-0.1, 1.496, 0.1, -1.1, 1, 3);
   sceneRTT.add(cameraRTT);
   cameraRTT.position.set(0, 0, 1);
 
-  const rtTexture = new THREE.WebGLRenderTarget(256, 256, {
+  const rtTexture = new THREE.WebGLRenderTarget(512*1.33, 512, {
     format: THREE.RGBFormat,
   });
 
@@ -39,6 +39,8 @@ export const initScreen = (
   composer.addPass(renderPass);
 
   // const bloomPass = new BloomPass()
+
+  // h = 1.2 1.596
 
   // const dotScreenPass = new DotScreenPass()
   // const rgbShiftShader = new ShaderPass(RGBShiftShader)
@@ -86,7 +88,7 @@ fontLoader.load(
         console.log('loaded')
         font = _font;
         let n: [number, number, any] | [number, number] = [0, 0];
-        const ws = 'edward:~$ cd home'
+        const ws = 'ed:~$ cd home/uni/2019'
         for (let w of ws) {
           n = makeWord({char: w, x: n[0], y: n[1], anm: true });
         }
@@ -133,7 +135,7 @@ fontLoader.load(
 
     const color = '#f99021'
 
-    if (width + x > 1) {
+    if (width + x > 1.396) {
       y += leading;
       x = 0;
     }
