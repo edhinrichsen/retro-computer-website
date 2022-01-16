@@ -10,7 +10,7 @@ const textColor = "#f99021";
 
 export const initScreen = (
   renderer: THREE.WebGLRenderer
-): [() => void, THREE.ShaderMaterial] => {
+): [() => void, THREE.Material] => {
   const sceneRTT = new THREE.Scene();
 
   // Geometry
