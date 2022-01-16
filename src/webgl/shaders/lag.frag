@@ -1,5 +1,6 @@
-#define LAG 0.5
-#define LAG_INVERSE 0.5
+#define LAG 0
+
+#define LAG_INVERSE 0.2
 
 uniform sampler2D uDiffuse;
 uniform sampler2D uLagTex;
