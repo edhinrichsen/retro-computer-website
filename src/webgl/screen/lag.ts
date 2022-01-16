@@ -1,49 +1,48 @@
 import * as THREE from "three";
+// @ts-ignore
+import vertexShader from "../shaders/vertex.vert";
+// @ts-ignore
+import lagFragmentShader from "../shaders/lag.frag";
+import { ShaderToScreen } from "./shaderToScreen";
 // import { seededRandom } from "three/src/math/MathUtils";
 
-let sceneRTT: any;
-let cameraRTT: any;
-let rtTexture: any;
+class Lag {
+  sceneRTT: any;
+  cameraRTT: any;
+  shaderToScreen: ShaderToScreen;
+  outputTexture: THREE.WebGLRenderTarget;
 
-function initLag(buffer: THREE.WebGLRenderTarget, width: number, height: number) {
-  const aspect = width / height;
-  sceneRTT = new THREE.Scene();
-  cameraRTT = new THREE.OrthographicCamera(
-    -0.5 * aspect,
-    0.5 * aspect,
-    0.5,
-    -0.5,
-    1,
-    3
-  );
-  cameraRTT.position.set(0, 0, 1);
-  sceneRTT.add(cameraRTT);
-  cameraRTT.position.set(0, 0, 1);
-  const plane = new THREE.Mesh(
-    new THREE.PlaneGeometry(1 * aspect, 1, 1, 1),
-    new THREE.MeshBasicMaterial({map: buffer.texture})
-    // new THREE.MeshBasicMaterial({ color: 'red' })
-  );
-  //   plane.position.set(0,0.5,0)
-  //   plane.scale.set(0.1,0.1,1)
-  sceneRTT.add(plane);
-  //   sceneRTT.add(plane);
-  sceneRTT.add(new THREE.AxesHelper(0));
+  //  lagTex: THREE.WebGLRenderTarget;
+  lagMat: THREE.ShaderMaterial;
+  constructor(buffer: THREE.WebGLRenderTarget, width: number, height: number) {
+    this.lagMat = new THREE.ShaderMaterial();
+
+    this.shaderToScreen = new ShaderToScreen(
+      buffer,
+      {
+        uniforms: {
+          uDiffuse: { value: null },
+        },
+        vertexShader: vertexShader,
+        fragmentShader: lagFragmentShader,
+      },
+      width,
+      height
+    );
+    this.outputTexture = this.shaderToScreen.outputTexture
+  }
 
 
-  rtTexture = new THREE.WebGLRenderTarget(width, height, {
-    format: THREE.RGBFormat,
-  });
+  render(renderer: THREE.WebGLRenderer, tex?: THREE.Texture) {
+    
+    this.shaderToScreen.render(renderer)
 
-  return rtTexture
+    // lagTex.dispose()
+    // lagTex = rtTexture.clone()
+    // lagTex.setTexture(rtTexture.texture.clone())
 
-  
+    // lagMat.uniforms.uLagTex.value = lagTex.texture
+  }
 }
 
-function renderLag(renderer: THREE.WebGLRenderer, tex?: THREE.Texture) {
-    renderer.setRenderTarget(rtTexture);
-    renderer.clear();
-    renderer.render(sceneRTT, cameraRTT);
-}
-
-export { initLag, renderLag };
+export { Lag };

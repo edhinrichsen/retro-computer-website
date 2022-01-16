@@ -9,14 +9,14 @@ import { GlitchPass } from "three/examples/jsm/postprocessing/GlitchPass.js";
 import { RGBShiftShader } from "three/examples/jsm/shaders/RGBShiftShader.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 // @ts-ignore
-import noiseVertexShader from "../shaders/noise/vertex.vert";
+import vertexShader from "../shaders/vertex.vert";
 // @ts-ignore
-import noiseFragmentShader from "../shaders/noise/fragment.frag";
+import noiseFragmentShader from "../shaders/noise.frag";
 import { Vector3 } from "three";
 import { Font, FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import { camera } from "../main";
-import { initLag, renderLag } from "./lag";
+import { Lag } from "./lag";
 
 const textColor = "#f99021";
 
@@ -54,11 +54,10 @@ export const initScreen = (
   const noiseMat = new THREE.ShaderMaterial({
     uniforms: {
       uDiffuse: { value: null },
-      uLastFrame: { value: null },
       uTime: { value: 1 },
       uProgress: { value: 1.2 },
     },
-    vertexShader: noiseVertexShader,
+    vertexShader: vertexShader,
     fragmentShader: noiseFragmentShader,
   });
 
@@ -204,7 +203,8 @@ export const initScreen = (
 
   let newDeltaTime = 0;
 
-  const rtTextureLag = initLag(composer.readBuffer, 512 * 1.33, 512);
+  const lag = new Lag(composer.readBuffer, 512 * 1.33, 512)
+  // const rtTextureLag = new Lag(composer.readBuffer, 512 * 1.33, 512).rtTexture;
   const tick = () => {
     // Update controls
 
@@ -248,7 +248,7 @@ export const initScreen = (
     // renderer.setRenderTarget(rtTexture);
     // renderer.clear();
     // renderer.render(sceneRTT, cameraRTT);
-    renderLag(renderer);
+    lag.render(renderer);
     composer.render();
 
     // lastFrame = renderLag(composer.readBuffer.texture).texture;
@@ -275,7 +275,7 @@ export const initScreen = (
 
 
   
-  noiseMat.uniforms.uDiffuse.value = rtTextureLag.texture;
+  noiseMat.uniforms.uDiffuse.value = lag.outputTexture.texture;
   // noiseMat.uniforms.uLastFrame.value = lastFrame;
   // lastFrame = composer.readBuffer.texture;
 
