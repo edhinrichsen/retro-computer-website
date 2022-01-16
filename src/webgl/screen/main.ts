@@ -13,9 +13,11 @@ import noiseVertexShader from "../shaders/noise/vertex.vert";
 // @ts-ignore
 import noiseFragmentShader from "../shaders/noise/fragment.frag";
 import { Vector3 } from "three";
-import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
-import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
+import { Font, FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import { camera } from "../main";
+
+const textColor = "#f99021";
 
 export const initScreen = (
   renderer: THREE.WebGLRenderer
@@ -26,7 +28,7 @@ export const initScreen = (
   sceneRTT.add(cameraRTT);
   cameraRTT.position.set(0, 0, 1);
 
-  const rtTexture = new THREE.WebGLRenderTarget(512*1.33, 512, {
+  const rtTexture = new THREE.WebGLRenderTarget(512 * 1.33, 512, {
     format: THREE.RGBFormat,
   });
 
@@ -58,12 +60,7 @@ export const initScreen = (
 
   // composer.addPass(noiseShader);
 
-  const bloomPass = new UnrealBloomPass(
-    new THREE.Vector2(128, 128),
-    1,
-    0.4,
-    0
-  );
+  const bloomPass = new UnrealBloomPass(new THREE.Vector2(128, 128), 1, 0.4, 0);
   composer.addPass(bloomPass);
   // composer.addPass(bloomPass);
 
@@ -75,27 +72,28 @@ export const initScreen = (
   backGround.position.set(0.5, -0.5, -0.01);
   // sceneRTT.add(backGround);
 
+  const caret = new THREE.Mesh(
+    new THREE.PlaneBufferGeometry(0.04, 0.06),
+    new THREE.MeshBasicMaterial({ color: textColor })
+  );
+  sceneRTT.add(caret);
 
-      /**
- * Fonts
- */
-const fontLoader = new FontLoader()
-let font: Font | undefined = undefined;
-fontLoader.load(
-    '/fonts/public-pixel.json',
-    (_font) =>
-    {
-        console.log('loaded')
-        font = _font;
-        let n: [number, number, any] | [number, number] = [0, 0];
-        const ws = 'ed:~$ cd home/uni/2019'
-        for (let w of ws) {
-          n = makeWord({char: w, x: n[0], y: n[1], anm: true });
-        }
-        
+  /**
+   * Fonts
+   */
+  const fontLoader = new FontLoader();
+  let font: Font | undefined = undefined;
+  fontLoader.load("/fonts/public-pixel.json", (_font) => {
+    console.log("loaded");
+    font = _font;
+    let n: [number, number, any] | [number, number] = [0, 0];
+    const ws = "ed:~$ cd home/uni/2019";
+    for (let w of ws) {
+      n = makeWord({ char: w, x: n[0], y: n[1], anm: true });
     }
-)
-
+    caret.position.set(n[0]+0.02, n[1]-0.015, 0);
+    
+  });
 
   // const colors = [
   //   "#568ca1",
@@ -115,16 +113,14 @@ fontLoader.load(
   const words = [];
   const wordsToAnm: { word: THREE.Group; width: number }[] = [];
   function makeWord(props: {
-    char: string,
+    char: string;
     x?: number;
     y?: number;
     width?: number;
     color?: THREE.ColorRepresentation;
     anm?: boolean;
   }): [number, number, THREE.Group] {
-
-
-    const size = 0.04
+    const size = 0.04;
     const height = size;
     const width = size;
     const leading = height * 2;
@@ -132,8 +128,6 @@ fontLoader.load(
 
     let x = props.x || 0;
     let y = props.y || 0;
-
-    const color = '#f99021'
 
     if (width + x > 1.396) {
       y += leading;
@@ -146,28 +140,22 @@ fontLoader.load(
 
     const m = new THREE.Mesh(
       new THREE.PlaneGeometry(1, 1, 1, 1),
-      new THREE.MeshBasicMaterial({ color: color })
+      new THREE.MeshBasicMaterial({ color: textColor })
     );
     m.position.set(0.5, -height / 2, -0.01);
     m.scale.x = 0.05;
 
-    const textGeometry = new TextGeometry(
-      props.char,
-      {
-          font: font as any,
-          size: size,
-          height: 0.0001,
-          curveSegments: 12,
-          bevelEnabled: false,
-      }
-  
-  )
-  const textMaterial = new THREE.MeshBasicMaterial({color: color})
-  const text = new THREE.Mesh(textGeometry, textMaterial)
-  text.position.set(0,-height,-0.01)
-  sceneRTT.add(text)
-
-
+    const textGeometry = new TextGeometry(props.char, {
+      font: font as any,
+      size: size,
+      height: 0.0001,
+      curveSegments: 12,
+      bevelEnabled: false,
+    });
+    const textMaterial = new THREE.MeshBasicMaterial({ color: textColor });
+    const text = new THREE.Mesh(textGeometry, textMaterial);
+    text.position.set(0, -height, -0.01);
+    sceneRTT.add(text);
 
     const word = new THREE.Group().add(text);
     m.scale.y = height;
@@ -185,9 +173,6 @@ fontLoader.load(
 
     return [width + tracking + x, y, word];
   }
-
-
-
 
   // const [_x, _y, bat] = makeWord({ x: 0.4, y: 0.9, width: 0.2, color: "red" });
   // bat.scale.x = 0.2;
@@ -211,6 +196,12 @@ fontLoader.load(
     const deltaTime = DeltaTime();
     // console.log(time)
     const elapsedTime = clock.getElapsedTime();
+
+    if (Math.floor(elapsedTime*2) % 2 == 0){
+      caret.visible = false;
+    } else {
+      caret.visible = true;
+    }
 
     newDeltaTime += deltaTime;
 
