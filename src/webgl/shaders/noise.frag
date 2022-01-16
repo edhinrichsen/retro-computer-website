@@ -1,9 +1,10 @@
 #define PI 3.1415926538
 
-#define LINE_SIZE 150.0
-#define LINE_STRENGTH 0.02
+#define LINE_SIZE 250.0
+#define LINE_STRENGTH 0.05
+#define LINE_OFFSET 2.0
 
-#define NOISE_STRENGTH 0.15
+#define NOISE_STRENGTH 0.125
 
 uniform sampler2D uDiffuse;
 uniform float uTime;
@@ -20,7 +21,8 @@ float squareWave(float x){
          (4.0/PI * sin(PI*LINE_SIZE*x))
         +(4.0/PI * 1.0/3.0 * sin(3.0*PI*LINE_SIZE*x))
         +(4.0/PI * 1.0/5.0 * sin(5.0*PI*LINE_SIZE*x))
-    )*LINE_STRENGTH;
+        - LINE_OFFSET
+        )*LINE_STRENGTH ;
 }
 
 vec4 progress(){
