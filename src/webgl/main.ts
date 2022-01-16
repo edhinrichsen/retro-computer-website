@@ -17,11 +17,14 @@ import { ExternalsPlugin } from "webpack";
 import { initScreen } from "./screen/main";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
+import Stats from "stats.js";
 
 let camera: any;
 const initWebGL = () => {
+  var stats = new Stats();
+  stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+  document.body.appendChild(stats.dom);
 
-  
   /**
    * Sizes
    */
@@ -33,7 +36,6 @@ const initWebGL = () => {
   // Canvas
   const canvas: any = document.querySelector("canvas.webgl");
   if (!canvas) console.error("no canvas");
-
 
   // Scene
   const scene = new THREE.Scene();
@@ -82,9 +84,6 @@ const initWebGL = () => {
 
   const [screenTick, texture] = initScreen(renderer);
 
-
-
-
   const planelikeGeometry = new THREE.BoxGeometry(1, 1, 1);
   const plane = new THREE.Mesh(
     planelikeGeometry,
@@ -131,6 +130,7 @@ const initWebGL = () => {
    */
 
   const tick = () => {
+    stats.begin();
     // Update controls
     controls.update();
 
@@ -141,23 +141,19 @@ const initWebGL = () => {
     // renderer.setRenderTarget(XXrtTexture);
     // renderer.render(sceneRTT, cameraRTT);
 
-
     // renderer.setRenderTarget(rtTexture);
     // renderer.clear();
     // renderer.render(sceneRTT, cameraRTT);
-
 
     // plane.material.map = XXrtTexture.texture
 
     renderer.setRenderTarget(null);
     renderer.render(scene, camera);
 
-    
-
-
     // composer.render()
     // renderer.render(sceneRTT, cameraRTT);
 
+    stats.end();
     // Call tick again on the next frame
     window.requestAnimationFrame(tick);
   };
