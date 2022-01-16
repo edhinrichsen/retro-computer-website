@@ -3,7 +3,7 @@ import DeltaTime from "../../DeltaTime";
 
 import { Font, FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
-import { Lag } from "./lag";
+
 import { screenRenderEngine } from "./renderEngine";
 
 const textColor = "#f99021";
@@ -13,7 +13,6 @@ export const initScreen = (
 ): [() => void, THREE.ShaderMaterial] => {
   const sceneRTT = new THREE.Scene();
 
-  
   // Geometry
   const backGround = new THREE.Mesh(
     new THREE.PlaneGeometry(1, 1, 1, 1),
@@ -35,15 +34,36 @@ export const initScreen = (
   fontLoader.load("/fonts/public-pixel.json", (_font) => {
     console.log("loaded");
     font = _font;
+    console.log(font);
     let n: [number, number, any] | [number, number] = [0, 0];
-    const ws = "ed:~$ cd home/uni/2019";
+    const ws = "ed:~$ cd home/uni/2019   ";
     for (let w of ws) {
       n = makeWord({ char: w, x: n[0], y: n[1], anm: true });
     }
-    caret.position.set(n[0] + 0.02, n[1] - 0.015, 0);
+    caret.position.set(n[0] + 0.02, -n[1] - 0.015, 0);
+    window.addEventListener('keydown', (ev) => {
+      // ev.key
+      console.log(ev.key);
+      if (ev.key == "Backspace") {
+        // caret.position.x -= 0.04;
+        const w = words.pop();
+        if (w) {
+          sceneRTT.remove(w);
+          n = [w.position.x, -w.position.y];
+          caret.position.set(n[0] + 0.02, -n[1] - 0.015, 0);
+        }
+      } else {
+        caret.visible = true;
+        // caret.position.x += 0.04;
+        n = makeWord({ char: ev.key, x: n[0], y: n[1], anm: true });
+        caret.position.set(n[0] + 0.02, -n[1] - 0.015, 0);
+      }
+    });
   });
 
   const wordsToAnm: { word: THREE.Group; width: number }[] = [];
+
+  const words: THREE.Group[] = [];
   function makeWord(props: {
     char: string;
     x?: number;
@@ -94,13 +114,11 @@ export const initScreen = (
     word.position.x = x;
     word.position.y = -y;
 
-    // if (props.anm) {
-    //   word.scale.x = 1;
-    //   words.push({ word: word, width: width });
-    //   wordsToAnm.push({ word: word, width: width });
-    // } else {
-    //   word.scale.x = width;
-    // }
+    if (props.anm) {
+      // word.scale.x = 1;
+      words.push(word);
+      // wordsToAnm.push({ word: word, width: width });
+    }
     sceneRTT.add(word);
 
     return [width + tracking + x, y, word];
@@ -118,18 +136,16 @@ export const initScreen = (
 
   let newDeltaTime = 0;
 
-  const [screenRender, noiseMat] = screenRenderEngine(renderer,sceneRTT)
+  const [screenRender, noiseMat] = screenRenderEngine(renderer, sceneRTT);
 
   const tick = () => {
     // Update controls
 
-    
     // console.log(time)
     const elapsedTime = clock.getElapsedTime();
 
     if (Math.floor(elapsedTime * 2) % 2 == 0) {
-      
-      caret.visible = false;
+      // caret.visible = false;
     } else {
       caret.visible = true;
     }
@@ -143,8 +159,6 @@ export const initScreen = (
 
     // newDeltaTime += deltaTime;
 
-    
-
     if (wordsToAnm.length > 0) {
       if (wordsToAnm[0].word.scale.x < wordsToAnm[0].width)
         wordsToAnm[0].word.scale.x = 0.05 * Math.floor(time);
@@ -154,14 +168,10 @@ export const initScreen = (
       }
     }
 
-    screenRender()
-
-    
+    screenRender();
   };
 
   // composer.readBuffer.texture.magFilter = THREE.NearestFilter;
-
-  
 
   return [tick, noiseMat];
 };
