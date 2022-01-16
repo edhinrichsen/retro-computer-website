@@ -36,7 +36,7 @@ export const initScreen = (
     font = _font;
     console.log(font);
     let n: [number, number, any] | [number, number] = [0, 0];
-    const ws = "ed:~$ cd home/uni/2019   ";
+    const ws = `root:~$ curl edwardh.io  Hi there,                I'm Edward                                        root:~$ cd /uni/2019     root:~/uni/2019$ `;
     for (let w of ws) {
       n = makeWord({ char: w, x: n[0], y: n[1], anm: true });
     }
