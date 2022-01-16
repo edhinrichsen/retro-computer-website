@@ -17,7 +17,6 @@ import { ExternalsPlugin } from "webpack";
 import { initScreen } from "./screen/main";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
-import { initLag, renderLag } from "./screen/lag";
 
 let camera: any;
 const initWebGL = () => {
@@ -83,11 +82,14 @@ const initWebGL = () => {
 
   const [screenTick, texture] = initScreen(renderer);
 
+
+
+
   const planelikeGeometry = new THREE.BoxGeometry(1, 1, 1);
   const plane = new THREE.Mesh(
     planelikeGeometry,
-    // texture
-    new THREE.MeshBasicMaterial({ color: 'blue' })
+    texture
+    // new THREE.MeshBasicMaterial({ map: rtTexture.texture })
   );
   plane.scale.x = 1.33;
 
@@ -128,11 +130,6 @@ const initWebGL = () => {
    * Animate
    */
 
-  const XXrtTexture = new THREE.WebGLRenderTarget(512, 512, {
-    format: THREE.RGBFormat,
-  });
-   const [sceneRTT, cameraRTT, rtTexture] = initLag(512, 128, canvas);
-   console.log(sceneRTT, cameraRTT)
   const tick = () => {
     // Update controls
     controls.update();
@@ -141,10 +138,16 @@ const initWebGL = () => {
 
     // plane.material.map = renderLag()
 
-    renderer.setRenderTarget(XXrtTexture);
-    renderer.render(sceneRTT, cameraRTT);
+    // renderer.setRenderTarget(XXrtTexture);
+    // renderer.render(sceneRTT, cameraRTT);
 
-    plane.material.map = XXrtTexture.texture
+
+    // renderer.setRenderTarget(rtTexture);
+    // renderer.clear();
+    // renderer.render(sceneRTT, cameraRTT);
+
+
+    // plane.material.map = XXrtTexture.texture
 
     renderer.setRenderTarget(null);
     renderer.render(scene, camera);

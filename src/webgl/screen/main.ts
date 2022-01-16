@@ -16,7 +16,7 @@ import { Vector3 } from "three";
 import { Font, FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import { camera } from "../main";
-import { renderLag } from "./lag";
+import { initLag, renderLag } from "./lag";
 
 const textColor = "#f99021";
 
@@ -204,6 +204,7 @@ export const initScreen = (
 
   let newDeltaTime = 0;
 
+  const rtTextureLag = initLag(composer.readBuffer, 512, 128);
   const tick = () => {
     // Update controls
 
@@ -247,7 +248,7 @@ export const initScreen = (
     // renderer.setRenderTarget(rtTexture);
     // renderer.clear();
     // renderer.render(sceneRTT, cameraRTT);
-
+    renderLag(renderer);
     composer.render();
 
     // lastFrame = renderLag(composer.readBuffer.texture).texture;
@@ -272,10 +273,9 @@ export const initScreen = (
 
   // composer.readBuffer.texture.magFilter = THREE.NearestFilter;
 
-  if (!lastFrame) lastFrame = composer.readBuffer.texture;
 
   
-  // noiseMat.uniforms.uDiffuse.value = renderLag(composer.readBuffer.texture).texture;
+  noiseMat.uniforms.uDiffuse.value = rtTextureLag.texture;
   // noiseMat.uniforms.uLastFrame.value = lastFrame;
   // lastFrame = composer.readBuffer.texture;
 
