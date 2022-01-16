@@ -3,24 +3,15 @@ import DeltaTime from "../../DeltaTime";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
-// import { BloomPass } from 'three/examples/jsm/postprocessing/BloomPass.js';
-import { DotScreenPass } from "three/examples/jsm/postprocessing/DotScreenPass.js";
-import { GlitchPass } from "three/examples/jsm/postprocessing/GlitchPass.js";
-import { RGBShiftShader } from "three/examples/jsm/shaders/RGBShiftShader.js";
-import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 // @ts-ignore
 import vertexShader from "../shaders/vertex.vert";
 // @ts-ignore
 import noiseFragmentShader from "../shaders/noise.frag";
-import { Vector3 } from "three";
 import { Font, FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
-import { camera } from "../main";
 import { Lag } from "./lag";
 
 const textColor = "#f99021";
-
-let lastFrame: THREE.Texture | undefined = undefined;
 
 export const initScreen = (
   renderer: THREE.WebGLRenderer
@@ -35,21 +26,12 @@ export const initScreen = (
     format: THREE.RGBFormat,
   });
 
-  // const renderer = new THREE.WebGLRenderer();
   const composer = new EffectComposer(renderer, rtTexture);
   composer.renderToScreen = false;
 
-  // renderer.render(sceneRTT, cameraRTT);
   const renderPass = new RenderPass(sceneRTT, cameraRTT);
   composer.addPass(renderPass);
 
-  // const bloomPass = new BloomPass()
-
-  // h = 1.2 1.596
-
-  // const dotScreenPass = new DotScreenPass()
-  // const rgbShiftShader = new ShaderPass(RGBShiftShader)
-  // composer.addPass(rgbShiftShader)
 
   const noiseMat = new THREE.ShaderMaterial({
     uniforms: {
@@ -61,22 +43,8 @@ export const initScreen = (
     fragmentShader: noiseFragmentShader,
   });
 
-  // composer.addPass(noiseShader);
-
   const bloomPass = new UnrealBloomPass(new THREE.Vector2(128, 128), 1, 0.4, 0);
   composer.addPass(bloomPass);
-
-  // const s = new ShaderPass({
-  //   uniforms: {
-  //     uDiffuse: { value: null },
-  //     uLastFrame: { value: null },
-  //     uTime: { value: 1 },
-  //     uProgress: { value: 1.2 },
-  //   },
-  //   vertexShader: noiseVertexShader,
-  //   fragmentShader: noiseFragmentShader,
-  // });
-  // composer.addPass(s);
 
   // Geometry
   const backGround = new THREE.Mesh(
@@ -84,7 +52,6 @@ export const initScreen = (
     new THREE.MeshBasicMaterial({ color: "red" })
   );
   backGround.position.set(0.5, -0.5, -0.01);
-  // sceneRTT.add(backGround);
 
   const caret = new THREE.Mesh(
     new THREE.PlaneBufferGeometry(0.04, 0.06),
@@ -108,22 +75,6 @@ export const initScreen = (
     caret.position.set(n[0] + 0.02, n[1] - 0.015, 0);
   });
 
-  // const colors = [
-  //   "#568ca1",
-  //   "#4fc1ff",
-  //   "#4ec9b0",
-  //   "#d4d4d4",
-  //   "#9cdcfe",
-  //   "#ce9178",
-  //   "#dcdcaa",
-  //   "#b5cea8",
-  //   "#6a9955",
-  //   "#569cd6",
-  //   "#c586c0",
-  // ];
-  // const colors = ["#42db82"];
-  const colors = ["#f99021"];
-  const words = [];
   const wordsToAnm: { word: THREE.Group; width: number }[] = [];
   function makeWord(props: {
     char: string;
@@ -187,10 +138,6 @@ export const initScreen = (
     return [width + tracking + x, y, word];
   }
 
-  // const [_x, _y, bat] = makeWord({ x: 0.4, y: 0.9, width: 0.2, color: "red" });
-  // bat.scale.x = 0.2;
-  // console.log(bat);
-
   const mouse = { x: 0, y: 0 };
   document.addEventListener("mousemove", (event) => {
     mouse.x = event.clientX;
@@ -204,9 +151,7 @@ export const initScreen = (
   let newDeltaTime = 0;
 
   const lag = new Lag(composer.readBuffer, 512 * 1.33, 512);
-  // const rtTextureLag = new Lag(composer.readBuffer, 512 * 1.33, 512).rtTexture;
 
-  let caretLastVisible = true;
   const tick = () => {
     // Update controls
 
@@ -231,7 +176,6 @@ export const initScreen = (
 
     newDeltaTime += deltaTime;
 
-    // @ts-ignore
     noiseMat.uniforms.uTime.value = elapsedTime;
     noiseMat.uniforms.uProgress.value = uProgress;
 
@@ -247,45 +191,13 @@ export const initScreen = (
       }
     }
 
-    // let batPos = mouse.x / window.innerWidth / 0.8 - 0.1 - 0.1;
-    // console.log(batPos);
-    // if (batPos < 0) batPos = 0;
-    // if (batPos > 0.8) batPos = 0.8;
-    // bat.position.x = batPos;
-
-    // Render first scene into texture
-
-    // renderer.setRenderTarget(rtTexture);
-    // renderer.clear();
-    // renderer.render(sceneRTT, cameraRTT);
     lag.render(renderer);
     composer.render();
-
-    // lastFrame = renderLag(composer.readBuffer.texture).texture;
-    // noiseMat.uniforms.uDiffuse.value = lastFrame;
-    // if (newDeltaTime >= 0.1) {
-    //   composer.render();
-    //   newDeltaTime = 0;
-    // }
-
-    // renderLag(composer.readBuffer.texture);
-
-    // plane.material =  new THREE.MeshBasicMaterial({ map: composer.readBuffer.texture })
-
-    // Render full screen quad with generated texture
-
-    // renderer.clear();
-    // renderer.render( sceneScreen, cameraRTT );
-
-    // Render second scene to screen
-    // (using first scene as regular texture)
   };
 
   // composer.readBuffer.texture.magFilter = THREE.NearestFilter;
 
   noiseMat.uniforms.uDiffuse.value = lag.outputTexture.texture;
-  // noiseMat.uniforms.uLastFrame.value = lastFrame;
-  // lastFrame = composer.readBuffer.texture;
 
   return [tick, noiseMat];
 };

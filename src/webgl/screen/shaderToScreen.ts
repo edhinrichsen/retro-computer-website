@@ -1,13 +1,8 @@
 import * as THREE from "three";
-// @ts-ignore
-import vertexShader from "../shaders/vertex.vert";
-// @ts-ignore
-import lagFragmentShader from "../shaders/lag.frag";
-// import { seededRandom } from "three/src/math/MathUtils";
 
 class ShaderToScreen {
-  sceneRTT: any;
-  cameraRTT: any;
+  sceneRTT: THREE.Scene;
+  cameraRTT: THREE.Camera;
   outputTexture: THREE.WebGLRenderTarget;
   shader: THREE.ShaderMaterial;
   constructor(
@@ -34,7 +29,6 @@ class ShaderToScreen {
     });
 
     this.shader = new THREE.ShaderMaterial(shader);
-    // this.shader.uniforms.uDiffuse.value = buffer.texture;
 
     const plane = new THREE.Mesh(
       new THREE.PlaneGeometry(1 * aspect, 1, 1, 1),
@@ -43,19 +37,12 @@ class ShaderToScreen {
     this.sceneRTT.add(plane);
     this.sceneRTT.add(new THREE.AxesHelper(0));
 
-    // return rtTexture;
   }
 
   render(renderer: THREE.WebGLRenderer, tex?: THREE.Texture) {
     renderer.setRenderTarget(this.outputTexture);
     renderer.clear();
     renderer.render(this.sceneRTT, this.cameraRTT);
-
-    // lagTex.dispose()
-    // lagTex = rtTexture.clone()
-    // lagTex.setTexture(rtTexture.texture.clone())
-
-    // lagMat.uniforms.uLagTex.value = lagTex.texture
   }
 }
 

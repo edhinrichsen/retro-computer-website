@@ -4,22 +4,15 @@ import vertexShader from "../shaders/vertex.vert";
 // @ts-ignore
 import lagFragmentShader from "../shaders/lag.frag";
 import { ShaderToScreen } from "./shaderToScreen";
-// import { seededRandom } from "three/src/math/MathUtils";
 
 class Lag {
-  sceneRTT: any;
-  cameraRTT: any;
   outputCopy: ShaderToScreen;
   shaderToScreen1: ShaderToScreen;
   outputTexture: THREE.WebGLRenderTarget;
-  needUpdate: boolean;
 
-  //  lagTex: THREE.WebGLRenderTarget;
   lagMat: THREE.ShaderMaterial;
   constructor(buffer: THREE.WebGLRenderTarget, width: number, height: number) {
     this.lagMat = new THREE.ShaderMaterial();
-
-    this.needUpdate = false;
     this.shaderToScreen1 = new ShaderToScreen(
       {
         uniforms: {
@@ -52,24 +45,8 @@ class Lag {
   }
 
   render(renderer: THREE.WebGLRenderer, tex?: THREE.Texture) {
-    if (this.needUpdate) {
-      this.shaderToScreen1.shader.uniforms.uNeedUpdate.value = true;
-
-      this.shaderToScreen1.render(renderer);
-
-      this.needUpdate = false;
-      this.shaderToScreen1.shader.uniforms.uNeedUpdate.value = false;
-    } else {
-      this.shaderToScreen1.render(renderer);
-    }
-
+    this.shaderToScreen1.render(renderer);
     this.outputCopy.render(renderer);
-
-    // lagTex.dispose()
-    // lagTex = rtTexture.clone()
-    // lagTex.setTexture(rtTexture.texture.clone())
-
-    // lagMat.uniforms.uLagTex.value = lagTex.texture
   }
 }
 
