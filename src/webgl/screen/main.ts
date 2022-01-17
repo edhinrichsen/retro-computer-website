@@ -38,24 +38,26 @@ export const initScreen = (
     let n: [number, number, any] | [number, number] = [0, 0];
     const ws = `root:~$ curl edwardh.io  Hi there,                I'm Edward                                        root:~$ cd /uni/2019     root:~/uni/2019$ `;
     for (let w of ws) {
-      n = makeWord({ char: w, x: n[0], y: n[1], anm: true });
+      n = placeChar(w, n[0], n[1], true);
     }
     caret.position.set(n[0] + 0.02, -n[1] - 0.015, 0);
-    window.addEventListener('keydown', (ev) => {
+    window.addEventListener("keydown", (ev) => {
       // ev.key
       console.log(ev.key);
       if (ev.key == "Backspace") {
         // caret.position.x -= 0.04;
-        const w = words.pop();
+        const w = chars.pop();
         if (w) {
-          sceneRTT.remove(w);
-          n = [w.position.x, -w.position.y];
-          caret.position.set(n[0] + 0.02, -n[1] - 0.015, 0);
+          if (!w.fixed) {
+            sceneRTT.remove(w.char);
+            n = [w.char.position.x, -w.char.position.y];
+            caret.position.set(n[0] + 0.02, -n[1] - 0.015, 0);
+          } else chars.push(w);
         }
       } else {
         caret.visible = true;
         // caret.position.x += 0.04;
-        n = makeWord({ char: ev.key, x: n[0], y: n[1], anm: true });
+        n = placeChar(ev.key, n[0], n[1],false,true);
         caret.position.set(n[0] + 0.02, -n[1] - 0.015, 0);
       }
     });
@@ -63,41 +65,31 @@ export const initScreen = (
 
   const wordsToAnm: { word: THREE.Group; width: number }[] = [];
 
-  const words: THREE.Group[] = [];
-  function makeWord(props: {
-    char: string;
-    x?: number;
-    y?: number;
-    width?: number;
-    color?: THREE.ColorRepresentation;
-    anm?: boolean;
-  }): [number, number, THREE.Group] {
+  const chars: { char: THREE.Group; fixed: boolean }[] = [];
+  function placeChar(
+    char: string,
+    x: number = 0,
+    y: number = 0,
+    fixed: boolean = false,
+    highlight: boolean = false
+  ): [number, number, THREE.Group] {
     const size = 0.04;
     const height = size;
     const width = size;
     const leading = height * 2;
     const tracking = width * 0.4;
 
-    let x = props.x || 0;
-    let y = props.y || 0;
-
     if (width + x > 1.396) {
       y += leading;
       x = 0;
     }
-    // if (Math.random() > 0.9 && y > 0) {
-    //   y += margin * 4;
-    //   x = 0;
-    // }
 
-    const m = new THREE.Mesh(
-      new THREE.PlaneGeometry(1, 1, 1, 1),
-      new THREE.MeshBasicMaterial({ color: textColor })
-    );
-    m.position.set(0.5, -height / 2, -0.01);
-    m.scale.x = 0.05;
+    const charObj = new THREE.Group();
+    // m.scale.y = height;hh
+    charObj.position.x = x;
+    charObj.position.y = -y;
 
-    const textGeometry = new TextGeometry(props.char, {
+    const textGeometry = new TextGeometry(char, {
       font: font as any,
       size: size,
       height: 0.0001,
@@ -107,21 +99,27 @@ export const initScreen = (
     const textMaterial = new THREE.MeshBasicMaterial({ color: textColor });
     const text = new THREE.Mesh(textGeometry, textMaterial);
     text.position.set(0, -height, -0.01);
-    sceneRTT.add(text);
+    charObj.add(text);
 
-    const word = new THREE.Group().add(text);
-    m.scale.y = height;
-    word.position.x = x;
-    word.position.y = -y;
+    if (highlight){
+      const background = new THREE.Mesh(
+        new THREE.PlaneGeometry(width + tracking, height + leading/2, 1, 1),
+        new THREE.MeshBasicMaterial({ color: textColor })
+      );
 
-    if (props.anm) {
-      // word.scale.x = 1;
-      words.push(word);
-      // wordsToAnm.push({ word: word, width: width });
+      textMaterial.color.set('black')
+      // background.position.x = 0.5;
+      background.position.set(width / 2, -height / 2, -0.01);
+      // background.scale.x = 0.05;
+      charObj.add(background);
     }
-    sceneRTT.add(word);
 
-    return [width + tracking + x, y, word];
+
+    chars.push({ char: charObj, fixed: fixed });
+
+    sceneRTT.add(charObj);
+
+    return [width + tracking + x, y, charObj];
   }
 
   const mouse = { x: 0, y: 0 };
