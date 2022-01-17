@@ -35,9 +35,15 @@ export const initScreen = (
 
     placeStr("root:~$ curl edwardh.io");
     placeLinebreak();
+    // size = 0.04
     placeStr("Hi there,");
     placeLinebreak();
     placeStr("I'm Edward", true);
+    placeLinebreak();
+    placeStr("-Computer Scientist"); // •
+    placeLinebreak();
+    placeStr("-Designer");
+    // size = 0.03
     placeLinebreak();
     placeLinebreak();
     placeStr("root:~$ cd /uni/2019");
@@ -66,7 +72,7 @@ export const initScreen = (
 
   // const wordsToAnm: { word: THREE.Group; width: number }[] = [];
 
-  const size = 0.04;
+  let size = 0.04
   const height = size;
   const width = size;
   const leading = height * 2;
