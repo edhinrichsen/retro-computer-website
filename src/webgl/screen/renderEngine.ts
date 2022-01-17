@@ -13,7 +13,7 @@ import { ShaderToScreen } from "./shaderToScreen";
 export function screenRenderEngine(
   renderer: THREE.WebGLRenderer,
   sceneRTT: THREE.Scene
-): [() => void, THREE.Material] {
+): [(deltaTime:  number) => void, THREE.Material] {
   const cameraRTT = new THREE.OrthographicCamera(-0.1, 1.496, 0.1, -1.1, 1, 3);
   sceneRTT.add(cameraRTT);
   cameraRTT.position.set(0, 0, 1);
@@ -46,8 +46,7 @@ export function screenRenderEngine(
 
   let uProgress = 1.2;
   const clock = new THREE.Clock();
-  const render = () => {
-    const deltaTime = DeltaTime();
+  const render = (deltaTime: number) => {
     const elapsedTime = clock.getElapsedTime();
 
     noiseMat.uniforms.uTime.value = elapsedTime;

@@ -133,10 +133,12 @@ const initWebGL = () => {
 
   const tick = () => {
     stats.begin();
+
+    const deltaTime = DeltaTime();
     // Update controls
     controls.update();
 
-    screenTick();
+    screenTick(deltaTime);
 
     // plane.material.map = renderLag()
 
