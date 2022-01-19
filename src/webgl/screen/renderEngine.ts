@@ -69,12 +69,12 @@ export function screenRenderEngine(
   const cubeTextureLoader = new THREE.CubeTextureLoader();
 
   const environmentMapTexture = cubeTextureLoader.load([
-    '/textures/environmentMaps/4/px.png',
-    '/textures/environmentMaps/4/nx.png',
-    '/textures/environmentMaps/4/py.png',
-    '/textures/environmentMaps/4/ny.png',
-    '/textures/environmentMaps/4/pz.png',
-    '/textures/environmentMaps/4/nz.png'
+    '/textures/environmentMaps/2/px.jpg',
+    '/textures/environmentMaps/2/nx.jpg',
+    '/textures/environmentMaps/2/py.jpg',
+    '/textures/environmentMaps/2/ny.jpg',
+    '/textures/environmentMaps/2/pz.jpg',
+    '/textures/environmentMaps/2/nz.jpg'
   ]);
 
   const shaderToScreen = new ShaderToScreen(

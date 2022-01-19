@@ -102,7 +102,7 @@ const initWebGL = () => {
 
   let screenMesh: THREE.Mesh;
   gltfLoader.load(
-    "/models/screen.glb",
+    "/models/screen2.glb",
     (gltf) => {
       console.log("success");
       // console.log(gltf);
