@@ -33,6 +33,22 @@ export const initScreen = (
 
     const ws = `root:~$ curl edwardh.io  Hi there,                I'm Edward                                        root:~$ cd /uni/2019     root:~/uni/2019$ `;
 
+    // placeHTML(
+    //   `
+    //   root:~$ curl edwardh.io
+    //   <br>
+    //   Hi there,
+    //   <br>
+    //   I'm Edward
+    //   <br>
+    //   -Computer Scientist
+    //   <br>
+    //   -Designer
+    //   <br>
+    //   <br>
+    //   root:~$ cd /uni/2019
+    //   `
+    // );
     placeStr("root:~$ curl edwardh.io");
     placeLinebreak();
     // size = 0.04
@@ -72,7 +88,7 @@ export const initScreen = (
 
   // const wordsToAnm: { word: THREE.Group; width: number }[] = [];
 
-  let size = 0.04
+  let size = 0.04;
   const height = size;
   const width = size;
   const leading = height * 2;
@@ -171,6 +187,22 @@ export const initScreen = (
   function placeStr(str: string, highlight: boolean = false) {
     for (let char of str) {
       placeChar(char, true, highlight);
+    }
+  }
+
+  function placeHTML(html: string) {
+    html = html.replace(/\n/g, "");
+    html = html.replace(/\s+/g, " ");
+    const text = html.split("<br>");
+    console.log(text);
+    for (let i = 0; i < text.length; i++) {
+      text[i] = text[i].replace(/^\s+|\s+$/g, '')
+      console.log(text[i]);
+      placeStr(text[i]);
+      if (i < text.length - 1) {
+        console.log("<br>");
+        placeLinebreak();
+      }
     }
   }
 
