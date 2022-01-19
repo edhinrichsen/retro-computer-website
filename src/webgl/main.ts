@@ -18,6 +18,7 @@ import { initScreen } from "./screen/main";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import Stats from "stats.js";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 let camera: any;
 const initWebGL = () => {
@@ -52,7 +53,7 @@ const initWebGL = () => {
     0.1,
     100
   );
-  camera.position.set(0, 0, 1.25);
+  camera.position.set(0, 0, -1.5);
   scene.add(camera);
 
   // Controls
@@ -94,6 +95,36 @@ const initWebGL = () => {
   );
   plane.scale.x = 1.33;
 
+  /**
+   * Models
+   */
+  const gltfLoader = new GLTFLoader();
+
+  let screenMesh: THREE.Mesh;
+  gltfLoader.load(
+    "/models/screen.glb",
+    (gltf) => {
+      console.log("success");
+      // console.log(gltf);
+      // screenMesh = gltf.scene.children[0];
+
+      screenMesh = gltf.scene.children[0] as any;
+      screenMesh.material = texture;
+      screenMesh.scale.y *= -1;
+      screenMesh.rotateY(Math.PI * 0.5);
+      console.log(screenMesh);
+      scene.add(screenMesh);
+    },
+    (progress) => {
+      console.log("progress");
+      console.log(progress);
+    },
+    (error) => {
+      console.log("error");
+      console.log(error);
+    }
+  );
+
   // console.log(screenMap)
   // const planelikeGeometry = new THREE.BoxGeometry(1, 1, 1);
   // const plane = new THREE.Mesh(
@@ -105,7 +136,7 @@ const initWebGL = () => {
   // const plane = new THREE.Mesh( planelikeGeometry, new THREE.MeshBasicMaterial( { color: 'red' } ) );
 
   // plane.position.set(0,100,-500);
-  scene.add(plane);
+  // scene.add(plane);
 
   /**
    * Textures
