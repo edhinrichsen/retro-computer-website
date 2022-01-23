@@ -97,22 +97,27 @@ export const initScreen = (
       placeLinebreak(terminalFont);
       placeLinebreak(terminalFont);
       // setSize(0.04);
-      placeStr("Hi there,", titleFont);
+      placeStr(" Hi there,", titleFont);
       placeLinebreak(titleFont);
+      placeStr(" ", titleFont);
       placeStr("I'm Edward", titleFont, true);
       placeLinebreak(titleFont);
-      placeStr("-Computer Scientist", titleFont); // •
+      placeStr(" -Computer Scientist", titleFont); // •
       placeLinebreak(titleFont);
-      placeStr("-Designer", titleFont);
+      placeStr(" -Designer", titleFont);
+      // placeLinebreak(titleFont);
+      placeLinebreak(titleFont);
+      placeStr(" ", titleFont);
+      placeStr("Type Help or scroll to get started", paragraphFont);
       placeLinebreak(terminalFont);
       placeLinebreak(terminalFont);
-      placeStr("root:~$ cd /uni/2019", terminalFont);
-      placeLinebreak(terminalFont);
-      placeHTML(
-        `My name is Edward Hinrichsen and I have recently completed a Bachelor of Science, majoring in Computing and Software Systems at the University of Melbourne. I have a passion for all things technology and design, from software engineering & machine learning to UI/UX & 3D graphics.`,
-        paragraphFont
-      );
-      // placeStr("root:~/uni/2019$ ", basisFont);
+      placeStr("root:~$ ", terminalFont);
+      // placeLinebreak(terminalFont);
+      // placeHTML(
+      //   `My name is Edward Hinrichsen and I have recently completed a Bachelor of Science, majoring in Computing and Software Systems at the University of Melbourne. I have a passion for all things technology and design, from software engineering & machine learning to UI/UX & 3D graphics.`,
+      //   paragraphFont
+      // );
+      // placeStr("root:~/uni/2019$ ", terminalFont);
 
       window.addEventListener("keydown", (ev) => {
         // ev.key
