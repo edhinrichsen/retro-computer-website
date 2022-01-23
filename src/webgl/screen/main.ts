@@ -33,7 +33,7 @@ export const initScreen = (
     tracking: number;
   };
 
-  const publicPixelFont: FontInfo = (function () {
+  const titleFont: FontInfo = (function () {
     let size = 0.04;
     let height = size;
     let width = size;
@@ -42,23 +42,35 @@ export const initScreen = (
     return { font: undefined, size, height, width, leading, tracking };
   })();
 
-  const basisFont: FontInfo = (function () {
+  const terminalFont: FontInfo = (function () {
+    const size = 0.04;
+    const height = size;
+    const width = size * 0.8;
+    const leading = height * 2;
+    const tracking = width * 0.2;
+    return { font: undefined, size, height, width, leading, tracking };
+  })();
+
+  const paragraphFont: FontInfo = (function () {
     const size = 0.03;
     const height = size;
-    const width = size*0.8;
+    const width = size * 0.8;
     const leading = height * 2.5;
     const tracking = width * 0.2;
     return { font: undefined, size, height, width, leading, tracking };
   })();
 
+
+
   const fontLoader = new FontLoader();
 
   fontLoader.load("/fonts/public-pixel.json", (font) => {
-    publicPixelFont.font = font;
+    titleFont.font = font;
     fontLoader.load("/fonts/chill.json", (font) => {
-    // fontLoader.load("/fonts/basis33.json", (font) => {
+      // fontLoader.load("/fonts/basis33.json", (font) => {
       console.log("loaded");
-      basisFont.font = font;
+      terminalFont.font = font;
+      paragraphFont.font = font;
       // font = _font;
       console.log(font);
       let n: [number, number, any] | [number, number] = [0, 0];
@@ -81,26 +93,26 @@ export const initScreen = (
       //   root:~$ cd /uni/2019
       //   `
       // );
-      placeStr("root:~$ curl edwardh.io", basisFont);
-      placeLinebreak(basisFont);
-      placeLinebreak(basisFont);
+      placeStr("root:~$ curl edwardh.io", terminalFont);
+      placeLinebreak(terminalFont);
+      placeLinebreak(terminalFont);
       // setSize(0.04);
-      placeStr("Hi there,", publicPixelFont);
-      placeLinebreak(publicPixelFont);
-      placeStr("I'm Edward", publicPixelFont, true);
-      placeLinebreak(publicPixelFont);
-      placeStr("-Computer Scientist", publicPixelFont); // •
-      placeLinebreak(publicPixelFont);
-      placeStr("-Designer", publicPixelFont);
-      placeLinebreak(basisFont);
-      placeLinebreak(basisFont);
-      placeStr("root:~$ cd /uni/2019", basisFont);
-      placeLinebreak(basisFont);
+      placeStr("Hi there,", titleFont);
+      placeLinebreak(titleFont);
+      placeStr("I'm Edward", titleFont, true);
+      placeLinebreak(titleFont);
+      placeStr("-Computer Scientist", titleFont); // •
+      placeLinebreak(titleFont);
+      placeStr("-Designer", titleFont);
+      placeLinebreak(terminalFont);
+      placeLinebreak(terminalFont);
+      placeStr("root:~$ cd /uni/2019", terminalFont);
+      placeLinebreak(terminalFont);
       placeHTML(
         `My name is Edward Hinrichsen and I have recently completed a Bachelor of Science, majoring in Computing and Software Systems at the University of Melbourne. I have a passion for all things technology and design, from software engineering & machine learning to UI/UX & 3D graphics.`,
-        basisFont
+        paragraphFont
       );
-      // placeStr("root:~/uni/2019$ ");
+      // placeStr("root:~/uni/2019$ ", basisFont);
 
       window.addEventListener("keydown", (ev) => {
         // ev.key
@@ -108,35 +120,34 @@ export const initScreen = (
         if (ev.key == "Backspace") {
           delChar();
         } else if (ev.key == "Enter") {
-          placeLinebreak(basisFont);
-          placeStr("command not found", basisFont);
-          placeLinebreak(basisFont);
-          placeLinebreak(basisFont);
-          placeStr("root:~/uni/2019$ ", basisFont);
+          placeLinebreak(terminalFont);
+          placeStr("command not found", terminalFont);
+          placeLinebreak(terminalFont);
+          placeLinebreak(terminalFont);
+          placeStr("root:~/uni/2019$ ", terminalFont);
         } else {
           caret.visible = true;
           // caret.position.x += 0.04;
-          placeChar(ev.key, basisFont);
+          placeChar(ev.key, terminalFont);
           // caret.position.set(n[0] + 0.02, -n[1] - 0.015, 0);
         }
       });
     });
   });
 
-
   const caret = new THREE.Mesh(
-    new THREE.PlaneBufferGeometry(basisFont.size, basisFont.size * 1.5),
+    new THREE.PlaneBufferGeometry(terminalFont.size, terminalFont.size * 1.5),
     new THREE.MeshBasicMaterial({ color: textColor })
   );
   sceneRTT.add(caret);
 
   let caretTimeSinceUpdate = 1;
   function updateCaret() {
-    let x = charNextLoc.x + basisFont.size / 2;
-    let y = -charNextLoc.y - basisFont.size / 2.66666;
+    let x = charNextLoc.x + terminalFont.size / 2;
+    let y = -charNextLoc.y - terminalFont.size / 2.66666;
     if (x > 1.396) {
-      y -= basisFont.leading;
-      x = basisFont.size / 2;
+      y -= terminalFont.leading;
+      x = terminalFont.size / 2;
     }
     caret.position.set(x, y, 0);
     caretTimeSinceUpdate = 0;
