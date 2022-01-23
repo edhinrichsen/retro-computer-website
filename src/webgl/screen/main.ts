@@ -43,10 +43,10 @@ export const initScreen = (
   })();
 
   const basisFont: FontInfo = (function () {
-    const size = 0.05;
+    const size = 0.03;
     const height = size;
-    const width = size / 2;
-    const leading = height * 1.5;
+    const width = size*0.8;
+    const leading = height * 2.5;
     const tracking = width * 0.2;
     return { font: undefined, size, height, width, leading, tracking };
   })();
@@ -55,8 +55,8 @@ export const initScreen = (
 
   fontLoader.load("/fonts/public-pixel.json", (font) => {
     publicPixelFont.font = font;
-    // fontLoader.load("/fonts/charybdis.json", (font) => {
-    fontLoader.load("/fonts/basis33.json", (font) => {
+    fontLoader.load("/fonts/chill.json", (font) => {
+    // fontLoader.load("/fonts/basis33.json", (font) => {
       console.log("loaded");
       basisFont.font = font;
       // font = _font;
