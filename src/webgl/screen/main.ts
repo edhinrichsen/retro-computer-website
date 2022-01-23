@@ -23,90 +23,120 @@ export const initScreen = (
   /**
    * Fonts
    */
+
+  type FontInfo = {
+    font: undefined | Font;
+    size: number;
+    height: number;
+    width: number;
+    leading: number;
+    tracking: number;
+  };
+
+  const publicPixelFont: FontInfo = (function () {
+    let size = 0.04;
+    let height = size;
+    let width = size;
+    let leading = height * 2;
+    let tracking = width * 0.4;
+    return { font: undefined, size, height, width, leading, tracking };
+  })();
+
+  const basisFont: FontInfo = (function () {
+    const size = 0.05;
+    const height = size;
+    const width = size / 2;
+    const leading = height * 1.5;
+    const tracking = width * 0.2;
+    return { font: undefined, size, height, width, leading, tracking };
+  })();
+
   const fontLoader = new FontLoader();
-  let font: Font | undefined = undefined;
-  fontLoader.load("/fonts/public-pixel.json", (_font) => {
-    console.log("loaded");
-    font = _font;
-    console.log(font);
-    let n: [number, number, any] | [number, number] = [0, 0];
 
-    const ws = `root:~$ curl edwardh.io  Hi there,                I'm Edward                                        root:~$ cd /uni/2019     root:~/uni/2019$ `;
+  fontLoader.load("/fonts/public-pixel.json", (font) => {
+    publicPixelFont.font = font;
+    // fontLoader.load("/fonts/charybdis.json", (font) => {
+    fontLoader.load("/fonts/basis33.json", (font) => {
+      console.log("loaded");
+      basisFont.font = font;
+      // font = _font;
+      console.log(font);
+      let n: [number, number, any] | [number, number] = [0, 0];
 
-    // placeHTML(
-    //   `
-    //   root:~$ curl edwardh.io
-    //   <br>
-    //   Hi there,
-    //   <br>
-    //   I'm Edward
-    //   <br>
-    //   -Computer Scientist
-    //   <br>
-    //   -Designer
-    //   <br>
-    //   <br>
-    //   root:~$ cd /uni/2019
-    //   `
-    // );
-    placeStr("root:~$ curl edwardh.io");
-    placeLinebreak();
-    // size = 0.04
-    placeStr("Hi there,");
-    placeLinebreak();
-    placeStr("I'm Edward", true);
-    placeLinebreak();
-    placeStr("-Computer Scientist"); // •
-    placeLinebreak();
-    placeStr("-Designer");
-    // size = 0.03
-    placeLinebreak();
-    placeLinebreak();
-    placeStr("root:~$ cd /uni/2019");
-    placeLinebreak();
-    placeStr("root:~/uni/2019$ ");
+      const ws = `root:~$ curl edwardh.io  Hi there,                I'm Edward                                        root:~$ cd /uni/2019     root:~/uni/2019$ `;
 
-    window.addEventListener("keydown", (ev) => {
-      // ev.key
-      console.log(ev.key);
-      if (ev.key == "Backspace") {
-        delChar();
-      } else if (ev.key == "Enter") {
-        placeLinebreak();
-        placeStr("command not found");
-        placeLinebreak();
-        placeLinebreak();
-        placeStr("root:~/uni/2019$ ");
-      } else {
-        caret.visible = true;
-        // caret.position.x += 0.04;
-        placeChar(ev.key);
-        // caret.position.set(n[0] + 0.02, -n[1] - 0.015, 0);
-      }
+      // placeHTML(
+      //   `
+      //   root:~$ curl edwardh.io
+      //   <br>
+      //   Hi there,
+      //   <br>
+      //   I'm Edward
+      //   <br>
+      //   -Computer Scientist
+      //   <br>
+      //   -Designer
+      //   <br>
+      //   <br>
+      //   root:~$ cd /uni/2019
+      //   `
+      // );
+      placeStr("root:~$ curl edwardh.io", basisFont);
+      placeLinebreak(basisFont);
+      placeLinebreak(basisFont);
+      // setSize(0.04);
+      placeStr("Hi there,", publicPixelFont);
+      placeLinebreak(publicPixelFont);
+      placeStr("I'm Edward", publicPixelFont, true);
+      placeLinebreak(publicPixelFont);
+      placeStr("-Computer Scientist", publicPixelFont); // •
+      placeLinebreak(publicPixelFont);
+      placeStr("-Designer", publicPixelFont);
+      placeLinebreak(basisFont);
+      placeLinebreak(basisFont);
+      placeStr("root:~$ cd /uni/2019", basisFont);
+      placeLinebreak(basisFont);
+      placeHTML(
+        `My name is Edward Hinrichsen and I have recently completed a Bachelor of Science, majoring in Computing and Software Systems at the University of Melbourne. I have a passion for all things technology and design, from software engineering & machine learning to UI/UX & 3D graphics.`,
+        basisFont
+      );
+      // placeStr("root:~/uni/2019$ ");
+
+      window.addEventListener("keydown", (ev) => {
+        // ev.key
+        console.log(ev.key);
+        if (ev.key == "Backspace") {
+          delChar();
+        } else if (ev.key == "Enter") {
+          placeLinebreak(basisFont);
+          placeStr("command not found", basisFont);
+          placeLinebreak(basisFont);
+          placeLinebreak(basisFont);
+          placeStr("root:~/uni/2019$ ", basisFont);
+        } else {
+          caret.visible = true;
+          // caret.position.x += 0.04;
+          placeChar(ev.key, basisFont);
+          // caret.position.set(n[0] + 0.02, -n[1] - 0.015, 0);
+        }
+      });
     });
   });
 
-  // const wordsToAnm: { word: THREE.Group; width: number }[] = [];
-
-  let size = 0.04;
-  const height = size;
-  const width = size;
-  const leading = height * 2;
-  const tracking = width * 0.4;
 
   const caret = new THREE.Mesh(
-    new THREE.PlaneBufferGeometry(size, size * 1.5),
+    new THREE.PlaneBufferGeometry(basisFont.size, basisFont.size * 1.5),
     new THREE.MeshBasicMaterial({ color: textColor })
   );
   sceneRTT.add(caret);
 
   let caretTimeSinceUpdate = 1;
   function updateCaret() {
-    let x = charNextLoc.x + size / 2;
-    let y = -charNextLoc.y - size / 2.66666;
+    let x = charNextLoc.x + basisFont.size / 2;
+    let y = -charNextLoc.y - basisFont.size / 2.66666;
     if (x > 1.396) {
-      y -= leading;
-      x = size / 2;
+      y -= basisFont.leading;
+      x = basisFont.size / 2;
     }
     caret.position.set(x, y, 0);
     caretTimeSinceUpdate = 0;
@@ -120,14 +150,15 @@ export const initScreen = (
 
   function placeChar(
     char: string,
+    font: FontInfo,
     fixed: boolean = false,
     highlight: boolean = false
   ) {
     let x = charNextLoc.x;
     let y = charNextLoc.y;
 
-    if (width + x > 1.396) {
-      y += leading;
+    if (font.width + x > 1.396) {
+      y += font.leading;
       x = 0;
     }
 
@@ -137,22 +168,22 @@ export const initScreen = (
     charObj.position.y = -y;
 
     const textGeometry = new TextGeometry(char, {
-      font: font as any,
-      size: size,
+      font: font.font as any,
+      size: font.size,
       height: 0.0001,
       curveSegments: 12,
       bevelEnabled: false,
     });
     const textMaterial = new THREE.MeshBasicMaterial({ color: textColor });
     const text = new THREE.Mesh(textGeometry, textMaterial);
-    text.position.set(0, -height, -0.01);
+    text.position.set(0, -font.height, -0.01);
     charObj.add(text);
 
     if (highlight) {
       const background = new THREE.Mesh(
         new THREE.PlaneGeometry(
-          width + tracking * 2,
-          height + leading / 2,
+          font.width + font.tracking * 2,
+          font.height + font.leading / 2,
           1,
           1
         ),
@@ -161,7 +192,11 @@ export const initScreen = (
 
       textMaterial.color.set("black");
       // background.position.x = 0.5;
-      background.position.set(width / 2 + tracking / 2, -height / 2, -0.01);
+      background.position.set(
+        font.width / 2 + font.tracking / 2,
+        -font.height / 2,
+        -0.01
+      );
       // background.scale.x = 0.05;
       charObj.add(background);
     }
@@ -170,7 +205,7 @@ export const initScreen = (
 
     sceneRTT.add(charObj);
 
-    charNextLoc.x = width + tracking + x;
+    charNextLoc.x = font.width + font.tracking + x;
     charNextLoc.y = y;
 
     updateCaret();
@@ -178,30 +213,30 @@ export const initScreen = (
     // return [width + tracking + x, y, charObj];
   }
 
-  function placeLinebreak() {
+  function placeLinebreak(font: FontInfo) {
     charNextLoc.x = 0;
-    charNextLoc.y += leading;
+    charNextLoc.y += font.leading;
     updateCaret();
   }
 
-  function placeStr(str: string, highlight: boolean = false) {
+  function placeStr(str: string, font: FontInfo, highlight: boolean = false) {
     for (let char of str) {
-      placeChar(char, true, highlight);
+      placeChar(char, font, true, highlight);
     }
   }
 
-  function placeHTML(html: string) {
+  function placeHTML(html: string, font: FontInfo) {
     html = html.replace(/\n/g, "");
     html = html.replace(/\s+/g, " ");
     const text = html.split("<br>");
     console.log(text);
     for (let i = 0; i < text.length; i++) {
-      text[i] = text[i].replace(/^\s+|\s+$/g, '')
+      text[i] = text[i].replace(/^\s+|\s+$/g, "");
       console.log(text[i]);
-      placeStr(text[i]);
+      placeStr(text[i], font);
       if (i < text.length - 1) {
         console.log("<br>");
-        placeLinebreak();
+        placeLinebreak(font);
       }
     }
   }
