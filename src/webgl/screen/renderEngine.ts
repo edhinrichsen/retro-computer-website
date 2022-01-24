@@ -14,11 +14,14 @@ export function screenRenderEngine(
   renderer: THREE.WebGLRenderer,
   sceneRTT: THREE.Scene
 ): [(deltaTime:  number) => void, THREE.Material] {
+
+  const resolution = 512
+
   const cameraRTT = new THREE.OrthographicCamera(-0.1, 1.496, 0.1, -1.1, 1, 3);
   sceneRTT.add(cameraRTT);
   cameraRTT.position.set(0, 0, 1);
 
-  const rtTexture = new THREE.WebGLRenderTarget(512 * 1.33, 512, {
+  const rtTexture = new THREE.WebGLRenderTarget(resolution * 1.33, resolution, {
     format: THREE.RGBFormat,
   });
 
@@ -41,7 +44,7 @@ export function screenRenderEngine(
   const bloomPass = new UnrealBloomPass(new THREE.Vector2(128, 128), 1, 0.4, 0);
   composer.addPass(bloomPass);
 
-  const lag = new Lag(composer.readBuffer, 512 * 1.33, 512);
+  const lag = new Lag(composer.readBuffer, resolution * 1.33, resolution);
   noiseMat.uniforms.uDiffuse.value = lag.outputTexture.texture;
 
   let uProgress = 1.2;
@@ -87,8 +90,8 @@ export function screenRenderEngine(
       vertexShader: vertexShader,
       fragmentShader: noiseFragmentShader,
     },
-    512 * 1.33,
-    512
+    resolution * 1.33,
+    resolution
   );
 
   const material = new THREE.MeshStandardMaterial();
