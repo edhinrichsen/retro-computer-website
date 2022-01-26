@@ -203,6 +203,10 @@ export function screenTextEngine(
 
     let currentToken: undefined | MDtoken = undefined;
     for (let i = 0; i < md.length; i++) {
+
+      // fix error with CRLF
+      if (md[i] === "\r") continue;
+
       // h1, h2, h3
       if (currentToken === undefined && md[i] === "#") {
         let type: "h1" | "h2" | "h3" = "h1";
