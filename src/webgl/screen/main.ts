@@ -24,7 +24,7 @@ export const initScreen = (
   );
   backGround.position.set(0.5, -0.5, -0.01);
 
-  const [screenTextEngineTick, userInput] = screenTextEngine(
+  const [screenTextEngineTick, userInput, placeMarkdown] = screenTextEngine(
     sceneRTT,
     titleText
   );

@@ -61,7 +61,7 @@ const breakFont: FontInfo = (function () {
 export function screenTextEngine(
   sceneRTT: THREE.Scene,
   startText: string
-): [(deltaTime: number, elapsedTime: number) => void, (key: string) => void] {
+): [(deltaTime: number, elapsedTime: number) => void, (key: string) => void, (md: string) => void] {
   const onFontLoad = () => {
     if (h1Font.font && h2Font.font && h3Font.font) {
       // placeHTML(startText, titleFont);
@@ -349,5 +349,5 @@ export function screenTextEngine(
     caretTimeSinceUpdate += deltaTime;
   }
 
-  return [tick, userInput];
+  return [tick, userInput, placeMarkdown];
 }
