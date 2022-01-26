@@ -43,10 +43,11 @@ const paragraphFont: FontInfo = (function () {
 export function screenTextEngine(
   sceneRTT: THREE.Scene,
   startText: string
-): [(deltaTime: number, elapsedTime: number) => void, (key: string)=>void] {
+): [(deltaTime: number, elapsedTime: number) => void, (key: string) => void] {
   const onFontLoad = () => {
     if (titleFont.font && terminalFont.font && paragraphFont.font) {
-      placeHTML(startText, titleFont);
+      // placeHTML(startText, titleFont);
+      placeMarkdown(startText);
     }
   };
   const fontLoader = new FontLoader();
@@ -186,6 +187,88 @@ export function screenTextEngine(
       if (i < text.length - 1) {
         console.log("<br>");
         placeLinebreak(font);
+      }
+    }
+  }
+
+  type MDtoken = {
+    type: "h1" | "h2" | "p" | "br";
+    emphasis: boolean;
+    value: string;
+  };
+  function placeMarkdown(md: string) {
+    console.log(md.length);
+    // md = "## root:~$ curl edwardh.io\n\n\n\n\n\n\n\n#  Hi there,\n#  *I'm Edward*\n#  -Computer Scientist\n#  -Designer\n\n\n\n\n\n\n# root:~$ cd /uni/2019"
+    console.log(md.length);
+
+    // md = "## root:~$ curl edwardh.io\n#  Hi there,\n#  *I'm Edward*\n#  -Computer Scientist\n#  -Designer\n# root:~$ cd /uni/2019"
+
+    console.log(md.length);
+    const tokens: MDtoken[] = [];
+
+    let currentToken: undefined | MDtoken = undefined;
+    for (let i = 0; i < md.length; i++) {
+      // h1
+      if (currentToken === undefined && md[i] === "#") {
+        let type: "h1" | "h2" = "h1";
+        if (i + 1 < md.length && md[i + 1] === "#") {
+          type = "h2";
+          i++;
+        }
+        if (i + 1 < md.length && md[i + 1] === " ") {
+          i++;
+        }
+        currentToken = {
+          type: type,
+          emphasis: false,
+          value: "",
+        };
+
+        // br
+      } else if (md[i] === "\n") {
+        if (currentToken !== undefined) {
+          tokens.push(currentToken);
+          currentToken = undefined;
+        }
+        tokens.push({
+          type: "br",
+          emphasis: false,
+          value: "",
+        });
+
+        // p
+      } else if (currentToken === undefined) {
+        currentToken = {
+          type: "p",
+          emphasis: false,
+          value: md[i],
+        };
+
+        // add char to token
+      } else {
+        currentToken.value += md[i];
+      }
+    }
+    if (currentToken !== undefined) {
+      tokens.push(currentToken);
+    }
+    console.log(tokens);
+
+    for (const t of tokens) {
+      console.log(t);
+      switch (t.type) {
+        case "h1":
+          placeStr(t.value, titleFont, true, t.emphasis, false, false);
+          break;
+        case "h2":
+          placeStr(t.value, terminalFont, true, t.emphasis, false, false);
+          break;
+        case "br":
+          placeLinebreak(terminalFont);
+          break;
+        case "p":
+          placeHTML(t.value, paragraphFont)
+          break;
       }
     }
   }
