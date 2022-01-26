@@ -15,7 +15,9 @@ export function screenRenderEngine(
   sceneRTT: THREE.Scene
 ): [(deltaTime:  number, elapsedTime: number) => void, THREE.Material] {
 
-  const resolution = 512
+  const resolution = 512 + 64
+  // const resolution = 768
+  // const resolution = 512
 
   const cameraRTT = new THREE.OrthographicCamera(-0.1, 1.496, 0.1, -1.1, 1, 3);
   sceneRTT.add(cameraRTT);

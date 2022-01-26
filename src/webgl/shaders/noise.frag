@@ -1,10 +1,10 @@
 #define PI 3.1415926538
 
-#define LINE_SIZE 250.0
+#define LINE_SIZE 288.0
 #define LINE_STRENGTH 0.05
 #define LINE_OFFSET 2.0
 
-#define NOISE_STRENGTH 0.125
+#define NOISE_STRENGTH 0.15
 
 uniform sampler2D uDiffuse;
 uniform float uTime;

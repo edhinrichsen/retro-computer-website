@@ -13,7 +13,7 @@ type FontInfo = {
   tracking: number;
 };
 
-const titleFont: FontInfo = (function () {
+const h1Font: FontInfo = (function () {
   let size = 0.04;
   let height = size;
   let width = size;
@@ -22,7 +22,7 @@ const titleFont: FontInfo = (function () {
   return { font: undefined, size, height, width, leading, tracking };
 })();
 
-const terminalFont: FontInfo = (function () {
+const h2Font: FontInfo = (function () {
   const size = 0.04;
   const height = size;
   const width = size * 0.8;
@@ -31,7 +31,7 @@ const terminalFont: FontInfo = (function () {
   return { font: undefined, size, height, width, leading, tracking };
 })();
 
-const paragraphFont: FontInfo = (function () {
+const h3Font: FontInfo = (function () {
   const size = 0.03;
   const height = size;
   const width = size * 0.8;
@@ -40,40 +40,59 @@ const paragraphFont: FontInfo = (function () {
   return { font: undefined, size, height, width, leading, tracking };
 })();
 
+const paragraphFont: FontInfo = (function () {
+  const size = 0.0275;
+  const height = size;
+  const width = size * 0.8;
+  const leading = height * 2.5;
+  const tracking = width * 0.2;
+  return { font: undefined, size, height, width, leading, tracking };
+})();
+
+const breakFont: FontInfo = (function () {
+  const size = 0.025;
+  const height = size;
+  const width = size * 0.8;
+  const leading = height * 1.6;
+  const tracking = width;
+  return { font: undefined, size, height, width, leading, tracking };
+})();
+
 export function screenTextEngine(
   sceneRTT: THREE.Scene,
   startText: string
 ): [(deltaTime: number, elapsedTime: number) => void, (key: string) => void] {
   const onFontLoad = () => {
-    if (titleFont.font && terminalFont.font && paragraphFont.font) {
+    if (h1Font.font && h2Font.font && h3Font.font) {
       // placeHTML(startText, titleFont);
       placeMarkdown(startText);
     }
   };
   const fontLoader = new FontLoader();
   fontLoader.load("/fonts/public-pixel.json", (font) => {
-    titleFont.font = font;
+    h1Font.font = font;
     onFontLoad();
   });
   fontLoader.load("/fonts/chill.json", (font) => {
-    terminalFont.font = font;
+    h2Font.font = font;
+    h3Font.font = font;
     paragraphFont.font = font;
     onFontLoad();
   });
 
   const caret = new THREE.Mesh(
-    new THREE.PlaneBufferGeometry(terminalFont.size, terminalFont.size * 1.5),
+    new THREE.PlaneBufferGeometry(h2Font.size, h2Font.size * 1.5),
     new THREE.MeshBasicMaterial({ color: textColor })
   );
   sceneRTT.add(caret);
 
   let caretTimeSinceUpdate = 1;
   function updateCaret() {
-    let x = charNextLoc.x + terminalFont.size / 2;
-    let y = -charNextLoc.y - terminalFont.size / 2.66666;
+    let x = charNextLoc.x + h2Font.size / 2;
+    let y = -charNextLoc.y - h2Font.size / 2.66666;
     if (x > 1.396) {
-      y -= terminalFont.leading;
-      x = terminalFont.size / 2;
+      y -= h2Font.leading;
+      x = h2Font.size / 2;
     }
     caret.position.set(x, y, 0);
     caretTimeSinceUpdate = 0;
@@ -175,7 +194,7 @@ export function screenTextEngine(
   }
 
   type MDtoken = {
-    type: "h1" | "h2" | "p" | "br";
+    type: "h1" | "h2" | "h3" | "p" | "br";
     emphasis: boolean;
     value: string;
   };
@@ -184,12 +203,16 @@ export function screenTextEngine(
 
     let currentToken: undefined | MDtoken = undefined;
     for (let i = 0; i < md.length; i++) {
-      // h1
+      // h1, h2, h3
       if (currentToken === undefined && md[i] === "#") {
-        let type: "h1" | "h2" = "h1";
+        let type: "h1" | "h2" | "h3" = "h1";
         if (i + 1 < md.length && md[i + 1] === "#") {
           type = "h2";
           i++;
+          if (i + 1 < md.length && md[i + 1] === "#") {
+            type = "h3";
+            i++;
+          }
         }
         if (i + 1 < md.length && md[i + 1] === " ") {
           i++;
@@ -241,20 +264,43 @@ export function screenTextEngine(
     }
     console.log(tokens);
 
-    for (const t of tokens) {
-      console.log(t);
+    for (let i = 0; i < tokens.length; i++) {
+      const t = tokens[i];
       switch (t.type) {
         case "h1":
-          placeStr(t.value, titleFont, true, t.emphasis, false, false);
+          placeStr(t.value, h1Font, true, t.emphasis, false, false);
           break;
         case "h2":
-          placeStr(t.value, terminalFont, true, t.emphasis, false, false);
+          placeStr(t.value, h2Font, true, t.emphasis, false, false);
           break;
-        case "br":
-          placeLinebreak(terminalFont);
+        case "h3":
+          placeStr(t.value, h3Font, true, t.emphasis, false, false);
           break;
         case "p":
           placeWords(t.value, paragraphFont);
+          break;
+        case "br":
+          let font = breakFont;
+          if (i > 0) {
+            const type = tokens[i - 1].type;
+            switch (type) {
+              case "h1":
+                font = h1Font;
+                break;
+              case "h2":
+                font = h2Font;
+                break;
+              case "h3":
+                font = h3Font;
+                break;
+              case "p":
+                font = paragraphFont;
+                break;
+              default:
+                break;
+            }
+          }
+          placeLinebreak(font);
           break;
       }
     }
@@ -276,15 +322,15 @@ export function screenTextEngine(
     if (key == "Backspace") {
       delChar();
     } else if (key == "Enter") {
-      placeLinebreak(terminalFont);
-      placeStr("command not found\n", terminalFont, true, false, true, false);
-      placeLinebreak(terminalFont);
-      placeLinebreak(terminalFont);
-      placeStr("root:~/uni/2019$ ", terminalFont, false, false, true, false);
+      placeLinebreak(h2Font);
+      placeStr("command not found\n", h2Font, true, false, true, false);
+      placeLinebreak(h2Font);
+      placeLinebreak(h2Font);
+      placeStr("root:~/uni/2019$ ", h2Font, false, false, true, false);
     } else {
       caret.visible = true;
       // caret.position.x += 0.04;
-      placeStr(key, terminalFont, false, false, true, false);
+      placeStr(key, h2Font, false, false, true, false);
       // caret.position.set(n[0] + 0.02, -n[1] - 0.015, 0);
     }
   }
