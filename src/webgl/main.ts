@@ -54,11 +54,24 @@ const initWebGL = () => {
     100
   );
   camera.position.set(0, 0, -1.5);
+  camera.rotation.set(-Math.PI, 0, Math.PI);
   scene.add(camera);
 
   // Controls
-  const controls = new OrbitControls(camera, canvas);
-  controls.enableDamping = true;
+  // const controls = new OrbitControls(camera, canvas);
+  // controls.enableDamping = true;
+
+  
+
+  const screenMeshTargetRotation = { x: 0, y: Math.PI * 0.5 };
+  document.addEventListener("mousemove", (event) => {
+    const mouseX = (event.clientX/window.innerWidth - 0.5)*2;
+    const mouseY = (event.clientY/window.innerHeight - 0.5)*(-2);
+    // console.log(mouse)
+    console.log(camera.rotation)
+    screenMeshTargetRotation.x = mouseY * (Math.PI / 32) 
+    screenMeshTargetRotation.y = mouseX * (Math.PI / 32) + Math.PI * 0.5
+  });
 
   /**
    * Renderer
@@ -168,8 +181,19 @@ const initWebGL = () => {
 
     const deltaTime = DeltaTime();
     const elapsedTime = clock.getElapsedTime();
+
     // Update controls
-    controls.update();
+    // controls.update();
+    if (screenMesh)
+    {
+      // console.log((screenMeshTargetRotation.x - screenMesh.rotation.x)/screenMeshTargetRotation.x)
+      // screenMesh.rotation.x = screenMeshTargetRotation.x * Math.abs(screenMeshTargetRotation.x - screenMesh.rotation.x)*deltaTime*10
+      // screenMesh.rotation.y = screenMeshTargetRotation.y * Math.abs(screenMeshTargetRotation.y - screenMesh.rotation.y)*deltaTime*10
+
+      screenMesh.rotation.x = (screenMeshTargetRotation.x*0.05 + screenMesh.rotation.x*0.95)
+      screenMesh.rotation.y =(screenMeshTargetRotation.y*0.05 + screenMesh.rotation.y*0.95)
+    }
+    
 
     screenTick(deltaTime, elapsedTime);
 
