@@ -8,8 +8,8 @@ import { screenRenderEngine } from "./renderEngine";
 import { screenTextEngine } from "./textEngine";
 
 // @ts-ignore
-import noiseFragmentShader from "../../text/title.md";
-console.log(noiseFragmentShader);
+import titleText from "../../text/title.md";
+console.log(titleText);
 
 export const initScreen = (
   renderer: THREE.WebGLRenderer
@@ -121,7 +121,7 @@ export const initScreen = (
 
   const [screenTextEngineTick, userInput] = screenTextEngine(
     sceneRTT,
-    noiseFragmentShader
+    titleText
   );
 
   const [screenRenderTick, noiseMat] = screenRenderEngine(renderer, sceneRTT);

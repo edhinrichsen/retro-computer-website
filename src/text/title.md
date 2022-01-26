@@ -4,6 +4,6 @@
 #  *I'm Edward*
 #  -Computer Scientist
 #  -Designer
+Type Help or scroll to get started
 
 ## root:~$ 
-tigger the dog

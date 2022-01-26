@@ -197,13 +197,6 @@ export function screenTextEngine(
     value: string;
   };
   function placeMarkdown(md: string) {
-    console.log(md.length);
-    // md = "## root:~$ curl edwardh.io\n\n\n\n\n\n\n\n#  Hi there,\n#  *I'm Edward*\n#  -Computer Scientist\n#  -Designer\n\n\n\n\n\n\n# root:~$ cd /uni/2019"
-    console.log(md.length);
-
-    // md = "## root:~$ curl edwardh.io\n#  Hi there,\n#  *I'm Edward*\n#  -Computer Scientist\n#  -Designer\n# root:~$ cd /uni/2019"
-
-    console.log(md.length);
     const tokens: MDtoken[] = [];
 
     let currentToken: undefined | MDtoken = undefined;
@@ -243,6 +236,17 @@ export function screenTextEngine(
           emphasis: false,
           value: md[i],
         };
+      } else if (md[i] === "*") {
+        if (currentToken === undefined) {
+          currentToken = { type: "p", emphasis: true, value: "" };
+        } else {
+          tokens.push(currentToken);
+          currentToken = {
+            type: currentToken.type,
+            emphasis: !currentToken.emphasis,
+            value: "",
+          };
+        }
 
         // add char to token
       } else {
@@ -267,7 +271,7 @@ export function screenTextEngine(
           placeLinebreak(terminalFont);
           break;
         case "p":
-          placeHTML(t.value, paragraphFont)
+          placeHTML(t.value, paragraphFont);
           break;
       }
     }
