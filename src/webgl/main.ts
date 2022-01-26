@@ -162,14 +162,16 @@ const initWebGL = () => {
    * Animate
    */
 
+   const clock = new THREE.Clock();
   const tick = () => {
     stats.begin();
 
     const deltaTime = DeltaTime();
+    const elapsedTime = clock.getElapsedTime();
     // Update controls
     controls.update();
 
-    screenTick(deltaTime);
+    screenTick(deltaTime, elapsedTime);
 
     // plane.material.map = renderLag()
 

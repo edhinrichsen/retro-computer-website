@@ -13,7 +13,7 @@ import { ShaderToScreen } from "./shaderToScreen";
 export function screenRenderEngine(
   renderer: THREE.WebGLRenderer,
   sceneRTT: THREE.Scene
-): [(deltaTime:  number) => void, THREE.Material] {
+): [(deltaTime:  number, elapsedTime: number) => void, THREE.Material] {
 
   const resolution = 512
 
@@ -48,9 +48,7 @@ export function screenRenderEngine(
   noiseMat.uniforms.uDiffuse.value = lag.outputTexture.texture;
 
   let uProgress = 1.2;
-  const clock = new THREE.Clock();
-  const render = (deltaTime: number) => {
-    const elapsedTime = clock.getElapsedTime();
+  const tick = (deltaTime: number, elapsedTime: number) => {
 
     noiseMat.uniforms.uTime.value = elapsedTime;
     noiseMat.uniforms.uProgress.value = uProgress;
@@ -104,5 +102,5 @@ export function screenRenderEngine(
   
 
   // return [render, noiseMat];
-  return [render, material];
+  return [tick, material];
 }
