@@ -7,6 +7,10 @@ import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import { screenRenderEngine } from "./renderEngine";
 import { screenTextEngine } from "./textEngine";
 
+// @ts-ignore
+import noiseFragmentShader from "../../text/title.md";
+console.log(noiseFragmentShader);
+
 export const initScreen = (
   renderer: THREE.WebGLRenderer
 ): [(deltaTime: number, elapsedTime: number) => void, THREE.Material] => {
@@ -117,18 +121,7 @@ export const initScreen = (
 
   const [screenTextEngineTick, userInput] = screenTextEngine(
     sceneRTT,
-    `root:~$ curl edwardh.io
-<br>
-Hi there,
-<br>
-I'm Edward
-<br>
--Computer Scientist
-<br>
--Designer
-<br>
-<br>
-root:~$ cd /uni/2019`
+    noiseFragmentShader
   );
 
   const [screenRenderTick, noiseMat] = screenRenderEngine(renderer, sceneRTT);

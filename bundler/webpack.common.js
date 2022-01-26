@@ -71,7 +71,16 @@ module.exports = {
         test: /\.(glsl|vs|fs|vert|frag)$/,
         type: "asset/source",
         generator: {
-          filename: "assets/images/[hash][ext]",
+          filename: "assets/shaders/[hash][ext]",
+        },
+      },
+
+      // MARKDOWN
+      {
+        test: /\.md$/,
+        type: "asset/source",
+        generator: {
+          filename: "assets/markdown/[hash][ext]",
         },
       },
     ],
