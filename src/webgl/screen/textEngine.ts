@@ -164,30 +164,13 @@ export function screenTextEngine(
   }
 
   function placeWords(
-    words: string[],
+    text: string,
     font: FontInfo,
     highlight: boolean = false
   ) {
+    const words = text.split(" ");
     for (let word of words) {
       placeStr(word + " ", font, true, highlight, true, true);
-    }
-  }
-
-  function placeHTML(html: string, font: FontInfo) {
-    html = html.replace(/\n/g, "");
-    html = html.replace(/\s+/g, " ");
-    const text = html.split("<br>");
-    console.log(text);
-
-    for (let i = 0; i < text.length; i++) {
-      text[i] = text[i].replace(/^\s+|\s+$/g, "");
-      console.log(text[i]);
-      const words = text[i].split(" ");
-      placeWords(words, font);
-      if (i < text.length - 1) {
-        console.log("<br>");
-        placeLinebreak(font);
-      }
     }
   }
 
@@ -271,7 +254,7 @@ export function screenTextEngine(
           placeLinebreak(terminalFont);
           break;
         case "p":
-          placeHTML(t.value, paragraphFont);
+          placeWords(t.value, paragraphFont);
           break;
       }
     }
