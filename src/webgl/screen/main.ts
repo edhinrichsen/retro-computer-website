@@ -60,8 +60,6 @@ export const initScreen = (
     return { font: undefined, size, height, width, leading, tracking };
   })();
 
-
-
   const fontLoader = new FontLoader();
 
   fontLoader.load("/fonts/public-pixel.json", (font) => {
@@ -93,31 +91,38 @@ export const initScreen = (
       //   root:~$ cd /uni/2019
       //   `
       // );
-      placeStr("root:~$ curl edwardh.io", terminalFont);
+      placeStr("root:~$ curl edwardh.io", terminalFont, true, false, false,false);
       placeLinebreak(terminalFont);
       placeLinebreak(terminalFont);
       // setSize(0.04);
-      placeStr(" Hi there,", titleFont);
+      placeStr(" Hi there,", titleFont, true, false, false,false);
       placeLinebreak(titleFont);
-      placeStr(" ", titleFont);
-      placeStr("I'm Edward", titleFont, true);
+      placeStr(" ", titleFont, true, false, false,false);
+      placeStr("I'm Edward", titleFont, true, true, false,false);
       placeLinebreak(titleFont);
-      placeStr(" -Computer Scientist", titleFont); // •
+      placeStr(" -Computer Scientist", titleFont, true, false, false,false); // •
       placeLinebreak(titleFont);
-      placeStr(" -Designer", titleFont);
+      placeStr(" -Designer", titleFont, true, false, true,false);
       // placeLinebreak(titleFont);
       placeLinebreak(titleFont);
-      placeStr(" ", titleFont);
-      placeStr("Type Help or scroll to get started", paragraphFont);
+      placeStr(" ", titleFont, true, false, true,false);
+      placeStr(
+        "Type Help or scroll to get started",
+        paragraphFont,
+        true,
+        false,
+        true,
+        false
+      );
       placeLinebreak(terminalFont);
       placeLinebreak(terminalFont);
-      placeStr("root:~$ ", terminalFont);
+      placeStr("root:~$ ", terminalFont, true, false, true, false);
       // placeLinebreak(terminalFont);
       // placeHTML(
       //   `My name is Edward Hinrichsen and I have recently completed a Bachelor of Science, majoring in Computing and Software Systems at the University of Melbourne. I have a passion for all things technology and design, from software engineering & machine learning to UI/UX & 3D graphics.`,
       //   paragraphFont
       // );
-      // placeStr("root:~/uni/2019$ ", terminalFont);
+      // placeStr("root:~/uni/2019$ ", terminalFont, true, false, true, false);
 
       window.addEventListener("keydown", (ev) => {
         // ev.key
@@ -126,14 +131,21 @@ export const initScreen = (
           delChar();
         } else if (ev.key == "Enter") {
           placeLinebreak(terminalFont);
-          placeStr("command not found", terminalFont);
+          placeStr("command not found\n", terminalFont, true, false, true, false);
           placeLinebreak(terminalFont);
           placeLinebreak(terminalFont);
-          placeStr("root:~/uni/2019$ ", terminalFont);
+          placeStr(
+            "root:~/uni/2019$ ",
+            terminalFont,
+            false,
+            false,
+            true,
+            false
+          );
         } else {
           caret.visible = true;
           // caret.position.x += 0.04;
-          placeChar(ev.key, terminalFont);
+          placeStr(ev.key, terminalFont, false, false, true, false);
           // caret.position.set(n[0] + 0.02, -n[1] - 0.015, 0);
         }
       });
@@ -164,16 +176,23 @@ export const initScreen = (
     y: 0,
   };
 
-  function placeChar(
+  function placeStr(
     char: string,
     font: FontInfo,
-    fixed: boolean = false,
-    highlight: boolean = false
+    fixed: boolean,
+    highlight: boolean,
+    wrap: boolean,
+    isWord: boolean
   ) {
+    const strLen = (font.width + font.tracking) * char.length;
+    const strWrapLen = isWord
+      ? (font.width + font.tracking) * (char.length - 1)
+      : font.width * char.length;
+
     let x = charNextLoc.x;
     let y = charNextLoc.y;
 
-    if (font.width + x > 1.396) {
+    if (wrap && strWrapLen + x > 1.396) {
       y += font.leading;
       x = 0;
     }
@@ -198,7 +217,7 @@ export const initScreen = (
     if (highlight) {
       const background = new THREE.Mesh(
         new THREE.PlaneGeometry(
-          font.width + font.tracking * 2,
+          strLen + font.tracking * 2,
           font.height + font.leading / 2,
           1,
           1
@@ -209,7 +228,7 @@ export const initScreen = (
       textMaterial.color.set("black");
       // background.position.x = 0.5;
       background.position.set(
-        font.width / 2 + font.tracking / 2,
+        strLen / 2 - font.tracking / 2,
         -font.height / 2,
         -0.01
       );
@@ -221,7 +240,7 @@ export const initScreen = (
 
     sceneRTT.add(charObj);
 
-    charNextLoc.x = font.width + font.tracking + x;
+    charNextLoc.x = strLen + x;
     charNextLoc.y = y;
 
     updateCaret();
@@ -235,9 +254,13 @@ export const initScreen = (
     updateCaret();
   }
 
-  function placeStr(str: string, font: FontInfo, highlight: boolean = false) {
-    for (let char of str) {
-      placeChar(char, font, true, highlight);
+  function placeWords(
+    words: string[],
+    font: FontInfo,
+    highlight: boolean = false
+  ) {
+    for (let word of words) {
+      placeStr(word + " ", font, true, highlight, true, true);
     }
   }
 
@@ -246,10 +269,12 @@ export const initScreen = (
     html = html.replace(/\s+/g, " ");
     const text = html.split("<br>");
     console.log(text);
+
     for (let i = 0; i < text.length; i++) {
       text[i] = text[i].replace(/^\s+|\s+$/g, "");
       console.log(text[i]);
-      placeStr(text[i], font);
+      const words = text[i].split(" ");
+      placeWords(words, font);
       if (i < text.length - 1) {
         console.log("<br>");
         placeLinebreak(font);
