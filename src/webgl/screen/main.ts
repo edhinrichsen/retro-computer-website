@@ -12,6 +12,12 @@ import { screenTextEngine } from "./textEngine";
 import titleText from "../../text/title.md";
 console.log(titleText);
 
+export  type Change = {
+  type: "add" | "del" | "none";
+  loc: number | "end" | "none";
+  str: string;
+};
+
 export const initScreen = (
   renderer: THREE.WebGLRenderer
 ): [(deltaTime: number, elapsedTime: number) => void, THREE.Material] => {
@@ -31,10 +37,87 @@ export const initScreen = (
 
   const [screenRenderTick, noiseMat] = screenRenderEngine(renderer, sceneRTT);
 
-  window.addEventListener("keydown", (ev) => {
-    // ev.key
-    userInput(ev.key);
-  });
+  // window.addEventListener("keydown", (ev) => {
+  //   // ev.key
+  //   userInput(ev.key);
+  // });
+
+  const textarea = document.getElementById("textarea") as HTMLTextAreaElement;
+  textarea.focus();
+  textarea.onblur = () => {
+    textarea.focus();
+  };
+
+  let oldText = "";
+  textarea.addEventListener(
+    "input",
+    function () {
+      const change = stringEditDistance(oldText, textarea.value);
+      oldText = textarea.value;
+      console.log(textarea.value);
+      if (change) userInput(change);
+    },
+    false
+  );
+
+ 
+  function stringEditDistance(oldStr: string, newStr: string) {
+    const lenDiff = oldStr.length - newStr.length;
+
+    let change: Change = {
+      type: "none",
+      loc: "none",
+      str: "",
+    };
+    let op = 0;
+    let np = 0;
+
+    if (lenDiff === 0) {
+      console.log("same");
+    } else if (lenDiff > 0) {
+      console.log("del");
+      change.type = "del";
+      while (op < oldStr.length || np < newStr.length) {
+        if (op >= oldStr.length) {
+          console.error("add and del");
+          return;
+        }
+        // console.log()
+        if (oldStr.charAt(op) !== newStr.charAt(np)) {
+          if (change.loc === "none")
+            change.loc = np === newStr.length ? "end" : np;
+          change.str += oldStr.charAt(op);
+          op++;
+        } else {
+          op++;
+          np++;
+        }
+      }
+    } else if (lenDiff < 0) {
+      console.log("add");
+      change.type = "add";
+      while (op < oldStr.length || np < newStr.length) {
+        if (np >= newStr.length) {
+          console.error("add and del");
+          return;
+        }
+        // console.log()
+        if (oldStr.charAt(op) !== newStr.charAt(np)) {
+          if (change.loc === "none")
+            change.loc = op === oldStr.length ? "end" : op;
+          change.str += newStr.charAt(np);
+          np++;
+        } else {
+          op++;
+          np++;
+        }
+      }
+    }
+    console.log("change: ", change);
+    return change;
+  }
+
+  stringEditDistance("hello", "hello there");
 
   const tick = (deltaTime: number, elapsedTime: number) => {
     screenTextEngineTick(deltaTime, elapsedTime);

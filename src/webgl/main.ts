@@ -68,7 +68,7 @@ const initWebGL = () => {
     const mouseX = (event.clientX/window.innerWidth - 0.5)*2;
     const mouseY = (event.clientY/window.innerHeight - 0.5)*(-2);
     // console.log(mouse)
-    console.log(camera.rotation)
+    // console.log(camera.rotation)
     screenMeshTargetRotation.x = mouseY * (Math.PI / 32) 
     screenMeshTargetRotation.y = mouseX * (Math.PI / 32) + Math.PI * 0.5
   });

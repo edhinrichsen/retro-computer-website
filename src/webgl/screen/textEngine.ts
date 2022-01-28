@@ -1,6 +1,7 @@
 import { Font, FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import * as THREE from "three";
+import { Change } from "./main";
 
 const textColor = "#f99021";
 
@@ -27,7 +28,7 @@ const h2Font: FontInfo = (function () {
   const height = size;
   const width = size * 0.8;
   const leading = height * 2;
-  const tracking = width * 0.2;
+  const tracking = width * 0.22;
   return { font: undefined, size, height, width, leading, tracking };
 })();
 
@@ -36,7 +37,7 @@ const h3Font: FontInfo = (function () {
   const height = size;
   const width = size * 0.8;
   const leading = height * 2.5;
-  const tracking = width * 0.2;
+  const tracking = width * 0.22;
   return { font: undefined, size, height, width, leading, tracking };
 })();
 
@@ -45,7 +46,7 @@ const paragraphFont: FontInfo = (function () {
   const height = size;
   const width = size * 0.8;
   const leading = height * 2.5;
-  const tracking = width * 0.2;
+  const tracking = width * 0.22;
   return { font: undefined, size, height, width, leading, tracking };
 })();
 
@@ -61,7 +62,11 @@ const breakFont: FontInfo = (function () {
 export function screenTextEngine(
   sceneRTT: THREE.Scene,
   startText: string
-): [(deltaTime: number, elapsedTime: number) => void, (key: string) => void, (md: string) => void] {
+): [
+  (deltaTime: number, elapsedTime: number) => void,
+  (change: Change) => void,
+  (md: string) => void
+] {
   const onFontLoad = () => {
     if (h1Font.font && h2Font.font && h3Font.font) {
       // placeHTML(startText, titleFont);
@@ -98,7 +103,7 @@ export function screenTextEngine(
     caretTimeSinceUpdate = 0;
   }
 
-  const chars: { char: THREE.Group; fixed: boolean }[] = [];
+  let chars: { char: THREE.Group; fixed: boolean }[] = [];
   const charNextLoc = {
     x: 0,
     y: 0,
@@ -164,7 +169,7 @@ export function screenTextEngine(
       charObj.add(background);
     }
 
-    chars.push({ char: charObj, fixed: fixed });
+    // chars.push({ char: charObj, fixed: fixed });
 
     sceneRTT.add(charObj);
 
@@ -172,6 +177,8 @@ export function screenTextEngine(
     charNextLoc.y = y;
 
     updateCaret();
+
+    return { char: charObj, fixed: fixed };
 
     // return [width + tracking + x, y, charObj];
   }
@@ -203,7 +210,6 @@ export function screenTextEngine(
 
     let currentToken: undefined | MDtoken = undefined;
     for (let i = 0; i < md.length; i++) {
-
       // fix error with CRLF
       if (md[i] === "\r") continue;
 
@@ -322,21 +328,44 @@ export function screenTextEngine(
     updateCaret();
   }
 
-  function userInput(key: string) {
-    if (key == "Backspace") {
-      delChar();
-    } else if (key == "Enter") {
-      placeLinebreak(h2Font);
-      placeStr("command not found\n", h2Font, true, false, true, false);
-      placeLinebreak(h2Font);
-      placeLinebreak(h2Font);
-      placeStr("root:~/uni/2019$ ", h2Font, false, false, true, false);
-    } else {
+  function userInput(change: Change) {
+    if (change.type === "add") {
       caret.visible = true;
-      // caret.position.x += 0.04;
-      placeStr(key, h2Font, false, false, true, false);
-      // caret.position.set(n[0] + 0.02, -n[1] - 0.015, 0);
+      for (const char of change.str) {
+        const textObj = placeStr(char, h2Font, false, false, true, false);
+        chars.push(textObj);
+      }
+    } else if (change.type === "del") {
+      const char = chars.slice(-change.str.length);
+      chars = chars.slice(0, -change.str.length);
+      console.log(char);
+
+      for (const c of char) {
+        sceneRTT.remove(c.char);
+      }
+      charNextLoc.x = char[0].char.position.x;
+      charNextLoc.y = -char[0].char.position.y;
     }
+    updateCaret();
+
+    // delChar();
+    // caret.visible = true;
+    // const char = placeStr(key, h2Font, false, false, true, false);
+    // chars.push(char);
+    // if (key == "Backspace") {
+    //   delChar();
+    // } else if (key == "Enter") {
+    //   placeLinebreak(h2Font);
+    //   placeStr("command not found\n", h2Font, true, false, true, false);
+    //   placeLinebreak(h2Font);
+    //   placeLinebreak(h2Font);
+    //   placeStr("root:~/uni/2019$ ", h2Font, false, false, true, false);
+    // } else {
+    //   caret.visible = true;
+    //   // caret.position.x += 0.04;
+    //   placeStr(key, h2Font, false, false, true, false);
+    //   // caret.position.set(n[0] + 0.02, -n[1] - 0.015, 0);
+    // }
   }
 
   function tick(deltaTime: number, elapsedTime: number) {
