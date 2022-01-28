@@ -12,7 +12,7 @@ import { screenTextEngine } from "./textEngine";
 import titleText from "../../text/title.md";
 console.log(titleText);
 
-export  type Change = {
+export type Change = {
   type: "add" | "del" | "none";
   loc: number | "end" | "none";
   str: string;
@@ -43,6 +43,7 @@ export const initScreen = (
   // });
 
   const textarea = document.getElementById("textarea") as HTMLTextAreaElement;
+  textarea.value = "";
   textarea.focus();
   textarea.onblur = () => {
     textarea.focus();
@@ -54,13 +55,16 @@ export const initScreen = (
     function () {
       const change = stringEditDistance(oldText, textarea.value);
       oldText = textarea.value;
-      console.log(textarea.value);
-      if (change) userInput(change);
+      if (change) userInput(change, textarea.selectionStart);
     },
     false
   );
 
- 
+  textarea.addEventListener("selectionchange", () => {
+    console.log(textarea.selectionStart);
+    userInput({ type: "none", loc: "none", str: "" }, textarea.selectionStart);
+  });
+
   function stringEditDistance(oldStr: string, newStr: string) {
     const lenDiff = oldStr.length - newStr.length;
 

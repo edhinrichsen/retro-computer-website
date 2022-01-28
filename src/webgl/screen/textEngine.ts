@@ -64,7 +64,7 @@ export function screenTextEngine(
   startText: string
 ): [
   (deltaTime: number, elapsedTime: number) => void,
-  (change: Change) => void,
+  (change: Change, selectionPos: number) => void,
   (md: string) => void
 ] {
   const onFontLoad = () => {
@@ -86,24 +86,51 @@ export function screenTextEngine(
   });
 
   const caret = new THREE.Mesh(
-    new THREE.PlaneBufferGeometry(h2Font.size, h2Font.size * 1.5),
+    new THREE.PlaneBufferGeometry(h2Font.size, h2Font.size * 1.6),
     new THREE.MeshBasicMaterial({ color: textColor })
   );
+  caret.position.z = -0.1
   sceneRTT.add(caret);
 
+  let charUnderCaret: THREE.Group | undefined = undefined;
+  function updateCharUnderCaret (isBlack: boolean){
+    if (charUnderCaret)
+      (
+        (charUnderCaret.children[0] as THREE.Mesh)
+          .material as THREE.MeshBasicMaterial
+      ).color = new THREE.Color(isBlack ? 'black' : textColor);
+  }
+
   let caretTimeSinceUpdate = 1;
-  function updateCaret() {
-    let x = charNextLoc.x + h2Font.size / 2;
-    let y = -charNextLoc.y - h2Font.size / 2.66666;
+  function updateCaret(pos?: number) {
+    const charPos = {
+      x: charNextLoc.x,
+      y: -charNextLoc.y,
+    };
+    updateCharUnderCaret(false)
+    charUnderCaret = undefined;
+    if (pos && pos < inputBuffer.length) {
+      charPos.x = inputBuffer[pos].position.x;
+      charPos.y = inputBuffer[pos].position.y;
+
+      updateCharUnderCaret(false)
+      charUnderCaret = inputBuffer[pos];
+    }
+    console.log(charPos);
+
+    let x = charPos.x + h2Font.size / 2;
+    let y = charPos.y - h2Font.size / 1.9;
     if (x > 1.396) {
       y -= h2Font.leading;
       x = h2Font.size / 2;
     }
-    caret.position.set(x, y, 0);
+    caret.position.x = x
+    caret.position.y = y
+    // caret.position.set(x, y, 0);
     caretTimeSinceUpdate = 0;
   }
 
-  let chars: { char: THREE.Group; fixed: boolean }[] = [];
+  let inputBuffer: THREE.Group[] = [];
   const charNextLoc = {
     x: 0,
     y: 0,
@@ -144,7 +171,7 @@ export function screenTextEngine(
     });
     const textMaterial = new THREE.MeshBasicMaterial({ color: textColor });
     const text = new THREE.Mesh(textGeometry, textMaterial);
-    text.position.set(0, -font.height, -0.01);
+    text.position.set(0, -font.height, -0.001);
     charObj.add(text);
 
     if (highlight) {
@@ -178,7 +205,7 @@ export function screenTextEngine(
 
     updateCaret();
 
-    return { char: charObj, fixed: fixed };
+    return charObj;
 
     // return [width + tracking + x, y, charObj];
   }
@@ -316,37 +343,71 @@ export function screenTextEngine(
     }
   }
 
-  function delChar() {
-    const char = chars.pop();
-    if (char) {
-      if (!char.fixed) {
-        sceneRTT.remove(char.char);
-        charNextLoc.x = char.char.position.x;
-        charNextLoc.y = -char.char.position.y;
-      } else chars.push(char);
+  function delChar(charsTODel: THREE.Group[]) {
+    charNextLoc.x = charsTODel[0].position.x;
+    charNextLoc.y = -charsTODel[0].position.y;
+    for (const c of charsTODel) {
+      sceneRTT.remove(c);
     }
-    updateCaret();
   }
 
-  function userInput(change: Change) {
+  function pushChar(index: number, pushDist: number) {
+    for (let i = index; i < inputBuffer.length; i++) {
+      inputBuffer[i].position.x += (h2Font.width + h2Font.tracking) * pushDist;
+    }
+  }
+
+  function userInput(change: Change, selectionPos: number) {
     if (change.type === "add") {
-      caret.visible = true;
-      for (const char of change.str) {
-        const textObj = placeStr(char, h2Font, false, false, true, false);
-        chars.push(textObj);
+      if (change.loc === "end") {
+        caret.visible = true;
+        for (const char of change.str) {
+          const textObj = placeStr(char, h2Font, false, false, true, false);
+          inputBuffer.push(textObj);
+        }
+      } else if (typeof change.loc === "number") {
+        // charNextLoc.x = inputBuffer[change.loc].position.x;
+        // charNextLoc.y = inputBuffer[change.loc].position.y;
+        pushChar(change.loc, change.str.length);
+
+        const newChars: THREE.Group[] = [];
+        for (const char of change.str) {
+          newChars.push(placeStr(char, h2Font, false, false, true, false));
+        }
+        inputBuffer = [
+          ...inputBuffer.slice(0, change.loc),
+          ...newChars,
+          ...inputBuffer.slice(change.loc, inputBuffer.length),
+        ];
       }
     } else if (change.type === "del") {
-      const char = chars.slice(-change.str.length);
-      chars = chars.slice(0, -change.str.length);
-      console.log(char);
+      if (change.loc === "end") {
+        const charsTODel = inputBuffer.slice(-change.str.length);
+        inputBuffer = inputBuffer.slice(0, -change.str.length);
 
-      for (const c of char) {
-        sceneRTT.remove(c.char);
+        delChar(charsTODel);
+      } else if (typeof change.loc === "number") {
+        // charNextLoc.x = inputBuffer[change.loc].position.x;
+        // charNextLoc.y = inputBuffer[change.loc].position.y;
+        pushChar(change.loc, -change.str.length);
+
+        const charsTODel = inputBuffer.slice(
+          change.loc,
+          change.loc + change.str.length
+        );
+        delChar(charsTODel);
+        console.log(charsTODel);
+
+        inputBuffer = [
+          ...inputBuffer.slice(0, change.loc),
+          ...inputBuffer.slice(
+            change.loc + change.str.length,
+            inputBuffer.length
+          ),
+        ];
       }
-      charNextLoc.x = char[0].char.position.x;
-      charNextLoc.y = -char[0].char.position.y;
     }
-    updateCaret();
+    updateCaret(selectionPos);
 
     // delChar();
     // caret.visible = true;
@@ -371,8 +432,11 @@ export function screenTextEngine(
   function tick(deltaTime: number, elapsedTime: number) {
     if (caretTimeSinceUpdate > 1 && Math.floor(elapsedTime * 2) % 2 == 0) {
       caret.visible = false;
+      updateCharUnderCaret(false)      
+       
     } else {
       caret.visible = true;
+      updateCharUnderCaret(true)    
     }
 
     caretTimeSinceUpdate += deltaTime;
