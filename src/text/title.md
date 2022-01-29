@@ -8,4 +8,3 @@
 ###     Type Help or scroll to get started
 
 
-## root:~$ 

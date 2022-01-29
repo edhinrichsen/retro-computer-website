@@ -62,16 +62,18 @@ const breakFont: FontInfo = (function () {
 
 export function screenTextEngine(
   sceneRTT: THREE.Scene,
-  startText: string
+  startText: string,
+  startTerminalPrompt: string
 ): [
   (deltaTime: number, elapsedTime: number) => void,
   (change: Change, selectionPos: number) => void,
-  (md: string) => void
+  (md: string) => void, (terminalPrompt: string) => void
 ] {
   const onFontLoad = () => {
     if (h1Font.font && h2Font.font && h3Font.font) {
       // placeHTML(startText, titleFont);
       placeMarkdown(startText);
+      placeTerminalPrompt(startTerminalPrompt);
     }
   };
   const fontLoader = new FontLoader();
@@ -115,10 +117,12 @@ export function screenTextEngine(
     const charsPerLine = Math.floor(screenWidth / charWidth);
 
     if (pos !== undefined) {
-      charPos.x = charNextLoc.x + charWidth * (pos % charsPerLine);
+      charPos.x =
+        charNextLoc.x +
+        charWidth * ((pos + terminalPromptOffset) % charsPerLine);
       charPos.y = -(
         charNextLoc.y +
-        h2Font.leading * Math.floor(pos / charsPerLine)
+        h2Font.leading * Math.floor((pos + terminalPromptOffset) / charsPerLine)
       );
 
       if (pos < inputBuffer.length) {
@@ -366,6 +370,18 @@ export function screenTextEngine(
     }
   }
 
+  let terminalPromptOffset = 0;
+  function placeTerminalPrompt(str: string) {
+    inputBuffer = []
+    for (const char of str) {
+      inputBuffer.push(placeStr({ str: char, font: h2Font, updateCharNextLoc: false }));
+    }
+    updateCharPos()
+    inputBuffer = []
+    terminalPromptOffset = str.length + 1;
+    updateCaret(0)
+  }
+
   function delChar(charsTODel: THREE.Group[]) {
     for (const c of charsTODel) {
       sceneRTT.remove(c);
@@ -377,10 +393,10 @@ export function screenTextEngine(
     const charsPerLine = Math.floor(screenWidth / charWidth);
     for (let i = 0; i < inputBuffer.length; i++) {
       inputBuffer[i].position.x =
-        charNextLoc.x + charWidth * (i % charsPerLine);
+        charNextLoc.x + charWidth * ((i + terminalPromptOffset) % charsPerLine);
       inputBuffer[i].position.y = -(
         charNextLoc.y +
-        h2Font.leading * Math.floor(i / charsPerLine)
+        h2Font.leading * Math.floor((i + terminalPromptOffset) / charsPerLine)
       );
     }
   }
@@ -463,5 +479,5 @@ export function screenTextEngine(
     caretTimeSinceUpdate += deltaTime;
   }
 
-  return [tick, userInput, placeMarkdown];
+  return [tick, userInput, placeMarkdown, placeTerminalPrompt];
 }

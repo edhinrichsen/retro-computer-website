@@ -30,9 +30,10 @@ export const initScreen = (
   );
   backGround.position.set(0.5, -0.5, -0.01);
 
-  const [screenTextEngineTick, userInput, placeMarkdown] = screenTextEngine(
+  const [screenTextEngineTick, userInput, placeMarkdown, placeTerminalPrompt] = screenTextEngine(
     sceneRTT,
-    titleText
+    titleText,
+    "root:~$"
   );
 
   const [screenRenderTick, noiseMat] = screenRenderEngine(renderer, sceneRTT);
