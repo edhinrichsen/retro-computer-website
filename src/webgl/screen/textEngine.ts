@@ -110,8 +110,16 @@ export function screenTextEngine(
     };
     updateCharUnderCaret(false);
     charUnderCaret = undefined;
+
+    const charWidth = h2Font.width + h2Font.tracking;
+    const charsPerLine = Math.floor(screenWidth / charWidth);
+
     if (pos !== undefined) {
-      charPos.x = charNextLoc.x + (h2Font.width + h2Font.tracking) * pos;
+      charPos.x = charNextLoc.x + charWidth * (pos % charsPerLine);
+      charPos.y = -(
+        charNextLoc.y +
+        h2Font.leading * Math.floor(pos / charsPerLine)
+      );
 
       if (pos < inputBuffer.length) {
         charPos.y = inputBuffer[pos].position.y;
