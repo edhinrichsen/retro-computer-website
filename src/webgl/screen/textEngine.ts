@@ -4,6 +4,7 @@ import * as THREE from "three";
 import { Change } from "./main";
 
 const textColor = "#f99021";
+const screenWidth = 1.396;
 
 type FontInfo = {
   font: undefined | Font;
@@ -89,16 +90,16 @@ export function screenTextEngine(
     new THREE.PlaneBufferGeometry(h2Font.size, h2Font.size * 1.6),
     new THREE.MeshBasicMaterial({ color: textColor })
   );
-  caret.position.z = -0.1
+  caret.position.z = -0.1;
   sceneRTT.add(caret);
 
   let charUnderCaret: THREE.Group | undefined = undefined;
-  function updateCharUnderCaret (isBlack: boolean){
+  function updateCharUnderCaret(isBlack: boolean) {
     if (charUnderCaret)
       (
         (charUnderCaret.children[0] as THREE.Mesh)
           .material as THREE.MeshBasicMaterial
-      ).color = new THREE.Color(isBlack ? 'black' : textColor);
+      ).color = new THREE.Color(isBlack ? "black" : textColor);
   }
 
   let caretTimeSinceUpdate = 1;
@@ -107,25 +108,29 @@ export function screenTextEngine(
       x: charNextLoc.x,
       y: -charNextLoc.y,
     };
-    updateCharUnderCaret(false)
+    updateCharUnderCaret(false);
     charUnderCaret = undefined;
-    if (pos && pos < inputBuffer.length) {
-      charPos.x = inputBuffer[pos].position.x;
-      charPos.y = inputBuffer[pos].position.y;
+    if (pos !== undefined) {
+      charPos.x = charNextLoc.x + (h2Font.width + h2Font.tracking) * pos;
 
-      updateCharUnderCaret(false)
-      charUnderCaret = inputBuffer[pos];
+      if (pos < inputBuffer.length) {
+        charPos.y = inputBuffer[pos].position.y;
+
+        updateCharUnderCaret(false);
+        charUnderCaret = inputBuffer[pos];
+      }
     }
     console.log(charPos);
 
     let x = charPos.x + h2Font.size / 2;
     let y = charPos.y - h2Font.size / 1.9;
-    if (x > 1.396) {
+
+    if (x > screenWidth) {
       y -= h2Font.leading;
       x = h2Font.size / 2;
     }
-    caret.position.x = x
-    caret.position.y = y
+    caret.position.x = x;
+    caret.position.y = y;
     // caret.position.set(x, y, 0);
     caretTimeSinceUpdate = 0;
   }
@@ -136,24 +141,29 @@ export function screenTextEngine(
     y: 0,
   };
 
-  function placeStr(
-    char: string,
-    font: FontInfo,
-    fixed: boolean,
-    highlight: boolean,
-    wrap: boolean,
-    isWord: boolean
-  ) {
-    const strLen = (font.width + font.tracking) * char.length;
-    const strWrapLen = isWord
-      ? (font.width + font.tracking) * (char.length - 1)
-      : font.width * char.length;
+  function placeStr(props: {
+    str: string;
+    font: FontInfo;
+    highlight?: boolean;
+    wrap?: boolean;
+    isWord?: boolean;
+    updateCharNextLoc?: boolean;
+  }) {
+    props.wrap = props.wrap !== undefined ? props.wrap : false;
+    props.isWord = props.isWord !== undefined ? props.isWord : false;
+    props.updateCharNextLoc =
+      props.updateCharNextLoc !== undefined ? props.updateCharNextLoc : true;
+
+    const strLen = (props.font.width + props.font.tracking) * props.str.length;
+    const strWrapLen = props.isWord
+      ? (props.font.width + props.font.tracking) * (props.str.length - 1)
+      : props.font.width * props.str.length;
 
     let x = charNextLoc.x;
     let y = charNextLoc.y;
 
-    if (wrap && strWrapLen + x > 1.396) {
-      y += font.leading;
+    if (props.wrap && strWrapLen + x > screenWidth) {
+      y += props.font.leading;
       x = 0;
     }
 
@@ -162,23 +172,23 @@ export function screenTextEngine(
     charObj.position.x = x;
     charObj.position.y = -y;
 
-    const textGeometry = new TextGeometry(char, {
-      font: font.font as any,
-      size: font.size,
+    const textGeometry = new TextGeometry(props.str, {
+      font: props.font.font as any,
+      size: props.font.size,
       height: 0.0001,
       curveSegments: 12,
       bevelEnabled: false,
     });
     const textMaterial = new THREE.MeshBasicMaterial({ color: textColor });
     const text = new THREE.Mesh(textGeometry, textMaterial);
-    text.position.set(0, -font.height, -0.001);
+    text.position.set(0, -props.font.height, -0.001);
     charObj.add(text);
 
-    if (highlight) {
+    if (props.highlight) {
       const background = new THREE.Mesh(
         new THREE.PlaneGeometry(
-          strLen + font.tracking * 2,
-          font.height + font.leading / 2,
+          strLen + props.font.tracking * 2,
+          props.font.height + props.font.leading / 2,
           1,
           1
         ),
@@ -188,8 +198,8 @@ export function screenTextEngine(
       textMaterial.color.set("black");
       // background.position.x = 0.5;
       background.position.set(
-        strLen / 2 - font.tracking / 2,
-        -font.height / 2,
+        strLen / 2 - props.font.tracking / 2,
+        -props.font.height / 2,
         -0.01
       );
       // background.scale.x = 0.05;
@@ -200,10 +210,10 @@ export function screenTextEngine(
 
     sceneRTT.add(charObj);
 
-    charNextLoc.x = strLen + x;
-    charNextLoc.y = y;
-
-    updateCaret();
+    if (props.updateCharNextLoc) {
+      charNextLoc.x = strLen + x;
+      charNextLoc.y = y;
+    }
 
     return charObj;
 
@@ -213,7 +223,6 @@ export function screenTextEngine(
   function placeLinebreak(font: FontInfo) {
     charNextLoc.x = 0;
     charNextLoc.y += font.leading;
-    updateCaret();
   }
 
   function placeWords(
@@ -223,7 +232,13 @@ export function screenTextEngine(
   ) {
     const words = text.split(" ");
     for (let word of words) {
-      placeStr(word + " ", font, true, highlight, true, true);
+      placeStr({
+        str: word + " ",
+        font: font,
+        highlight: highlight,
+        wrap: true,
+        isWord: true,
+      });
     }
   }
 
@@ -305,13 +320,13 @@ export function screenTextEngine(
       const t = tokens[i];
       switch (t.type) {
         case "h1":
-          placeStr(t.value, h1Font, true, t.emphasis, false, false);
+          placeStr({ str: t.value, font: h1Font, highlight: t.emphasis });
           break;
         case "h2":
-          placeStr(t.value, h2Font, true, t.emphasis, false, false);
+          placeStr({ str: t.value, font: h2Font, highlight: t.emphasis });
           break;
         case "h3":
-          placeStr(t.value, h3Font, true, t.emphasis, false, false);
+          placeStr({ str: t.value, font: h3Font, highlight: t.emphasis });
           break;
         case "p":
           placeWords(t.value, paragraphFont);
@@ -344,16 +359,21 @@ export function screenTextEngine(
   }
 
   function delChar(charsTODel: THREE.Group[]) {
-    charNextLoc.x = charsTODel[0].position.x;
-    charNextLoc.y = -charsTODel[0].position.y;
     for (const c of charsTODel) {
       sceneRTT.remove(c);
     }
   }
 
-  function pushChar(index: number, pushDist: number) {
-    for (let i = index; i < inputBuffer.length; i++) {
-      inputBuffer[i].position.x += (h2Font.width + h2Font.tracking) * pushDist;
+  function updateCharPos() {
+    const charWidth = h2Font.width + h2Font.tracking;
+    const charsPerLine = Math.floor(screenWidth / charWidth);
+    for (let i = 0; i < inputBuffer.length; i++) {
+      inputBuffer[i].position.x =
+        charNextLoc.x + charWidth * (i % charsPerLine);
+      inputBuffer[i].position.y = -(
+        charNextLoc.y +
+        h2Font.leading * Math.floor(i / charsPerLine)
+      );
     }
   }
 
@@ -362,34 +382,46 @@ export function screenTextEngine(
       if (change.loc === "end") {
         caret.visible = true;
         for (const char of change.str) {
-          const textObj = placeStr(char, h2Font, false, false, true, false);
+          const textObj = placeStr({
+            str: char,
+            font: h2Font,
+            updateCharNextLoc: false,
+          });
+
           inputBuffer.push(textObj);
+          updateCharPos();
         }
       } else if (typeof change.loc === "number") {
         // charNextLoc.x = inputBuffer[change.loc].position.x;
         // charNextLoc.y = inputBuffer[change.loc].position.y;
-        pushChar(change.loc, change.str.length);
 
         const newChars: THREE.Group[] = [];
         for (const char of change.str) {
-          newChars.push(placeStr(char, h2Font, false, false, true, false));
+          newChars.push(
+            placeStr({
+              str: char,
+              font: h2Font,
+              updateCharNextLoc: false,
+            })
+          );
         }
         inputBuffer = [
           ...inputBuffer.slice(0, change.loc),
           ...newChars,
           ...inputBuffer.slice(change.loc, inputBuffer.length),
         ];
+        updateCharPos();
       }
     } else if (change.type === "del") {
       if (change.loc === "end") {
         const charsTODel = inputBuffer.slice(-change.str.length);
         inputBuffer = inputBuffer.slice(0, -change.str.length);
+        updateCharPos();
 
         delChar(charsTODel);
       } else if (typeof change.loc === "number") {
         // charNextLoc.x = inputBuffer[change.loc].position.x;
         // charNextLoc.y = inputBuffer[change.loc].position.y;
-        pushChar(change.loc, -change.str.length);
 
         const charsTODel = inputBuffer.slice(
           change.loc,
@@ -405,38 +437,19 @@ export function screenTextEngine(
             inputBuffer.length
           ),
         ];
+        updateCharPos();
       }
     }
     updateCaret(selectionPos);
-
-    // delChar();
-    // caret.visible = true;
-    // const char = placeStr(key, h2Font, false, false, true, false);
-    // chars.push(char);
-    // if (key == "Backspace") {
-    //   delChar();
-    // } else if (key == "Enter") {
-    //   placeLinebreak(h2Font);
-    //   placeStr("command not found\n", h2Font, true, false, true, false);
-    //   placeLinebreak(h2Font);
-    //   placeLinebreak(h2Font);
-    //   placeStr("root:~/uni/2019$ ", h2Font, false, false, true, false);
-    // } else {
-    //   caret.visible = true;
-    //   // caret.position.x += 0.04;
-    //   placeStr(key, h2Font, false, false, true, false);
-    //   // caret.position.set(n[0] + 0.02, -n[1] - 0.015, 0);
-    // }
   }
 
   function tick(deltaTime: number, elapsedTime: number) {
     if (caretTimeSinceUpdate > 1 && Math.floor(elapsedTime * 2) % 2 == 0) {
       caret.visible = false;
-      updateCharUnderCaret(false)      
-       
+      updateCharUnderCaret(false);
     } else {
       caret.visible = true;
-      updateCharUnderCaret(true)    
+      updateCharUnderCaret(true);
     }
 
     caretTimeSinceUpdate += deltaTime;
