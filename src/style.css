@@ -17,6 +17,7 @@ body
     left: 0;
     outline: none;
     z-index: 0;
+    display: none;
 }
 
 #textarea
@@ -26,4 +27,19 @@ body
     right: 0;
     outline: none;
     z-index: 1;
+}
+
+#loading{
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 24px;
+    color: #f99021;
+    background-color: black;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 32px;
+    /* color: white; */
 }

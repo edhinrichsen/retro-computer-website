@@ -24,7 +24,44 @@ let camera: any;
 const initWebGL = () => {
   var stats = new Stats();
   stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-  document.body.appendChild(stats.dom);
+  // document.body.appendChild(stats.dom);
+
+  const loadingDOM = document.querySelector("#loading");
+  const loadingListDOM = document.querySelector("#loading-list");
+  const manager = new THREE.LoadingManager();
+
+  manager.onStart = function (url, itemsLoaded, itemsTotal) {
+    console.log(
+      "Started loading file: " +
+        url +
+        ".\nLoaded " +
+        itemsLoaded +
+        " of " +
+        itemsTotal +
+        " files."
+    );
+  };
+
+  manager.onLoad = function () {
+    console.log("Loading complete!");
+    (loadingDOM as any).style.display = "none";
+    canvas.style.display = "block";
+  };
+
+  manager.onProgress = function (url, itemsLoaded, itemsTotal) {
+    const node = document.createElement("li");
+    node.append("Loading file: " + url);
+    loadingListDOM?.append(node);
+    console.log(
+      "Loading file: " +
+        url +
+        ".\nLoaded " +
+        itemsLoaded +
+        " of " +
+        itemsTotal +
+        " files."
+    );
+  };
 
   /**
    * Sizes
@@ -61,16 +98,14 @@ const initWebGL = () => {
   // const controls = new OrbitControls(camera, canvas);
   // controls.enableDamping = true;
 
-  
-
   const screenMeshTargetRotation = { x: 0, y: Math.PI * 0.5 };
   document.addEventListener("mousemove", (event) => {
-    const mouseX = (event.clientX/window.innerWidth - 0.5)*2;
-    const mouseY = (event.clientY/window.innerHeight - 0.5)*(-2);
+    const mouseX = (event.clientX / window.innerWidth - 0.5) * 2;
+    const mouseY = (event.clientY / window.innerHeight - 0.5) * -2;
     // console.log(mouse)
     // console.log(camera.rotation)
-    screenMeshTargetRotation.x = mouseY * (Math.PI / 32) 
-    screenMeshTargetRotation.y = mouseX * (Math.PI / 32) + Math.PI * 0.5
+    screenMeshTargetRotation.x = mouseY * (Math.PI / 32);
+    screenMeshTargetRotation.y = mouseX * (Math.PI / 32) + Math.PI * 0.5;
   });
 
   /**
@@ -111,32 +146,21 @@ const initWebGL = () => {
   /**
    * Models
    */
-  const gltfLoader = new GLTFLoader();
+  const gltfLoader = new GLTFLoader(manager);
 
   let screenMesh: THREE.Mesh;
-  gltfLoader.load(
-    "/models/screen2.glb",
-    (gltf) => {
-      console.log("success");
-      // console.log(gltf);
-      // screenMesh = gltf.scene.children[0];
+  gltfLoader.load("/models/screen2.glb", (gltf) => {
+    console.log("success");
+    // console.log(gltf);
+    // screenMesh = gltf.scene.children[0];
 
-      screenMesh = gltf.scene.children[0] as any;
-      screenMesh.material = texture;
-      screenMesh.scale.y *= -1;
-      screenMesh.rotateY(Math.PI * 0.5);
-      console.log(screenMesh);
-      scene.add(screenMesh);
-    },
-    (progress) => {
-      console.log("progress");
-      console.log(progress);
-    },
-    (error) => {
-      console.log("error");
-      console.log(error);
-    }
-  );
+    screenMesh = gltf.scene.children[0] as any;
+    screenMesh.material = texture;
+    screenMesh.scale.y *= -1;
+    screenMesh.rotateY(Math.PI * 0.5);
+    console.log(screenMesh);
+    scene.add(screenMesh);
+  });
 
   // console.log(screenMap)
   // const planelikeGeometry = new THREE.BoxGeometry(1, 1, 1);
@@ -175,7 +199,7 @@ const initWebGL = () => {
    * Animate
    */
 
-   const clock = new THREE.Clock();
+  const clock = new THREE.Clock();
   const tick = () => {
     stats.begin();
 
@@ -184,16 +208,16 @@ const initWebGL = () => {
 
     // Update controls
     // controls.update();
-    if (screenMesh)
-    {
+    if (screenMesh) {
       // console.log((screenMeshTargetRotation.x - screenMesh.rotation.x)/screenMeshTargetRotation.x)
       // screenMesh.rotation.x = screenMeshTargetRotation.x * Math.abs(screenMeshTargetRotation.x - screenMesh.rotation.x)*deltaTime*10
       // screenMesh.rotation.y = screenMeshTargetRotation.y * Math.abs(screenMeshTargetRotation.y - screenMesh.rotation.y)*deltaTime*10
 
-      screenMesh.rotation.x = (screenMeshTargetRotation.x*0.05 + screenMesh.rotation.x*0.95)
-      screenMesh.rotation.y =(screenMeshTargetRotation.y*0.05 + screenMesh.rotation.y*0.95)
+      screenMesh.rotation.x =
+        screenMeshTargetRotation.x * 0.05 + screenMesh.rotation.x * 0.95;
+      screenMesh.rotation.y =
+        screenMeshTargetRotation.y * 0.05 + screenMesh.rotation.y * 0.95;
     }
-    
 
     screenTick(deltaTime, elapsedTime);
 
