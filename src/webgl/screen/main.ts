@@ -1,15 +1,11 @@
 import * as THREE from "three";
-import DeltaTime from "../../DeltaTime";
-
-import { Font, FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
-import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
-
 import { screenRenderEngine } from "./renderEngine";
 import { screenTextEngine } from "./textEngine";
 
 // @ts-ignore
 // import titleText from "../../text/projects.md";
 import titleText from "../../text/title.md";
+import { Assists } from "../loader";
 console.log(titleText);
 
 export type Change = {
@@ -19,6 +15,7 @@ export type Change = {
 };
 
 export const initScreen = (
+  assists: Assists,
   renderer: THREE.WebGLRenderer
 ): [(deltaTime: number, elapsedTime: number) => void, THREE.Material] => {
   const sceneRTT = new THREE.Scene();
@@ -30,13 +27,10 @@ export const initScreen = (
   );
   backGround.position.set(0.5, -0.5, -0.01);
 
-  const [screenTextEngineTick, userInput, placeMarkdown, placeTerminalPrompt] = screenTextEngine(
-    sceneRTT,
-    titleText,
-    "root:~$"
-  );
+  const [screenTextEngineTick, userInput, placeMarkdown, placeTerminalPrompt] =
+    screenTextEngine(assists, sceneRTT, titleText, "root:~$");
 
-  const [screenRenderTick, noiseMat] = screenRenderEngine(renderer, sceneRTT);
+  const [screenRenderTick, noiseMat] = screenRenderEngine(assists, renderer, sceneRTT);
 
   // window.addEventListener("keydown", (ev) => {
   //   // ev.key

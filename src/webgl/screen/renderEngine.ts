@@ -9,13 +9,14 @@ import noiseFragmentShader from "../shaders/noise.frag";
 import { Lag } from "./lag";
 import DeltaTime from "../../DeltaTime";
 import { ShaderToScreen } from "./shaderToScreen";
+import { Assists } from "../loader";
 
 export function screenRenderEngine(
+  assists: Assists,
   renderer: THREE.WebGLRenderer,
   sceneRTT: THREE.Scene
-): [(deltaTime:  number, elapsedTime: number) => void, THREE.Material] {
-
-  const resolution = 512 + 64
+): [(deltaTime: number, elapsedTime: number) => void, THREE.Material] {
+  const resolution = 512 + 64;
   // const resolution = 768
   // const resolution = 512
 
@@ -51,7 +52,6 @@ export function screenRenderEngine(
 
   let uProgress = 1.2;
   const tick = (deltaTime: number, elapsedTime: number) => {
-
     noiseMat.uniforms.uTime.value = elapsedTime;
     noiseMat.uniforms.uProgress.value = uProgress;
 
@@ -69,16 +69,7 @@ export function screenRenderEngine(
 
   // **********************************
 
-  const cubeTextureLoader = new THREE.CubeTextureLoader();
-
-  const environmentMapTexture = cubeTextureLoader.load([
-    '/textures/environmentMaps/2/px.jpg',
-    '/textures/environmentMaps/2/nx.jpg',
-    '/textures/environmentMaps/2/py.jpg',
-    '/textures/environmentMaps/2/ny.jpg',
-    '/textures/environmentMaps/2/pz.jpg',
-    '/textures/environmentMaps/2/nz.jpg'
-  ]);
+  const environmentMapTexture = assists.environmentMapTexture;
 
   const shaderToScreen = new ShaderToScreen(
     {
@@ -100,8 +91,6 @@ export function screenRenderEngine(
   material.envMap = environmentMapTexture;
   material.map = shaderToScreen.outputTexture.texture;
   // material.color.set("#fff");
-
-  
 
   // return [render, noiseMat];
   return [tick, material];
