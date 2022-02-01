@@ -30,7 +30,11 @@ export const initScreen = (
   const [screenTextEngineTick, userInput, placeMarkdown, placeTerminalPrompt] =
     screenTextEngine(assists, sceneRTT, titleText, "root:~$");
 
-  const [screenRenderTick, noiseMat] = screenRenderEngine(assists, renderer, sceneRTT);
+  const [screenRenderTick, noiseMat] = screenRenderEngine(
+    assists,
+    renderer,
+    sceneRTT
+  );
 
   // window.addEventListener("keydown", (ev) => {
   //   // ev.key
@@ -55,8 +59,12 @@ export const initScreen = (
     false
   );
 
-  textarea.addEventListener("selectionchange", () => {
-    console.log(textarea.selectionStart);
+  let lastSelection = 0;
+  document.addEventListener("selectionchange", () => {
+    if (textarea.selectionStart !== textarea.selectionEnd)
+      textarea.setSelectionRange(lastSelection, lastSelection);
+    lastSelection = textarea.selectionStart;
+    console.log("tigger", textarea.selectionStart, textarea.selectionEnd);
     userInput({ type: "none", loc: "none", str: "" }, textarea.selectionStart);
   });
 
@@ -115,8 +123,6 @@ export const initScreen = (
     console.log("change: ", change);
     return change;
   }
-
-  stringEditDistance("hello", "hello there");
 
   const tick = (deltaTime: number, elapsedTime: number) => {
     screenTextEngineTick(deltaTime, elapsedTime);
