@@ -30,15 +30,19 @@ function loadAssists(callback: (assists: Assists) => any) {
 
   manager.onLoad = function () {
     console.log("Loading complete!");
-    // (loadingDOM as any).style.display = "none";
-    //   canvas.style.display = "block";
-    callback(assists as Assists);
+    window.setTimeout(() => {
+      (loadingDOM as any).style.opacity = "0";
+      callback(assists as Assists);
+    }, 500);
+    window.setTimeout(() => {
+      (loadingDOM as any).style.display = "none";
+    }, 1000);
   };
 
   manager.onProgress = function (url, itemsLoaded, itemsTotal) {
-    // const node = document.createElement("li");
-    // node.append("Loading file: " + url);
-    // loadingListDOM?.append(node);
+    const node = document.createElement("li");
+    node.append(`${itemsLoaded} of ${itemsTotal} File Loaded: ${url}`);
+    loadingListDOM?.append(node);
     console.log(
       "Loading file: " +
         url +
@@ -49,12 +53,6 @@ function loadAssists(callback: (assists: Assists) => any) {
         " files."
     );
   };
-
-  // Mesh
-  const gltfLoader = new GLTFLoader(manager);
-  gltfLoader.load("/models/screen2.glb", (gltf) => {
-    assists.screenMesh = gltf.scene.children[0] as any;
-  });
 
   // Fonts
   const fontLoader = new FontLoader(manager);
@@ -81,6 +79,12 @@ function loadAssists(callback: (assists: Assists) => any) {
       assists.environmentMapTexture = tex;
     }
   );
+
+  // Mesh
+  const gltfLoader = new GLTFLoader(manager);
+  gltfLoader.load("/models/screen2.glb", (gltf) => {
+    assists.screenMesh = gltf.scene.children[0] as any;
+  });
 }
 
 export { loadAssists };

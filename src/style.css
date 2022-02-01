@@ -33,7 +33,7 @@ body
     font-family: monospace;
     font-weight: bold;
     font-size: 24px;
-    color: #f99021;
+    color: #fff;
     background-color: black;
     position: fixed;
     top: 0;
@@ -41,5 +41,11 @@ body
     left: 0;
     right: 0;
     padding: 32px;
-    /* color: white; */
+    z-index: 2;
+    transition: opacity 0.5s;
+}
+
+#loading-list {
+    list-style-type: none;
+    font-weight: normal;
 }

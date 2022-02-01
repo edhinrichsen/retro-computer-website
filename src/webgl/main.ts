@@ -11,7 +11,7 @@ const initWebGL = () => {
   loadAssists((assists) => {
     var stats = new Stats();
     stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-    // document.body.appendChild(stats.dom);
+    document.body.appendChild(stats.dom);
 
     /**
      * Sizes
@@ -135,7 +135,7 @@ const initWebGL = () => {
       window.requestAnimationFrame(tick);
     };
 
-    window.onload = tick;
+    tick();
   });
 };
 
