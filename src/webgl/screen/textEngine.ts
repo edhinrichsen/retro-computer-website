@@ -1,8 +1,8 @@
 import { Font } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import * as THREE from "three";
-import { Change } from "./";
 import { Assists } from "../loader";
+import { Change } from "../../terminal";
 
 const textColor = "#f99021";
 const screenWidth = 1.396;
@@ -370,6 +370,7 @@ export default function ScreenTextEngine(
         placeStr({ str: char, font: h2Font, updateCharNextLoc: false })
       );
     }
+    terminalPromptOffset = 0;
     updateCharPos();
     inputBuffer = [];
     terminalPromptOffset = str.length + 1;
