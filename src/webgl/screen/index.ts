@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { screenRenderEngine } from "./renderEngine";
-import { screenTextEngine } from "./textEngine";
+import ScreenRenderEngine from "./renderEngine";
+import ScreenTextEngine from "./textEngine";
 
 // @ts-ignore
 // import titleText from "../../text/projects.md";
@@ -14,10 +14,10 @@ export type Change = {
   str: string;
 };
 
-export const initScreen = (
+export default function Screen(
   assists: Assists,
   renderer: THREE.WebGLRenderer
-): [(deltaTime: number, elapsedTime: number) => void, THREE.Material] => {
+) {
   const sceneRTT = new THREE.Scene();
 
   // Geometry
@@ -27,14 +27,14 @@ export const initScreen = (
   );
   backGround.position.set(0.5, -0.5, -0.01);
 
-  const [screenTextEngineTick, userInput, placeMarkdown, placeTerminalPrompt] =
-    screenTextEngine(assists, sceneRTT, titleText, "root:~$");
-
-  const [screenRenderTick, noiseMat] = screenRenderEngine(
+  const screenTextEngine = ScreenTextEngine(
     assists,
-    renderer,
-    sceneRTT
+    sceneRTT,
+    titleText,
+    "root:~$"
   );
+
+  const screenRenderEngine = ScreenRenderEngine(assists, renderer, sceneRTT);
 
   // window.addEventListener("keydown", (ev) => {
   //   // ev.key
@@ -54,7 +54,7 @@ export const initScreen = (
     function () {
       const change = stringEditDistance(oldText, textarea.value);
       oldText = textarea.value;
-      if (change) userInput(change, textarea.selectionStart);
+      if (change) screenTextEngine.userInput(change, textarea.selectionStart);
     },
     false
   );
@@ -65,7 +65,7 @@ export const initScreen = (
       textarea.setSelectionRange(lastSelection, lastSelection);
     lastSelection = textarea.selectionStart;
     console.log("tigger", textarea.selectionStart, textarea.selectionEnd);
-    userInput({ type: "none", loc: "none", str: "" }, textarea.selectionStart);
+    screenTextEngine.userInput({ type: "none", loc: "none", str: "" }, textarea.selectionStart);
   });
 
   function stringEditDistance(oldStr: string, newStr: string) {
@@ -125,9 +125,9 @@ export const initScreen = (
   }
 
   const tick = (deltaTime: number, elapsedTime: number) => {
-    screenTextEngineTick(deltaTime, elapsedTime);
-    screenRenderTick(deltaTime, elapsedTime);
+    screenRenderEngine.tick(deltaTime, elapsedTime);
+    screenTextEngine.tick(deltaTime, elapsedTime);
   };
 
-  return [tick, noiseMat];
-};
+  return { tick, screenRenderEngine, screenTextEngine };
+}

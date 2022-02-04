@@ -1,7 +1,7 @@
 import { Font } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import * as THREE from "three";
-import { Change } from "./main";
+import { Change } from "./";
 import { Assists } from "../loader";
 
 const textColor = "#f99021";
@@ -61,17 +61,12 @@ const breakFont: FontInfo = (function () {
   return { font: undefined, size, height, width, leading, tracking };
 })();
 
-export function screenTextEngine(
+export default function ScreenTextEngine(
   assists: Assists,
   sceneRTT: THREE.Scene,
   startText: string,
   startTerminalPrompt: string
-): [
-  (deltaTime: number, elapsedTime: number) => void,
-  (change: Change, selectionPos: number) => void,
-  (md: string) => void,
-  (terminalPrompt: string) => void
-] {
+) {
   h1Font.font = assists.publicPixelFont;
   h2Font.font = assists.chillFont;
   h3Font.font = assists.chillFont;
@@ -478,7 +473,7 @@ export function screenTextEngine(
     caretTimeSinceUpdate += deltaTime;
   }
 
-  onFontLoad()
+  onFontLoad();
 
-  return [tick, userInput, placeMarkdown, placeTerminalPrompt];
+  return { tick, userInput, placeMarkdown, placeTerminalPrompt };
 }
