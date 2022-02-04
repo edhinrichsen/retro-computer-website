@@ -1,4 +1,4 @@
 import "./style.css";
-import { initWebGL } from "./webgl/main";
+import WebGL from "./webgl";
 
-initWebGL();
+WebGL();

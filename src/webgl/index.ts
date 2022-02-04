@@ -2,12 +2,12 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import DeltaTime from "../DeltaTime";
 import { ExternalsPlugin } from "webpack";
-import { initScreen } from "./screen/main";
+import Screen from "./screen/";
 import Stats from "stats.js";
 import { loadAssists } from "./loader";
 
 let camera: any;
-const initWebGL = () => {
+export default function WebGL() {
   loadAssists((assists) => {
     var stats = new Stats();
     stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -83,13 +83,13 @@ const initWebGL = () => {
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     });
 
-    const [screenTick, texture] = initScreen(assists, renderer);
+    const screen = Screen(assists, renderer);
 
     const planelikeGeometry = new THREE.BoxGeometry(1, 1, 1);
     const plane = new THREE.Mesh(
       planelikeGeometry,
       // texture
-      new THREE.MeshBasicMaterial({ color: 'blue' })
+      new THREE.MeshBasicMaterial({ color: "blue" })
     );
     plane.scale.x = 1.33;
     // scene.add(plane);
@@ -97,7 +97,7 @@ const initWebGL = () => {
     /**
      * Models
      */
-    assists.screenMesh.material = texture;
+    assists.screenMesh.material = screen.screenRenderEngine.material;
     assists.screenMesh.scale.y *= -1;
     assists.screenMesh.rotateY(Math.PI * 0.5);
     console.log(assists.screenMesh);
@@ -125,7 +125,7 @@ const initWebGL = () => {
           assists.screenMesh.rotation.y * 0.95;
       }
 
-      screenTick(deltaTime, elapsedTime);
+      screen.tick(deltaTime, elapsedTime);
 
       renderer.setRenderTarget(null);
       renderer.render(scene, camera);
@@ -137,6 +137,4 @@ const initWebGL = () => {
 
     tick();
   });
-};
-
-export { initWebGL, camera };
+}

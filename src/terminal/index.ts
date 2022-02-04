@@ -1,46 +1,20 @@
-import * as THREE from "three";
-import { screenRenderEngine } from "./renderEngine";
-import { screenTextEngine } from "./textEngine";
-
+import Input from "./input";
 // @ts-ignore
-// import titleText from "../../text/projects.md";
-import titleText from "../../text/title.md";
-import { Assists } from "../loader";
-console.log(titleText);
-
+import notFound from "../text/notFound.md";
+// @ts-ignore
+import newLine from "../text/newLine.md";
 export type Change = {
   type: "add" | "del" | "none";
   loc: number | "end" | "none";
   str: string;
 };
-
-export const initScreen = (
-  assists: Assists,
-  renderer: THREE.WebGLRenderer
-): [(deltaTime: number, elapsedTime: number) => void, THREE.Material] => {
-  const sceneRTT = new THREE.Scene();
-
-  // Geometry
-  const backGround = new THREE.Mesh(
-    new THREE.PlaneGeometry(1, 1, 1, 1),
-    new THREE.MeshBasicMaterial({ color: "red" })
-  );
-  backGround.position.set(0.5, -0.5, -0.01);
-
-  const [screenTextEngineTick, userInput, placeMarkdown, placeTerminalPrompt] =
-    screenTextEngine(assists, sceneRTT, titleText, "root:~$");
-
-  const [screenRenderTick, noiseMat] = screenRenderEngine(
-    assists,
-    renderer,
-    sceneRTT
-  );
-
-  // window.addEventListener("keydown", (ev) => {
-  //   // ev.key
-  //   userInput(ev.key);
-  // });
-
+export default function Terminal(screenTextEngine: {
+  tick: (deltaTime: number, elapsedTime: number) => void;
+  userInput: (change: Change, selectionPos: number) => void;
+  placeMarkdown: (md: string) => void;
+  placeTerminalPrompt: (str: string) => void;
+}) {
+  // const input = Input()
   const textarea = document.getElementById("textarea") as HTMLTextAreaElement;
   textarea.value = "";
   textarea.focus();
@@ -54,10 +28,26 @@ export const initScreen = (
     function () {
       const change = stringEditDistance(oldText, textarea.value);
       oldText = textarea.value;
-      if (change) userInput(change, textarea.selectionStart);
+      if (change) screenTextEngine.userInput(change, textarea.selectionStart);
     },
     false
   );
+
+  window.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      if (textarea.value.match(/^ *$/) === null) {
+        screenTextEngine.placeMarkdown(notFound);
+      } else {
+        screenTextEngine.placeMarkdown(newLine);
+      }
+
+      textarea.value = "";
+      screenTextEngine.placeTerminalPrompt("root:~$");
+      const change = stringEditDistance(oldText, textarea.value);
+      oldText = textarea.value;
+      if (change) screenTextEngine.userInput(change, textarea.selectionStart);
+    }
+  });
 
   let lastSelection = 0;
   document.addEventListener("selectionchange", () => {
@@ -65,7 +55,10 @@ export const initScreen = (
       textarea.setSelectionRange(lastSelection, lastSelection);
     lastSelection = textarea.selectionStart;
     console.log("tigger", textarea.selectionStart, textarea.selectionEnd);
-    userInput({ type: "none", loc: "none", str: "" }, textarea.selectionStart);
+    screenTextEngine.userInput(
+      { type: "none", loc: "none", str: "" },
+      textarea.selectionStart
+    );
   });
 
   function stringEditDistance(oldStr: string, newStr: string) {
@@ -123,11 +116,4 @@ export const initScreen = (
     console.log("change: ", change);
     return change;
   }
-
-  const tick = (deltaTime: number, elapsedTime: number) => {
-    screenTextEngineTick(deltaTime, elapsedTime);
-    screenRenderTick(deltaTime, elapsedTime);
-  };
-
-  return [tick, noiseMat];
-};
+}

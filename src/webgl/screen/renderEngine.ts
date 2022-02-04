@@ -11,11 +11,11 @@ import DeltaTime from "../../DeltaTime";
 import { ShaderToScreen } from "./shaderToScreen";
 import { Assists } from "../loader";
 
-export function screenRenderEngine(
+export default function ScreenRenderEngine(
   assists: Assists,
   renderer: THREE.WebGLRenderer,
   sceneRTT: THREE.Scene
-): [(deltaTime: number, elapsedTime: number) => void, THREE.Material] {
+) {
   const resolution = 512 + 64;
   // const resolution = 768
   // const resolution = 512
@@ -93,5 +93,5 @@ export function screenRenderEngine(
   // material.color.set("#fff");
 
   // return [render, noiseMat];
-  return [tick, material];
+  return { tick, material };
 }

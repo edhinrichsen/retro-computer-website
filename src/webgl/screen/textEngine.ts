@@ -1,8 +1,8 @@
 import { Font } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import * as THREE from "three";
-import { Change } from "./main";
 import { Assists } from "../loader";
+import { Change } from "../../terminal";
 
 const textColor = "#f99021";
 const screenWidth = 1.396;
@@ -61,17 +61,12 @@ const breakFont: FontInfo = (function () {
   return { font: undefined, size, height, width, leading, tracking };
 })();
 
-export function screenTextEngine(
+export default function ScreenTextEngine(
   assists: Assists,
   sceneRTT: THREE.Scene,
   startText: string,
   startTerminalPrompt: string
-): [
-  (deltaTime: number, elapsedTime: number) => void,
-  (change: Change, selectionPos: number) => void,
-  (md: string) => void,
-  (terminalPrompt: string) => void
-] {
+) {
   h1Font.font = assists.publicPixelFont;
   h2Font.font = assists.chillFont;
   h3Font.font = assists.chillFont;
@@ -369,12 +364,15 @@ export function screenTextEngine(
 
   let terminalPromptOffset = 0;
   function placeTerminalPrompt(str: string) {
+    // if (inputBuffer.length > 0)
+    //   charNextLoc.y = inputBuffer[inputBuffer.length - 1].position.y;
     inputBuffer = [];
     for (const char of str) {
       inputBuffer.push(
         placeStr({ str: char, font: h2Font, updateCharNextLoc: false })
       );
     }
+    terminalPromptOffset = 0;
     updateCharPos();
     inputBuffer = [];
     terminalPromptOffset = str.length + 1;
@@ -478,7 +476,7 @@ export function screenTextEngine(
     caretTimeSinceUpdate += deltaTime;
   }
 
-  onFontLoad()
+  onFontLoad();
 
-  return [tick, userInput, placeMarkdown, placeTerminalPrompt];
+  return { tick, userInput, placeMarkdown, placeTerminalPrompt };
 }
