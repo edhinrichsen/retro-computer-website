@@ -364,6 +364,8 @@ export default function ScreenTextEngine(
 
   let terminalPromptOffset = 0;
   function placeTerminalPrompt(str: string) {
+    // if (inputBuffer.length > 0)
+    //   charNextLoc.y = inputBuffer[inputBuffer.length - 1].position.y;
     inputBuffer = [];
     for (const char of str) {
       inputBuffer.push(

@@ -1,7 +1,8 @@
 import Input from "./input";
 // @ts-ignore
-// import notFound from "../text/projects.md";
 import notFound from "../text/notFound.md";
+// @ts-ignore
+import newLine from "../text/newLine.md";
 export type Change = {
   type: "add" | "del" | "none";
   loc: number | "end" | "none";
@@ -34,8 +35,13 @@ export default function Terminal(screenTextEngine: {
 
   window.addEventListener("keypress", (e) => {
     if (e.key === "Enter") {
+      if (textarea.value.match(/^ *$/) === null) {
+        screenTextEngine.placeMarkdown(notFound);
+      } else {
+        screenTextEngine.placeMarkdown(newLine);
+      }
+
       textarea.value = "";
-      screenTextEngine.placeMarkdown(notFound);
       screenTextEngine.placeTerminalPrompt("root:~$");
       const change = stringEditDistance(oldText, textarea.value);
       oldText = textarea.value;
