@@ -4,7 +4,7 @@
 #define LINE_STRENGTH 0.05
 #define LINE_OFFSET 2.0
 
-#define NOISE_STRENGTH 0.15
+#define NOISE_STRENGTH 0.2
 
 uniform sampler2D uDiffuse;
 uniform float uTime;
@@ -27,7 +27,7 @@ float squareWave(float x){
 
 vec4 progress(){
      if (vUv.y < uProgress && vUv.y > uProgress - 0.2) {
-        return vec4(0.1,0.1,0.1,0.5) * (uProgress - vUv.y) ;
+        return vec4(0.1,0.1,0.1,1.0) * (uProgress - vUv.y) ;
     }
         else {return vec4(0,0,0,0);}
 }

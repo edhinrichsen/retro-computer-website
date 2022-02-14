@@ -10,6 +10,7 @@ type Assists = {
   shadowPlaneMesh: THREE.Mesh;
   bakeTexture: THREE.Texture;
   bakeFloorTexture: THREE.Texture;
+  // glossMap: THREE.Texture;
   publicPixelFont: Font;
   chillFont: Font;
   environmentMapTexture: THREE.CubeTexture;
@@ -75,24 +76,41 @@ function loadAssists(callback: (assists: Assists) => any) {
   const textureLoader = new THREE.TextureLoader(manager);
   textureLoader.load("/textures/bake.jpg", (tex) => {
     tex.flipY = false;
+    tex.encoding = THREE.sRGBEncoding
     assists.bakeTexture = tex;
   })
 
   textureLoader.load("/textures/bake_floor.jpg", (tex) => {
     tex.flipY = false;
+    tex.encoding = THREE.sRGBEncoding
     assists.bakeFloorTexture = tex;
   })
 
+  // textureLoader.load("/textures/HandleRubberSmooth001_GLOSS_3K.jpg", (tex) => {
+  //   tex.
+  //   assists.glossMap = tex;
+    
+  // })
+
   const cubeTextureLoader = new THREE.CubeTextureLoader(manager);
 
+  const num = 7;
   cubeTextureLoader.load(
+    // [
+    //   "/textures/environmentMaps/2/px.jpg",
+    //   "/textures/environmentMaps/2/nx.jpg",
+    //   "/textures/environmentMaps/2/py.jpg",
+    //   "/textures/environmentMaps/2/ny.jpg",
+    //   "/textures/environmentMaps/2/pz.jpg",
+    //   "/textures/environmentMaps/2/nz.jpg",
+    // ],
     [
-      "/textures/environmentMaps/2/px.jpg",
-      "/textures/environmentMaps/2/nx.jpg",
-      "/textures/environmentMaps/2/py.jpg",
-      "/textures/environmentMaps/2/ny.jpg",
-      "/textures/environmentMaps/2/pz.jpg",
-      "/textures/environmentMaps/2/nz.jpg",
+      `/textures/environmentMaps/${num}/px.png`,
+      `/textures/environmentMaps/${num}/nx.png`,
+      `/textures/environmentMaps/${num}/py.png`,
+      `/textures/environmentMaps/${num}/ny.png`,
+      `/textures/environmentMaps/${num}/pz.png`,
+      `/textures/environmentMaps/${num}/nz.png`,
     ],
     (tex) => {
       assists.environmentMapTexture = tex;

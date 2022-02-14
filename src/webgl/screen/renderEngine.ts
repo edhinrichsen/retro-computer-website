@@ -44,7 +44,7 @@ export default function ScreenRenderEngine(
     fragmentShader: noiseFragmentShader,
   });
 
-  const bloomPass = new UnrealBloomPass(new THREE.Vector2(128, 128), 1, 0.4, 0);
+  const bloomPass = new UnrealBloomPass(new THREE.Vector2(128, 128), 1.1, 0.4, 0);
   composer.addPass(bloomPass);
 
   const lag = new Lag(composer.readBuffer, resolution * 1.33, resolution);
@@ -70,6 +70,7 @@ export default function ScreenRenderEngine(
   // **********************************
 
   const environmentMapTexture = assists.environmentMapTexture;
+  environmentMapTexture.encoding = THREE.sRGBEncoding
 
   const shaderToScreen = new ShaderToScreen(
     {
@@ -85,10 +86,12 @@ export default function ScreenRenderEngine(
     resolution
   );
 
+  shaderToScreen.outputTexture.texture.encoding = THREE.sRGBEncoding
   const material = new THREE.MeshStandardMaterial();
   material.metalness = 0;
-  material.roughness = 0.1;
+  material.roughness = 0.125;
   material.envMap = environmentMapTexture;
+  material.envMapIntensity = 0.7
   material.map = shaderToScreen.outputTexture.texture;
   // material.color.set("#fff");
 

@@ -27,9 +27,9 @@ export default function WebGL() {
 
     // Scene
     const scene = new THREE.Scene();
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.55);
     scene.add(ambientLight);
-    scene.background = new THREE.Color( 0xf6d4b1 );
+    scene.background = new THREE.Color(0xf6d4b1);
 
     /**
      * Camera
@@ -68,6 +68,7 @@ export default function WebGL() {
     });
     renderer.setSize(sizes.width, sizes.height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.outputEncoding = THREE.sRGBEncoding
     // renderer.render(sceneRTT, cameraRTT);
 
     window.addEventListener("resize", () => {
@@ -95,22 +96,26 @@ export default function WebGL() {
     plane.scale.x = 1.33;
     // scene.add(plane);
 
+
+    // Materials
+    // const computerMaterial = new THREE.MeshStandardMaterial({ map: assists.bakeTexture});
+    // computerMaterial.envMap = assists.environmentMapTexture
+    // computerMaterial.roughnessMap = assists.glossMap
+    const computerMaterial = new THREE.MeshBasicMaterial({ map: assists.bakeTexture });
+
     /**
      * Models
      */
     assists.screenMesh.material = screen.screenRenderEngine.material;
-    // assists.screenMesh.scale.y *= -1;
-    // assists.screenMesh.rotateY(Math.PI * 0.5);
-    // console.log(assists.screenMesh);
     scene.add(assists.screenMesh);
 
-    assists.computerMesh.material = new THREE.MeshBasicMaterial({ map: assists.bakeTexture });
+    assists.computerMesh.material = computerMaterial;
     scene.add(assists.computerMesh);
 
-    assists.crtMesh.material = new THREE.MeshBasicMaterial({ map: assists.bakeTexture });
+    assists.crtMesh.material = computerMaterial;
     scene.add(assists.crtMesh);
 
-    assists.keyboardMesh.material = new THREE.MeshBasicMaterial({ map: assists.bakeTexture });
+    assists.keyboardMesh.material = computerMaterial;
     scene.add(assists.keyboardMesh);
 
     assists.shadowPlaneMesh.material = new THREE.MeshBasicMaterial({ map: assists.bakeFloorTexture });
