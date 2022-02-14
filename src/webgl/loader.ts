@@ -4,6 +4,12 @@ import { Font, FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 
 type Assists = {
   screenMesh: THREE.Mesh;
+  computerMesh: THREE.Mesh;
+  crtMesh: THREE.Mesh;
+  keyboardMesh: THREE.Mesh;
+  shadowPlaneMesh: THREE.Mesh;
+  bakeTexture: THREE.Texture;
+  bakeFloorTexture: THREE.Texture;
   publicPixelFont: Font;
   chillFont: Font;
   environmentMapTexture: THREE.CubeTexture;
@@ -19,12 +25,12 @@ function loadAssists(callback: (assists: Assists) => any) {
   manager.onStart = function (url, itemsLoaded, itemsTotal) {
     console.log(
       "Started loading file: " +
-        url +
-        ".\nLoaded " +
-        itemsLoaded +
-        " of " +
-        itemsTotal +
-        " files."
+      url +
+      ".\nLoaded " +
+      itemsLoaded +
+      " of " +
+      itemsTotal +
+      " files."
     );
   };
 
@@ -45,12 +51,12 @@ function loadAssists(callback: (assists: Assists) => any) {
     loadingListDOM?.append(node);
     console.log(
       "Loading file: " +
-        url +
-        ".\nLoaded " +
-        itemsLoaded +
-        " of " +
-        itemsTotal +
-        " files."
+      url +
+      ".\nLoaded " +
+      itemsLoaded +
+      " of " +
+      itemsTotal +
+      " files."
     );
   };
 
@@ -64,6 +70,19 @@ function loadAssists(callback: (assists: Assists) => any) {
   });
 
   // Texture
+
+  // Texture
+  const textureLoader = new THREE.TextureLoader(manager);
+  textureLoader.load("/textures/bake.jpg", (tex) => {
+    tex.flipY = false;
+    assists.bakeTexture = tex;
+  })
+
+  textureLoader.load("/textures/bake_floor.jpg", (tex) => {
+    tex.flipY = false;
+    assists.bakeFloorTexture = tex;
+  })
+
   const cubeTextureLoader = new THREE.CubeTextureLoader(manager);
 
   cubeTextureLoader.load(
@@ -82,8 +101,17 @@ function loadAssists(callback: (assists: Assists) => any) {
 
   // Mesh
   const gltfLoader = new GLTFLoader(manager);
-  gltfLoader.load("/models/screen2.glb", (gltf) => {
-    assists.screenMesh = gltf.scene.children[0] as any;
+  gltfLoader.load("/models/Commodore710_32.glb", (gltf) => {
+    // gltfLoader.load("/models/screen2.glb", (gltf) => {
+    // assists.screenMesh = gltf.scene.children[0] as any;
+    const computer = new THREE.Group()
+    assists.screenMesh = gltf.scene.children.find(m => m.name === "Screen")
+    assists.computerMesh = gltf.scene.children.find(m => m.name === "Computer")
+    assists.crtMesh = gltf.scene.children.find(m => m.name === "CRT")
+    assists.keyboardMesh = gltf.scene.children.find(m => m.name === "Keyboard")
+    assists.shadowPlaneMesh = gltf.scene.children.find(m => m.name === "ShadowPlane")
+
+    // console.log(gltf)
   });
 }
 

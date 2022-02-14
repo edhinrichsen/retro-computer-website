@@ -29,6 +29,7 @@ export default function WebGL() {
     const scene = new THREE.Scene();
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
+    scene.background = new THREE.Color( 0xf6d4b1 );
 
     /**
      * Camera
@@ -45,8 +46,8 @@ export default function WebGL() {
     scene.add(camera);
 
     // Controls
-    // const controls = new OrbitControls(camera, canvas);
-    // controls.enableDamping = true;
+    const controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true;
 
     const screenMeshTargetRotation = { x: 0, y: Math.PI * 0.5 };
     document.addEventListener("mousemove", (event) => {
@@ -98,10 +99,22 @@ export default function WebGL() {
      * Models
      */
     assists.screenMesh.material = screen.screenRenderEngine.material;
-    assists.screenMesh.scale.y *= -1;
-    assists.screenMesh.rotateY(Math.PI * 0.5);
-    console.log(assists.screenMesh);
+    // assists.screenMesh.scale.y *= -1;
+    // assists.screenMesh.rotateY(Math.PI * 0.5);
+    // console.log(assists.screenMesh);
     scene.add(assists.screenMesh);
+
+    assists.computerMesh.material = new THREE.MeshBasicMaterial({ map: assists.bakeTexture });
+    scene.add(assists.computerMesh);
+
+    assists.crtMesh.material = new THREE.MeshBasicMaterial({ map: assists.bakeTexture });
+    scene.add(assists.crtMesh);
+
+    assists.keyboardMesh.material = new THREE.MeshBasicMaterial({ map: assists.bakeTexture });
+    scene.add(assists.keyboardMesh);
+
+    assists.shadowPlaneMesh.material = new THREE.MeshBasicMaterial({ map: assists.bakeFloorTexture });
+    scene.add(assists.shadowPlaneMesh);
 
     /**
      * Animate
@@ -115,15 +128,15 @@ export default function WebGL() {
       const elapsedTime = clock.getElapsedTime();
 
       // Update controls
-      // controls.update();
-      if (assists.screenMesh) {
-        assists.screenMesh.rotation.x =
-          screenMeshTargetRotation.x * 0.05 +
-          assists.screenMesh.rotation.x * 0.95;
-        assists.screenMesh.rotation.y =
-          screenMeshTargetRotation.y * 0.05 +
-          assists.screenMesh.rotation.y * 0.95;
-      }
+      controls.update();
+      // if (assists.screenMesh) {
+      //   assists.screenMesh.rotation.x =
+      //     screenMeshTargetRotation.x * 0.05 +
+      //     assists.screenMesh.rotation.x * 0.95;
+      //   assists.screenMesh.rotation.y =
+      //     screenMeshTargetRotation.y * 0.05 +
+      //     assists.screenMesh.rotation.y * 0.95;
+      // }
 
       screen.tick(deltaTime, elapsedTime);
 
