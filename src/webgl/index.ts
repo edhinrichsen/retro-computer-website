@@ -41,7 +41,8 @@ export default function WebGL() {
       0.1,
       100
     );
-    camera.position.set(0, 0, -1.5);
+    // camera.position.set(0, 0, -1.5);
+    camera.position.set(0, -1, -5.5);
     camera.rotation.set(-Math.PI, 0, Math.PI);
     scene.add(camera);
 
@@ -118,6 +119,7 @@ export default function WebGL() {
     assists.keyboardMesh.material = computerMaterial;
     scene.add(assists.keyboardMesh);
 
+    // assists.shadowPlaneMesh.material = new THREE.MeshBasicMaterial({ map: assists.bakeFloorTexture, blending: THREE.MultiplyBlending, transparent: true });
     assists.shadowPlaneMesh.material = new THREE.MeshBasicMaterial({ map: assists.bakeFloorTexture });
     scene.add(assists.shadowPlaneMesh);
 
