@@ -42,7 +42,7 @@ export default function Terminal(screenTextEngine: {
       }
 
       textarea.value = "";
-      screenTextEngine.placeTerminalPrompt("root:~$");
+      screenTextEngine.placeTerminalPrompt("root:~>");
       const change = stringEditDistance(oldText, textarea.value);
       oldText = textarea.value;
       if (change) screenTextEngine.userInput(change, textarea.selectionStart);
@@ -54,7 +54,6 @@ export default function Terminal(screenTextEngine: {
     if (textarea.selectionStart !== textarea.selectionEnd)
       textarea.setSelectionRange(lastSelection, lastSelection);
     lastSelection = textarea.selectionStart;
-    console.log("tigger", textarea.selectionStart, textarea.selectionEnd);
     screenTextEngine.userInput(
       { type: "none", loc: "none", str: "" },
       textarea.selectionStart

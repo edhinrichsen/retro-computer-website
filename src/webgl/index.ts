@@ -36,19 +36,41 @@ export default function WebGL() {
      */
     // Base camera
     camera = new THREE.PerspectiveCamera(
-      75,
+      50,
       sizes.width / sizes.height,
       0.1,
       100
     );
-    // camera.position.set(0, 0, -1.5);
-    camera.position.set(0, -1, -5.5);
+    camera.position.set(0, 0, -2.5);
+    // camera.position.set(0, -1, -5.5);
     camera.rotation.set(-Math.PI, 0, Math.PI);
     scene.add(camera);
 
     // Controls
     const controls = new OrbitControls(camera, canvas);
+
+    const controlProps = {
+      minAzimuthAngleOffest: -Math.PI * 0.3,
+      maxAzimuthAngleOffest: Math.PI * 0.3,
+
+      minPolarAngleOffest: -Math.PI * 0.3,
+      maxPolarAngleOffest: 0,
+    };
+
     controls.enableDamping = true;
+    controls.enablePan = false;
+
+    controls.maxDistance = 15;
+    controls.minDistance = 2.5;
+
+    // controls.getDistance()
+
+    controls.minAzimuthAngle = Math.PI + controlProps.minAzimuthAngleOffest;
+    controls.maxAzimuthAngle = Math.PI + controlProps.maxAzimuthAngleOffest;
+    console.log("xoxoxo", controls.maxAzimuthAngle);
+
+    controls.minPolarAngle = Math.PI * 0.5 + controlProps.minPolarAngleOffest;
+    controls.maxPolarAngle = Math.PI * 0.5 + controlProps.maxPolarAngleOffest;
 
     const screenMeshTargetRotation = { x: 0, y: Math.PI * 0.5 };
     document.addEventListener("mousemove", (event) => {
@@ -69,7 +91,7 @@ export default function WebGL() {
     });
     renderer.setSize(sizes.width, sizes.height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.outputEncoding = THREE.sRGBEncoding
+    renderer.outputEncoding = THREE.sRGBEncoding;
     // renderer.render(sceneRTT, cameraRTT);
 
     window.addEventListener("resize", () => {
@@ -97,31 +119,39 @@ export default function WebGL() {
     plane.scale.x = 1.33;
     // scene.add(plane);
 
-
     // Materials
     // const computerMaterial = new THREE.MeshStandardMaterial({ map: assists.bakeTexture});
     // computerMaterial.envMap = assists.environmentMapTexture
     // computerMaterial.roughnessMap = assists.glossMap
-    const computerMaterial = new THREE.MeshBasicMaterial({ map: assists.bakeTexture });
+    const computerMaterial = new THREE.MeshBasicMaterial({
+      map: assists.bakeTexture,
+    });
 
     /**
      * Models
      */
+    const computerGroup = new THREE.Group();
+
     assists.screenMesh.material = screen.screenRenderEngine.material;
-    scene.add(assists.screenMesh);
+    computerGroup.add(assists.screenMesh);
 
     assists.computerMesh.material = computerMaterial;
-    scene.add(assists.computerMesh);
+    computerGroup.add(assists.computerMesh);
 
     assists.crtMesh.material = computerMaterial;
-    scene.add(assists.crtMesh);
+    computerGroup.add(assists.crtMesh);
 
     assists.keyboardMesh.material = computerMaterial;
-    scene.add(assists.keyboardMesh);
+    computerGroup.add(assists.keyboardMesh);
 
     // assists.shadowPlaneMesh.material = new THREE.MeshBasicMaterial({ map: assists.bakeFloorTexture, blending: THREE.MultiplyBlending, transparent: true });
-    assists.shadowPlaneMesh.material = new THREE.MeshBasicMaterial({ map: assists.bakeFloorTexture });
-    scene.add(assists.shadowPlaneMesh);
+    assists.shadowPlaneMesh.material = new THREE.MeshBasicMaterial({
+      map: assists.bakeFloorTexture,
+    });
+    computerGroup.add(assists.shadowPlaneMesh);
+
+    computerGroup.position.y = 1.5;
+    scene.add(computerGroup);
 
     /**
      * Animate
@@ -135,6 +165,23 @@ export default function WebGL() {
       const elapsedTime = clock.getElapsedTime();
 
       // Update controls
+
+      const zoomFac =
+        (controls.getDistance() - controls.minDistance) /
+        (controls.minDistance + controls.maxDistance);
+
+      computerGroup.position.y = 1.5 * zoomFac;
+
+      controls.minAzimuthAngle =
+        Math.PI + controlProps.minAzimuthAngleOffest * zoomFac;
+      controls.maxAzimuthAngle =
+        Math.PI + controlProps.maxAzimuthAngleOffest * zoomFac;
+
+      controls.minPolarAngle =
+        Math.PI * 0.5 + controlProps.minPolarAngleOffest * zoomFac;
+      controls.maxPolarAngle =
+        Math.PI * 0.5 + controlProps.maxPolarAngleOffest * zoomFac;
+
       controls.update();
       // if (assists.screenMesh) {
       //   assists.screenMesh.rotation.x =

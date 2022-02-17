@@ -1,4 +1,4 @@
-## root:~$ curl edwardh.io
+## root:~> curl edwardh.io
 
 
 #  Hi there,
