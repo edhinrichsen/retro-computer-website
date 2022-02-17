@@ -41,7 +41,7 @@ export default function WebGL() {
       0.1,
       100
     );
-    camera.position.set(0, 0, -2.5);
+    camera.position.set(0, 0, -10);
     // camera.position.set(0, -1, -5.5);
     camera.rotation.set(-Math.PI, 0, Math.PI);
     scene.add(camera);
@@ -50,6 +50,9 @@ export default function WebGL() {
     const controls = new OrbitControls(camera, canvas);
 
     const controlProps = {
+      computerHeight: 2.5,
+      computerAngle: Math.PI * 0.25,
+
       minAzimuthAngleOffest: -Math.PI * 0.3,
       maxAzimuthAngleOffest: Math.PI * 0.3,
 
@@ -60,14 +63,13 @@ export default function WebGL() {
     controls.enableDamping = true;
     controls.enablePan = false;
 
-    controls.maxDistance = 15;
+    controls.maxDistance = 10;
     controls.minDistance = 2.5;
 
     // controls.getDistance()
 
     controls.minAzimuthAngle = Math.PI + controlProps.minAzimuthAngleOffest;
     controls.maxAzimuthAngle = Math.PI + controlProps.maxAzimuthAngleOffest;
-    console.log("xoxoxo", controls.maxAzimuthAngle);
 
     controls.minPolarAngle = Math.PI * 0.5 + controlProps.minPolarAngleOffest;
     controls.maxPolarAngle = Math.PI * 0.5 + controlProps.maxPolarAngleOffest;
@@ -150,7 +152,8 @@ export default function WebGL() {
     });
     computerGroup.add(assists.shadowPlaneMesh);
 
-    computerGroup.position.y = 1.5;
+    computerGroup.position.y = controlProps.computerHeight;
+    computerGroup.rotation.y = controlProps.computerAngle;
     scene.add(computerGroup);
 
     /**
@@ -170,7 +173,8 @@ export default function WebGL() {
         (controls.getDistance() - controls.minDistance) /
         (controls.minDistance + controls.maxDistance);
 
-      computerGroup.position.y = 1.5 * zoomFac;
+      computerGroup.position.y = controlProps.computerHeight * zoomFac;
+      computerGroup.rotation.y = controlProps.computerAngle * zoomFac;
 
       controls.minAzimuthAngle =
         Math.PI + controlProps.minAzimuthAngleOffest * zoomFac;
