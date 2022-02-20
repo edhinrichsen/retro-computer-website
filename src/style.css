@@ -8,15 +8,18 @@ html,
 body
 {
     overflow: hidden;
+    /* background-color: #f6d4b1; */
 }
 
 .webgl
 {
-    position: fixed;
-    top: 0;
-    left: 0;
+    /* position: fixed; */
+    /* top: 0; */
+    /* left: 0; */
+    /* right: 50%; */
     outline: none;
     z-index: 0;
+    cursor: pointer;
     /* display: none; */
 }
 
@@ -49,3 +52,89 @@ body
     list-style-type: none;
     font-weight: normal;
 }
+
+#hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
+    /* flex-direction: column-reverse; */
+    height: 100%;
+    z-index: 1;
+    /* background-color: aquamarine; */
+  }
+
+#hero-txt {
+    z-index: 2;
+    /* margin-top: 3.5em; */
+    text-align: center;
+    color: #525252;
+    /* text-shadow: 0 0 20px rgba(0, 0, 0, 0.7); */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+    /* margin-top: -25vh; */
+    /* margin-right: 15vw; */
+    /* margin-left: -15vw; */
+  }
+
+  body {
+    font-family: "Raleway", sans-serif;
+  }
+  
+  h1 {
+    font-family: "Crete Round", serif;
+    font-weight: 400;
+    font-size: 3.5em;
+    margin-top: -0.3em;
+    margin-bottom: -0.2em;
+  }
+  
+  h2 {
+    font-size: 1.5em;
+    font-weight: normal;
+    /* margin-bottom: -2em; */
+  }
+  
+  h3 {
+    font-size: 1em;
+    font-weight: normal;
+  }
+  
+  h4 {
+    font-size: 1.5em;
+    text-align: center;
+    font-family: "Crete Round", serif;
+    margin: 0;
+  }
+  
+  h5 {
+    font-size: 1.5em;
+    text-align: center;
+    font-family: "Crete Round", serif;
+    margin: 0;
+    opacity: 0.5;
+  }
+
+  @media only screen and (min-width: 850px) and (orientation: landscape) {
+    #hero-txt h1 {
+      font-size: 7em;
+    }
+    #hero-txt h2 {
+      font-size: 2em;
+    }
+    #hero-txt h3 {
+      font-size: 1.5em;
+    }
+    .image {
+      width: 840px;
+    }
+    #hero-txt {
+      margin-top: -25vh;
+      margin-right: 15vw;
+      margin-left: -10vw;
+      /* background-color: #b3d4fc; */
+    }
+  }

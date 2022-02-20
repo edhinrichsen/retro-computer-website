@@ -16,13 +16,14 @@ export default function WebGL() {
     /**
      * Sizes
      */
+    const widthOffset = 0.5;
     const sizes = {
-      width: window.innerWidth,
+      width: window.innerWidth / (widthOffset + 1),
       height: window.innerHeight,
     };
 
     // Canvas
-    const canvas: any = document.querySelector("canvas.webgl");
+    const canvas = document.querySelector("canvas.webgl") as HTMLCanvasElement;
     if (!canvas) console.error("no canvas");
 
     // Scene
@@ -50,8 +51,8 @@ export default function WebGL() {
     const controls = new OrbitControls(camera, canvas);
 
     const controlProps = {
-      computerHeight: 2.5,
-      computerAngle: Math.PI * 0.25,
+      computerHeight: 1.5,
+      computerAngle: Math.PI * 0.15,
 
       minAzimuthAngleOffest: -Math.PI * 0.3,
       maxAzimuthAngleOffest: Math.PI * 0.3,
@@ -96,18 +97,20 @@ export default function WebGL() {
     renderer.outputEncoding = THREE.sRGBEncoding;
     // renderer.render(sceneRTT, cameraRTT);
 
-    window.addEventListener("resize", () => {
-      // Update sizes
-      sizes.width = window.innerWidth;
-      sizes.height = window.innerHeight;
-
+    function updateCanvasSize(width: number, height: number) {
       // Update camera
-      camera.aspect = sizes.width / sizes.height;
+      camera.aspect = width / height;
       camera.updateProjectionMatrix();
 
       // Update renderer
-      renderer.setSize(sizes.width, sizes.height);
+      renderer.setSize(width, height);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    }
+    window.addEventListener("resize", () => {
+      // Update sizes
+      sizes.width = window.innerWidth / (widthOffset + 1);
+      sizes.height = window.innerHeight;
+      updateCanvasSize(sizes.width, sizes.height);
     });
 
     const screen = Screen(assists, renderer);
@@ -171,20 +174,25 @@ export default function WebGL() {
 
       const zoomFac =
         (controls.getDistance() - controls.minDistance) /
-        (controls.minDistance + controls.maxDistance);
+        (controls.maxDistance - controls.minDistance);
 
       computerGroup.position.y = controlProps.computerHeight * zoomFac;
       computerGroup.rotation.y = controlProps.computerAngle * zoomFac;
 
       controls.minAzimuthAngle =
-        Math.PI + controlProps.minAzimuthAngleOffest * zoomFac;
+        Math.PI + controlProps.minAzimuthAngleOffest * zoomFac - 0.1;
       controls.maxAzimuthAngle =
-        Math.PI + controlProps.maxAzimuthAngleOffest * zoomFac;
+        Math.PI + controlProps.maxAzimuthAngleOffest * zoomFac + 0.1;
 
       controls.minPolarAngle =
-        Math.PI * 0.5 + controlProps.minPolarAngleOffest * zoomFac;
+        Math.PI * 0.5 + controlProps.minPolarAngleOffest * zoomFac - 0.1;
       controls.maxPolarAngle =
-        Math.PI * 0.5 + controlProps.maxPolarAngleOffest * zoomFac;
+        Math.PI * 0.5 + controlProps.maxPolarAngleOffest * zoomFac + 0.1;
+
+        console.log(zoomFac);
+        
+      sizes.width = window.innerWidth / ((widthOffset * zoomFac) + 1);
+      updateCanvasSize(sizes.width, sizes.height);
 
       controls.update();
       // if (assists.screenMesh) {
