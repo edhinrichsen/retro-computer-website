@@ -22,6 +22,7 @@ export default function WebGL() {
       height: window.innerHeight,
     };
 
+    const heroText = document.querySelector("div#hero-txt") as HTMLDivElement;
     // Canvas
     const canvas = document.querySelector("canvas.webgl") as HTMLCanvasElement;
     if (!canvas) console.error("no canvas");
@@ -193,6 +194,7 @@ export default function WebGL() {
         
       sizes.width = window.innerWidth / ((widthOffset * zoomFac) + 1);
       updateCanvasSize(sizes.width, sizes.height);
+      heroText.style.opacity = `${zoomFac}`
 
       controls.update();
       // if (assists.screenMesh) {
