@@ -18,7 +18,8 @@ export default function WebGL() {
      */
     const widthOffset = 0.5;
     const sizes = {
-      width: window.innerWidth / (widthOffset + 1),
+      width: window.innerWidth,
+      // width: window.innerWidth / (widthOffset + 1),
       height: window.innerHeight,
     };
 
@@ -42,7 +43,7 @@ export default function WebGL() {
       0.1,
       100
     );
-    camera.position.set(0, 0, -10);
+    camera.position.set(0, 0, -2.5);
     // camera.position.set(0, -1, -5.5);
     camera.rotation.set(-Math.PI, 0, Math.PI);
     scene.add(camera);
@@ -52,7 +53,8 @@ export default function WebGL() {
 
     const controlProps = {
       computerHeight: 1.5,
-      computerAngle: Math.PI * 0.15,
+      computerAngle: Math.PI * 0.2,
+      computerHorizontal: 0.5,
 
       minAzimuthAngleOffest: -Math.PI * 0.3,
       maxAzimuthAngleOffest: Math.PI * 0.3,
@@ -108,7 +110,8 @@ export default function WebGL() {
     }
     window.addEventListener("resize", () => {
       // Update sizes
-      sizes.width = window.innerWidth / (widthOffset + 1);
+      sizes.width = window.innerWidth;
+      // sizes.width = window.innerWidth / (widthOffset + 1);
       sizes.height = window.innerHeight;
       updateCanvasSize(sizes.width, sizes.height);
     });
@@ -155,6 +158,7 @@ export default function WebGL() {
     });
     computerGroup.add(assists.shadowPlaneMesh);
 
+    computerGroup.position.x = controlProps.computerHorizontal;
     computerGroup.position.y = controlProps.computerHeight;
     computerGroup.rotation.y = controlProps.computerAngle;
     scene.add(computerGroup);
@@ -176,6 +180,7 @@ export default function WebGL() {
         (controls.getDistance() - controls.minDistance) /
         (controls.maxDistance - controls.minDistance);
 
+      computerGroup.position.x = controlProps.computerHorizontal * zoomFac;
       computerGroup.position.y = controlProps.computerHeight * zoomFac;
       computerGroup.rotation.y = controlProps.computerAngle * zoomFac;
 
@@ -189,10 +194,10 @@ export default function WebGL() {
       controls.maxPolarAngle =
         Math.PI * 0.5 + controlProps.maxPolarAngleOffest * zoomFac + 0.1;
 
-        console.log(zoomFac);
-        
-      sizes.width = window.innerWidth / ((widthOffset * zoomFac) + 1);
-      updateCanvasSize(sizes.width, sizes.height);
+      console.log(zoomFac);
+
+      // sizes.width = window.innerWidth / ((widthOffset * zoomFac) + 1);
+      // updateCanvasSize(sizes.width, sizes.height);
 
       controls.update();
       // if (assists.screenMesh) {
