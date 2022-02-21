@@ -6,6 +6,21 @@ import Screen from "./screen/";
 import Stats from "stats.js";
 import { loadAssists } from "./loader";
 
+function valMap(x: number, from: [number, number], to: [number, number]) {
+  const y = ((x - from[0]) / (from[1] - from[0])) * (to[1] - to[0]) + to[0];
+
+  if (to[0] < to[1]){
+    if (y < to[0]) return to[0];
+    if (y > to[1]) return to[1];
+  } else {
+    if (y > to[0]) return to[0];
+    if (y < to[1]) return to[1];
+  }
+
+
+  return y;
+}
+
 let camera: any;
 export default function WebGL() {
   loadAssists((assists) => {
@@ -23,10 +38,10 @@ export default function WebGL() {
       height: window.innerHeight,
     };
 
-    const sideBar = {
-      left: document.querySelector("div#left") as HTMLDivElement,
-      right: document.querySelector("div#right") as HTMLDivElement,
-    };
+    // const sideBar = {
+    //   left: document.querySelector("div#left") as HTMLDivElement,
+    //   right: document.querySelector("div#right") as HTMLDivElement,
+    // };
     // Canvas
     const canvas = document.querySelector("canvas.webgl") as HTMLCanvasElement;
     if (!canvas) console.error("no canvas");
@@ -113,8 +128,6 @@ export default function WebGL() {
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     }
     window.addEventListener("resize", () => {
-      
-      
       // Update sizes
       sizes.width = window.innerWidth;
       // sizes.width = window.innerWidth / (widthOffset + 1);
@@ -201,9 +214,18 @@ export default function WebGL() {
       controls.maxPolarAngle =
         Math.PI * 0.5 + controlProps.maxPolarAngleOffest * zoomFac + 0.1;
 
-      console.log(zoomFac);
-      sideBar.left.style.opacity = `${zoomFac > 0 ? 0 : 1}`;
-      sideBar.right.style.opacity = `${zoomFac > 0 ? 0 : 1}`;
+      // console.log(zoomFac);
+      // sideBar.left.style.opacity = `${zoomFac > 0 ? 0 : 1}`;
+      // sideBar.right.style.opacity = `${zoomFac > 0 ? 0 : 1}`;
+
+      if (assists.crtMesh.morphTargetInfluences) {
+        // let morphFac = (1 - zoomFac) * 10 - 9;
+
+        // if (morphFac > 1) morphFac = 1;
+        // if (morphFac < 0) morphFac = 0;
+        console.log(valMap(zoomFac, [0, 0.5], [0.5, 0]));
+        assists.crtMesh.morphTargetInfluences[0] = valMap(zoomFac, [0, 0.1], [0.5, 0]);
+      }
 
       // sideBar.left.style.width = `${zoomFac > 0 ? '0px' : '100px'}`;
       // sideBar.right.style.width = `${zoomFac > 0 ? '0px' : '100px'}`;
