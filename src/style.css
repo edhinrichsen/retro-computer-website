@@ -11,6 +11,36 @@ body
     /* background-color: #f6d4b1; */
 }
 
+/* #side-bars{
+    opacity: 1;
+    transition: opacity 0.3s;
+    pointer-events: none;
+} */
+#left{
+    background-image:  url('../static/left.png');
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100px;
+    z-index: 2;
+    pointer-events: none;
+    transition: opacity 0.1s, width 0.1s;
+}
+
+
+#right{
+    background-image:  url('../static/right.png');
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 100px;
+    z-index: 2;
+    pointer-events: none;
+    transition: opacity 0.1s, width 0.1s;
+}
+
 .webgl
 {
     /* position: fixed; */
@@ -19,7 +49,7 @@ body
     /* right: 50%; */
     outline: none;
     z-index: 0;
-    cursor: pointer;
+    /* cursor: grab; */
     /* display: none; */
 }
 
@@ -29,7 +59,7 @@ body
     top: 0;
     right: 0;
     outline: none;
-    z-index: 1;
+    z-index: 3;
 }
 
 #loading{

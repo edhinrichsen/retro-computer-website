@@ -11,7 +11,7 @@ export default function WebGL() {
   loadAssists((assists) => {
     var stats = new Stats();
     stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-    document.body.appendChild(stats.dom);
+    // document.body.appendChild(stats.dom);
 
     /**
      * Sizes
@@ -23,6 +23,10 @@ export default function WebGL() {
       height: window.innerHeight,
     };
 
+    const sideBar = {
+      left: document.querySelector("div#left") as HTMLDivElement,
+      right: document.querySelector("div#right") as HTMLDivElement,
+    };
     // Canvas
     const canvas = document.querySelector("canvas.webgl") as HTMLCanvasElement;
     if (!canvas) console.error("no canvas");
@@ -109,11 +113,14 @@ export default function WebGL() {
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     }
     window.addEventListener("resize", () => {
+      
+      
       // Update sizes
       sizes.width = window.innerWidth;
       // sizes.width = window.innerWidth / (widthOffset + 1);
       sizes.height = window.innerHeight;
       updateCanvasSize(sizes.width, sizes.height);
+      console.log(sizes.width / sizes.height);
     });
 
     const screen = Screen(assists, renderer);
@@ -195,6 +202,11 @@ export default function WebGL() {
         Math.PI * 0.5 + controlProps.maxPolarAngleOffest * zoomFac + 0.1;
 
       console.log(zoomFac);
+      sideBar.left.style.opacity = `${zoomFac > 0 ? 0 : 1}`;
+      sideBar.right.style.opacity = `${zoomFac > 0 ? 0 : 1}`;
+
+      // sideBar.left.style.width = `${zoomFac > 0 ? '0px' : '100px'}`;
+      // sideBar.right.style.width = `${zoomFac > 0 ? '0px' : '100px'}`;
 
       // sizes.width = window.innerWidth / ((widthOffset * zoomFac) + 1);
       // updateCanvasSize(sizes.width, sizes.height);
