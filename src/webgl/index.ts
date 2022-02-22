@@ -9,7 +9,7 @@ import { loadAssists } from "./loader";
 function valMap(x: number, from: [number, number], to: [number, number]) {
   const y = ((x - from[0]) / (from[1] - from[0])) * (to[1] - to[0]) + to[0];
 
-  if (to[0] < to[1]){
+  if (to[0] < to[1]) {
     if (y < to[0]) return to[0];
     if (y > to[1]) return to[1];
   } else {
@@ -17,9 +17,14 @@ function valMap(x: number, from: [number, number], to: [number, number]) {
     if (y < to[1]) return to[1];
   }
 
-
   return y;
 }
+
+let scroll = 0;
+window.addEventListener("scroll", (ev) => {
+  scroll = window.scrollY / document.documentElement.clientHeight;
+  console.log(window.scrollY / document.documentElement.clientHeight);
+});
 
 let camera: any;
 export default function WebGL() {
@@ -28,12 +33,15 @@ export default function WebGL() {
     stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
     // document.body.appendChild(stats.dom);
 
+    // Canvas
+    const canvas = document.querySelector("canvas.webgl") as HTMLCanvasElement;
+    if (!canvas) console.error("no canvas");
     /**
      * Sizes
      */
     const widthOffset = 0.5;
     const sizes = {
-      width: window.innerWidth,
+      width: document.documentElement.clientWidth,
       // width: window.innerWidth / (widthOffset + 1),
       height: window.innerHeight,
     };
@@ -42,9 +50,6 @@ export default function WebGL() {
     //   left: document.querySelector("div#left") as HTMLDivElement,
     //   right: document.querySelector("div#right") as HTMLDivElement,
     // };
-    // Canvas
-    const canvas = document.querySelector("canvas.webgl") as HTMLCanvasElement;
-    if (!canvas) console.error("no canvas");
 
     // Scene
     const scene = new THREE.Scene();
@@ -129,7 +134,8 @@ export default function WebGL() {
     }
     window.addEventListener("resize", () => {
       // Update sizes
-      sizes.width = window.innerWidth;
+
+      sizes.width = document.documentElement.clientWidth;
       // sizes.width = window.innerWidth / (widthOffset + 1);
       sizes.height = window.innerHeight;
       updateCanvasSize(sizes.width, sizes.height);
@@ -196,10 +202,14 @@ export default function WebGL() {
 
       // Update controls
 
-      const zoomFac =
-        (controls.getDistance() - controls.minDistance) /
-        (controls.maxDistance - controls.minDistance);
+      // const zoomFac =
+      //   (controls.getDistance() - controls.minDistance) /
+      //   (controls.maxDistance - controls.minDistance);
 
+      const zoomFac = scroll;
+
+
+      computerGroup.position.z = 10 * zoomFac;
       computerGroup.position.x = controlProps.computerHorizontal * zoomFac;
       computerGroup.position.y = controlProps.computerHeight * zoomFac;
       computerGroup.rotation.y = controlProps.computerAngle * zoomFac;
@@ -224,7 +234,11 @@ export default function WebGL() {
         // if (morphFac > 1) morphFac = 1;
         // if (morphFac < 0) morphFac = 0;
         console.log(valMap(zoomFac, [0, 0.5], [0.5, 0]));
-        assists.crtMesh.morphTargetInfluences[0] = valMap(zoomFac, [0, 0.1], [0.5, 0]);
+        assists.crtMesh.morphTargetInfluences[0] = valMap(
+          zoomFac,
+          [0, 0.1],
+          [0.5, 0]
+        );
       }
 
       // sideBar.left.style.width = `${zoomFac > 0 ? '0px' : '100px'}`;
