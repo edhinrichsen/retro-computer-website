@@ -89,6 +89,7 @@ export default function WebGL() {
 
     controls.enableDamping = true;
     controls.enablePan = false;
+    controls.enableZoom = false;
 
     controls.maxDistance = 10;
     controls.minDistance = 2.5;
@@ -206,13 +207,17 @@ export default function WebGL() {
       //   (controls.getDistance() - controls.minDistance) /
       //   (controls.maxDistance - controls.minDistance);
 
-      const zoomFac = scroll;
+      const zoomFac = valMap(scroll, [0, 1], [0, 1 ]);
 
-
-      computerGroup.position.z = 10 * zoomFac;
+      camera.position.z = valMap(scroll, [0, 1], [-2.5, -10]);
+      // computerGroup.position.z = 7.5 * zoomFac;
       computerGroup.position.x = controlProps.computerHorizontal * zoomFac;
       computerGroup.position.y = controlProps.computerHeight * zoomFac;
       computerGroup.rotation.y = controlProps.computerAngle * zoomFac;
+
+      // canvas.style.left = `-${50*valMap(scroll, [1, 2], [0, 1])}%`
+
+      canvas.style.opacity = `${valMap(scroll, [1, 1.5], [1, 0])}`
 
       controls.minAzimuthAngle =
         Math.PI + controlProps.minAzimuthAngleOffest * zoomFac - 0.1;

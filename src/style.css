@@ -1,3 +1,6 @@
+@font-face { font-family: public-pixel; src: url('../static/fonts/public-pixel.ttf'); } 
+@font-face { font-family: chill; src: url('../static/fonts/chill.otf'); } 
+
 *
 {
     margin: 0;
@@ -9,7 +12,9 @@ body
 {
     /* overflow: hidden; */
     height: 300vh;
-    /* background-color: #f6d4b1; */
+    background-color: #f6d4b1;
+    font-family: "chill", sans-serif;
+    font-size: 20px;
 }
 
 /* #side-bars{
@@ -67,11 +72,10 @@ body
 }
 
 #loading{
-    font-family: monospace;
-    font-weight: bold;
-    font-size: 24px;
-    color: #fff;
-    background-color: black;
+    /* font-family: monospace; */
+    /* font-weight: bold; */
+    color: #f6d4b1;
+    background-color: #525252;
     position: fixed;
     top: 0;
     bottom: 0;
@@ -88,13 +92,13 @@ body
 }
 
 #hero {
-    position: relative;
-    display: flex;
-    align-items: center;
+    /* position: relative; */
+    /* display: flex; */
+    /* align-items: center; */
     /* justify-content: center; */
     /* flex-direction: column-reverse; */
-    height: 100%;
-    z-index: 1;
+    /* height: 100%; */
+    /* z-index: 1; */
     /* background-color: aquamarine; */
   }
 
@@ -114,16 +118,23 @@ body
     /* margin-left: -15vw; */
   }
 
-  body {
-    font-family: "Raleway", sans-serif;
-  }
+  p {
+  padding: 20px;
+  margin: auto;
+  width: auto;
+  text-align: justify;
+}
   
   h1 {
-    font-family: "Crete Round", serif;
+    color: #f6d4b1;
+    background-color: #525252;
+    font-family: "public-pixel", monospace;
     font-weight: 400;
-    font-size: 3.5em;
-    margin-top: -0.3em;
-    margin-bottom: -0.2em;
+    font-size: 2em;
+    padding-top: 4px;
+    padding-bottom: 8px;
+    margin-top: 0.3em;
+    margin-bottom: 0.3em;
   }
   
   h2 {
@@ -150,6 +161,21 @@ body
     font-family: "Crete Round", serif;
     margin: 0;
     opacity: 0.5;
+  }
+
+  
+#content {
+    /* position: relative; */
+    /* margin-top: 100vh; */
+    color: #525252;
+    width: 600px;
+    margin: auto;
+    padding-top: 200vh;
+    text-align: center;
+    padding-bottom: 200vh;
+    /* font-size: 0.5em; */
+    position: relative;
+    z-index: 1;
   }
 
   @media only screen and (min-width: 850px) and (orientation: landscape) {
