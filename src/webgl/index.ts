@@ -218,7 +218,7 @@ export default function WebGL() {
 
       // canvas.style.left = `-${50*valMap(scroll, [1, 2], [0, 1])}%`
 
-      canvas.style.opacity = `${valMap(scroll, [1, 1.5], [1, 0])}`
+      canvas.style.opacity = `${valMap(scroll, [1.25, 1.75], [1, 0])}`
 
       controls.minAzimuthAngle =
         Math.PI + controlProps.minAzimuthAngleOffest * zoomFac - 0.1;
