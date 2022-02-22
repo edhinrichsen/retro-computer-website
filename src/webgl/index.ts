@@ -87,6 +87,7 @@ export default function WebGL() {
       maxPolarAngleOffest: 0,
     };
 
+    controls.enabled = false;
     controls.enableDamping = true;
     controls.enablePan = false;
     controls.enableZoom = false;

@@ -3,7 +3,7 @@ import ScreenRenderEngine from "./renderEngine";
 import ScreenTextEngine from "./textEngine";
 
 // @ts-ignore
-// import titleText from "../../text/projects.md";
+// import titleText from "../../text/about.md";
 import titleText from "../../text/title.md";
 import { Assists } from "../loader";
 import Terminal from "../../terminal";
