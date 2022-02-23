@@ -119,17 +119,19 @@ body
   }
   
   h1 {
+    display: inline-block;
     color: #f6d4b1;
     background-color: #525252;
     font-family: "public-pixel", monospace;
     font-size: 2em;
+    padding: 16px;
     padding-top: 4px;
     padding-bottom: 8px;
     margin: auto;
     margin-top: 0.3em;
     margin-bottom: 0.3em;
     
-    width: 550px;
+    /* width: 550px; */
   }
   
   h2 {
@@ -144,18 +146,19 @@ body
   }
   
   h4 {
+    display: inline-block;
     font-size: 1.2em;
     text-align: center;
     color: #f6d4b1;
     background-color: #525252;
     font-family: "public-pixel", monospace;
+    padding: 16px;
     padding-top: 4px;
     padding-bottom: 8px;
     margin: auto;
     margin-top: 0.3em;
     margin-bottom: 0.3em;
-    
-    width: 450px;
+  
   }
   
   h5 {
@@ -247,23 +250,16 @@ body
     z-index: 1;
   }
 
-  @media only screen and (min-width: 850px) and (orientation: landscape) {
-    #hero-txt h1 {
-      font-size: 7em;
+  /* and (orientation: landscape) */
+  @media only screen and (max-width: 700px) {
+    .skills,
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
+      width: auto;
     }
-    #hero-txt h2 {
-      font-size: 2em;
-    }
-    #hero-txt h3 {
-      font-size: 1.5em;
-    }
-    .image {
-      width: 840px;
-    }
-    #hero-txt {
-      margin-top: -25vh;
-      margin-right: 15vw;
-      margin-left: -10vw;
-      /* background-color: #b3d4fc; */
-    }
+
   }
