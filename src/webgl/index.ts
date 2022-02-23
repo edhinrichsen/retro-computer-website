@@ -23,7 +23,7 @@ function valMap(x: number, from: [number, number], to: [number, number]) {
 let scroll = 0;
 window.addEventListener("scroll", (ev) => {
   scroll = window.scrollY / document.documentElement.clientHeight;
-  console.log(window.scrollY / document.documentElement.clientHeight);
+  // console.log(window.scrollY / document.documentElement.clientHeight);
 });
 
 let camera: any;
@@ -44,6 +44,7 @@ export default function WebGL() {
       width: document.documentElement.clientWidth,
       // width: window.innerWidth / (widthOffset + 1),
       height: window.innerHeight,
+      portraitOffset: 0,
     };
 
     // const sideBar = {
@@ -141,7 +142,12 @@ export default function WebGL() {
       // sizes.width = window.innerWidth / (widthOffset + 1);
       sizes.height = window.innerHeight;
       updateCanvasSize(sizes.width, sizes.height);
-      console.log(sizes.width / sizes.height);
+      sizes.portraitOffset = valMap(
+        sizes.height / sizes.width,
+        [0.75, 1.75],
+        [0, 5]
+      );
+      console.log(sizes.portraitOffset);
     });
 
     const screen = Screen(assists, renderer);
@@ -208,9 +214,17 @@ export default function WebGL() {
       //   (controls.getDistance() - controls.minDistance) /
       //   (controls.maxDistance - controls.minDistance);
 
-      const zoomFac = valMap(scroll, [0, 1], [0, 1 ]);
+      const zoomFac = valMap(scroll, [0, 1], [0, 1]);
 
-      camera.position.z = valMap(scroll, [0, 1], [-2.5, -10]);
+      camera.position.z = valMap(
+        scroll,
+        [0, 1],
+        [-2.5 - sizes.portraitOffset, -10]
+      );
+
+      // console.log(sizes.width/sizes.height);
+
+      // camera.position.z = -2.5 + ;
       // computerGroup.position.z = 7.5 * zoomFac;
       computerGroup.position.x = controlProps.computerHorizontal * zoomFac;
       computerGroup.position.y = controlProps.computerHeight * zoomFac;
@@ -218,7 +232,7 @@ export default function WebGL() {
 
       // canvas.style.left = `-${50*valMap(scroll, [1, 2], [0, 1])}%`
 
-      canvas.style.opacity = `${valMap(scroll, [1.25, 1.75], [1, 0])}`
+      canvas.style.opacity = `${valMap(scroll, [1.25, 1.75], [1, 0])}`;
 
       controls.minAzimuthAngle =
         Math.PI + controlProps.minAzimuthAngleOffest * zoomFac - 0.1;
@@ -235,16 +249,13 @@ export default function WebGL() {
       // sideBar.right.style.opacity = `${zoomFac > 0 ? 0 : 1}`;
 
       if (assists.crtMesh.morphTargetInfluences) {
-        // let morphFac = (1 - zoomFac) * 10 - 9;
-
-        // if (morphFac > 1) morphFac = 1;
-        // if (morphFac < 0) morphFac = 0;
-        console.log(valMap(zoomFac, [0, 0.5], [0.5, 0]));
-        assists.crtMesh.morphTargetInfluences[0] = valMap(
-          zoomFac,
-          [0, 0.1],
-          [0.5, 0]
-        );
+        if (sizes.portraitOffset === 0)
+          assists.crtMesh.morphTargetInfluences[0] = valMap(
+            zoomFac,
+            [0, 0.1],
+            [0.5, 0]
+          );
+        else assists.crtMesh.morphTargetInfluences[0] = 0;
       }
 
       // sideBar.left.style.width = `${zoomFac > 0 ? '0px' : '100px'}`;
