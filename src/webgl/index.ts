@@ -44,7 +44,11 @@ export default function WebGL() {
       width: document.documentElement.clientWidth,
       // width: window.innerWidth / (widthOffset + 1),
       height: window.innerHeight,
-      portraitOffset: 0,
+      portraitOffset: valMap(
+        window.innerHeight / document.documentElement.clientWidth,
+        [0.75, 1.75],
+        [0, 4]
+      ),
     };
 
     // const sideBar = {
@@ -93,8 +97,8 @@ export default function WebGL() {
     controls.enablePan = false;
     controls.enableZoom = false;
 
-    controls.maxDistance = 10;
-    controls.minDistance = 2.5;
+    // controls.maxDistance = 10;
+    // controls.minDistance = 2.5;
 
     // controls.getDistance()
 
@@ -145,7 +149,7 @@ export default function WebGL() {
       sizes.portraitOffset = valMap(
         sizes.height / sizes.width,
         [0.75, 1.75],
-        [0, 5]
+        [0, 4]
       );
       console.log(sizes.portraitOffset);
     });
@@ -219,7 +223,7 @@ export default function WebGL() {
       camera.position.z = valMap(
         scroll,
         [0, 1],
-        [-2.5 - sizes.portraitOffset, -10]
+        [-2.5 - sizes.portraitOffset, -10 - sizes.portraitOffset]
       );
 
       // console.log(sizes.width/sizes.height);
@@ -227,8 +231,8 @@ export default function WebGL() {
       // camera.position.z = -2.5 + ;
       // computerGroup.position.z = 7.5 * zoomFac;
       computerGroup.position.x = controlProps.computerHorizontal * zoomFac;
-      computerGroup.position.y = valMap(scroll, [0, 1], [sizes.portraitOffset/4, controlProps.computerHeight]);
-      
+      computerGroup.position.y = valMap(scroll, [0, 1], [sizes.portraitOffset / 3, controlProps.computerHeight]);
+
       computerGroup.rotation.y = controlProps.computerAngle * zoomFac;
 
       // canvas.style.left = `-${50*valMap(scroll, [1, 2], [0, 1])}%`
