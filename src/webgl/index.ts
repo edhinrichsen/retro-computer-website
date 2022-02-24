@@ -227,7 +227,8 @@ export default function WebGL() {
       // camera.position.z = -2.5 + ;
       // computerGroup.position.z = 7.5 * zoomFac;
       computerGroup.position.x = controlProps.computerHorizontal * zoomFac;
-      computerGroup.position.y = controlProps.computerHeight * zoomFac;
+      computerGroup.position.y = valMap(scroll, [0, 1], [sizes.portraitOffset/4, controlProps.computerHeight]);
+      
       computerGroup.rotation.y = controlProps.computerAngle * zoomFac;
 
       // canvas.style.left = `-${50*valMap(scroll, [1, 2], [0, 1])}%`
