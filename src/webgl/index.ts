@@ -47,7 +47,7 @@ export default function WebGL() {
       portraitOffset: valMap(
         window.innerHeight / document.documentElement.clientWidth,
         [0.75, 1.75],
-        [0, 4]
+        [0, 3]
       ),
     };
 
@@ -149,7 +149,7 @@ export default function WebGL() {
       sizes.portraitOffset = valMap(
         sizes.height / sizes.width,
         [0.75, 1.75],
-        [0, 4]
+        [0, 3]
       );
       console.log(sizes.portraitOffset);
     });
@@ -223,7 +223,7 @@ export default function WebGL() {
       camera.position.z = valMap(
         scroll,
         [0, 1],
-        [-2.5 - sizes.portraitOffset / 2, -10 - sizes.portraitOffset / 2]
+        [-2.5 - sizes.portraitOffset, -10 - sizes.portraitOffset]
       );
 
       // console.log(sizes.width/sizes.height);
@@ -249,19 +249,16 @@ export default function WebGL() {
       controls.maxPolarAngle =
         Math.PI * 0.5 + controlProps.maxPolarAngleOffest * zoomFac + 0.1;
 
-      if (sizes.portraitOffset > 0)
-        computerGroup.rotation.z = valMap(scroll, [0, 1], [Math.PI / 2, 0]);
-      else computerGroup.rotation.z = 0
-      // console.log(zoomFac);
-      // sideBar.left.style.opacity = `${zoomFac > 0 ? 0 : 1}`;
-      // sideBar.right.style.opacity = `${zoomFac > 0 ? 0 : 1}`;
+      // if (sizes.portraitOffset > 0)
+      //   computerGroup.rotation.z = valMap(scroll, [0, 1], [Math.PI / 2, 0]);
+      // else computerGroup.rotation.z = 0
 
       if (assists.crtMesh.morphTargetInfluences) {
         // if (sizes.portraitOffset === 0)
         assists.crtMesh.morphTargetInfluences[0] = valMap(
           zoomFac,
           [0, 0.1],
-          [0.5, 0]
+          [0.6, 0]
         );
         // else assists.crtMesh.morphTargetInfluences[0] = 0;
       }
