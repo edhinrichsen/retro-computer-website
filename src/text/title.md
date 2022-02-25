@@ -3,8 +3,10 @@
 
 #  Hi there,
 #  *I'm Edward*
-#  -Computer Scientist
-#  -Designer
+#  -Creative Developer
+##     — Computer Science graduate of
+##        the University of Melbourne
+##
 ###     Type Help or scroll to get started
 
 
