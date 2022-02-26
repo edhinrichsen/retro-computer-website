@@ -14,39 +14,8 @@ body
     height: 300vh;
     background-color: #f6d4b1;
     font-family: "chill", sans-serif;
-    font-size: 20px;
+    font-size: 18px;
 }
-
-/* #side-bars{
-    opacity: 1;
-    transition: opacity 0.3s;
-    pointer-events: none;
-} */
-#left{
-    background-image:  url('../static/left.png');
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 100px;
-    z-index: 2;
-    pointer-events: none;
-    transition: opacity 0.1s, width 0.1s;
-}
-
-
-#right{
-    background-image:  url('../static/right.png');
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    width: 100px;
-    z-index: 2;
-    pointer-events: none;
-    transition: opacity 0.1s, width 0.1s;
-}
-
 .webgl
 {
     position: fixed;
@@ -91,32 +60,6 @@ body
     font-weight: normal;
 }
 
-#hero {
-    /* position: relative; */
-    /* display: flex; */
-    /* align-items: center; */
-    /* justify-content: center; */
-    /* flex-direction: column-reverse; */
-    /* height: 100%; */
-    /* z-index: 1; */
-    /* background-color: aquamarine; */
-  }
-
-#hero-txt {
-    z-index: 2;
-    /* margin-top: 3.5em; */
-    text-align: center;
-    color: #525252;
-    /* text-shadow: 0 0 20px rgba(0, 0, 0, 0.7); */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 16px;
-    /* margin-top: -25vh; */
-    /* margin-right: 15vw; */
-    /* margin-left: -15vw; */
-  }
   
   h1 {
     display: inline-block;
@@ -128,11 +71,24 @@ body
     padding-top: 4px;
     padding-bottom: 8px;
     margin: auto;
-    margin-top: 0.3em;
+    margin-top: 0;
     margin-bottom: 0.3em;
+  }
+
+   
+  /* h1::after {
+    content: '';
+    height: 5px;
+    position: absolute;
+    width: 90vw;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 50%;
+    z-index: -1;
+    background-color: #525252;
     
     /* width: 550px; */
-  }
+  /* } */
   
   h2 {
     font-size: 1.5em;
@@ -175,31 +131,27 @@ body
     
     width: 450px;
   }
+
   hr {
-    box-shadow: 0 10px 40px -40px black;
-    border-width: 0;
-    width: 90%;
-    margin: auto;
-    height: 100px;
-    margin-top: -90px;
-    margin-bottom: 70px;
-  }
-  .spacer {
     width: 100px;
     height: 2px;
-    background-color: rgba(65, 27, 27, 0.3);
+    background-color: none;
     margin: auto;
     margin-top: 40px;
     margin-bottom: 40px;
-    border-radius: 2px;
+    border: none;
+    border-bottom: dashed 2px #525252;
   }
 
   .skills,
   p {
-    padding: 20px;
+    padding: 16px;
     margin: auto;
-    width: 650px;
     text-align: justify;
+    width: 680px;
+    margin: auto;
+    box-sizing: border-box;
+
   }
   .skills {
     display: flex;
@@ -235,31 +187,69 @@ body
     content: ']';
   }
 
-  
-#content {
-    /* position: relative; */
-    /* margin-top: 100vh; */
-    color: #525252;
-    /* width: 600px; */
+  .image {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    border: dashed 2px #525252;
+    padding: 8px;
+    width: 950px;
+    box-sizing: border-box;
     margin: auto;
+
+  }
+  
+main {
+    color: #525252;
     padding-top: 200vh;
     text-align: center;
-    padding-bottom: 200vh;
-    /* font-size: 0.5em; */
     position: relative;
     z-index: 1;
+
   }
 
-  /* and (orientation: landscape) */
-  @media only screen and (max-width: 700px) {
-    .skills,
-    p,
-    h1,
-    h2,
-    h3,
-    h4,
-    h5 {
+  section {
+    padding-bottom: 64px;
+    margin: auto;
+    margin-bottom: 80px;
+    /* box-shadow: 0 10px 40px -40px black; */
+    border-bottom: dashed 2px #525252;
+    /* border-style: dashed; */
+    /* width: 90%; */
+    width: fit-content;
+    
+    /* height: 100px; */
+    /* margin-top: -90px; */
+    /* margin-bottom: 70px; */
+  }
+
+  section:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  footer {
+    display: flex;
+    gap: 32px;
+    flex-direction: column;
+    border-top: dashed 1px #525252;
+    font-size: 12px;
+    margin: 0px 32px 0 32px;
+    padding: 32px 0px;
+    text-align: center;
+    color: #525252;
+  }
+
+  @media only screen and (max-width: 950px) {
+    .image {
+      margin: 8px;
+      width: calc(100vw - 32px);
+      
+    }
+  }
+  @media only screen and (max-width: 680px) {
+    p, .skills {
       width: auto;
     }
-
   }

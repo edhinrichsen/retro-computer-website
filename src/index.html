@@ -1,66 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Edward Hinrichsen – Personal Website</title>
-    <meta name="description" content="Edward Hinrichsen – Personal Website, My
+
+<head>
+  <meta charset="utf-8" />
+  <title>Edward Hinrichsen – Personal Website</title>
+  <meta name="description" content="Edward Hinrichsen – Personal Website, My
     name is Edward Hinrichsen and I have recently completed a Bachelor of
     Science, majoring in Computing and Software Systems at the University of
     Melbourne. I have a passion for all things technology and design, from
     software engineering & machine learning to UI/UX & 3D graphics."" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/png" href="favicon-32.png" />
+    <meta name=" viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" href="favicon-32.png" />
 
-    <meta property="og:title" content="Edward Hinrichsen – Personal Website" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="edwardh.io" />
-    <meta property="og:image" content="http://edwardh.io/img/ed.png" />
-    <meta
-      name="og:description"
-      content="Edward Hinrichsen – Personal Website, My name is Edward Hinrichsen and I have recently completed a Bachelor of Science,
+  <meta property="og:title" content="Edward Hinrichsen – Personal Website" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="edwardh.io" />
+  <meta property="og:image" content="http://edwardh.io/img/ed.png" />
+  <meta name="og:description" content="Edward Hinrichsen – Personal Website, My name is Edward Hinrichsen and I have recently completed a Bachelor of Science,
       majoring in Computing and Software Systems at the University of
       Melbourne. I have a passion for all things technology and design, from
-      software engineering & machine learning to UI/UX & 3D graphics."
-    />
-    <title>27 - Shaders</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@800&family=Raleway&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Crete+Round&display=swap"
-      rel="stylesheet"
-    />
+      software engineering & machine learning to UI/UX & 3D graphics." />
+  <title>27 - Shaders</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@800&family=Raleway&display=swap"
+    rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Crete+Round&display=swap" rel="stylesheet" />
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Bree+Serif&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div id="loading">
-      <ul id="loading-list">
-        <li>Booting Experience...</li>
-      </ul>
-    </div>
-    <!-- <div id="side-bar">
-      <div id="left"></div>
-      <div id="right"></div>
-    </div> -->
-    <div id="hero">
-      <canvas class="webgl"></canvas>
+  <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&display=swap" rel="stylesheet" />
+</head>
 
-      <!-- <div id="hero-txt">
+<body>
+  <div id="loading">
+    <ul id="loading-list">
+      <li>Booting Experience...</li>
+    </ul>
+  </div>
+  <div id="hero">
+    <canvas class="webgl"></canvas>
+
+    <!-- <div id="hero-txt">
         <h2>Hi there, I’m</h2>
         <h1>Edward</h1>
         <h3>Computer Scientist + Designer</h3>
      
       </div> -->
-    </div>
+  </div>
 
-    <div id="content">
+  <main>
+    <section>
       <h1 id="aboutMe">Hi there</h1>
       <p>
         My name is Edward Hinrichsen and I have recently completed a Bachelor of
@@ -78,10 +66,11 @@
         Below are details of some of projects I have developed over my ten years
         of coding experience.
       </p>
-      <hr />
+    </section>
 
+    <section>
       <h1 id="projects">Projects</h1>
-      <div class="spacer"></div>
+      <hr />
 
       <h4>Writing Buddy</h4>
       <h5>2021</h5>
@@ -129,20 +118,14 @@
 
       <p>
         You can check out the development build of Writing Buddy at
-        <a target="_blank" href="https://writingbuddy.org/"
-          ><u>WritingBuddy.org</u></a
-        >
+        <a target="_blank" href="https://writingbuddy.org/"><u>WritingBuddy.org</u></a>
         and it is installable as a progressive web app (PWA).
       </p>
 
       <div class="image">
-        <img src="img/glyph9.png" width="100%" alt="" /><br /><br /><img
-          src="img/glyph8.png"
-          width="100%"
-          alt=""
-        />
+        <img src="img/glyph9.png" width="100%" alt="" /><img src="img/glyph8.png" width="100%" alt="" />
       </div>
-      <div class="spacer"></div>
+      <hr />
 
       <h4>My Own Programming Language</h4>
       <h5>2021</h5>
@@ -170,7 +153,7 @@
         tail-call recursion. I am also experimenting with implementing a stack
         based virtual machine—bytecode interpreter—to run my language.
       </p>
-      <div class="spacer"></div>
+      <hr />
 
       <h4>Glowbal</h4>
       <h5>2020</h5>
@@ -197,7 +180,7 @@
           Your browser does not support the video tag.
         </video>
       </div>
-      <div class="spacer"></div>
+      <hr />
 
       <h4>CyberHeist</h4>
       <h5>2020</h5>
@@ -220,16 +203,11 @@
         can be found below.
       </p>
       <div class="image">
-        <iframe
-          width="100%"
-          height="473"
-          src="https://www.youtube.com/embed/LvVK7j2WmfU?controls=0"
-          frameborder="0"
+        <iframe width="100%" height="473" src="https://www.youtube.com/embed/LvVK7j2WmfU?controls=0" frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-        ></iframe>
+          allowfullscreen></iframe>
       </div>
-      <div class="spacer"></div>
+      <hr />
 
       <h4>Pavilion</h4>
       <h5>2019</h5>
@@ -252,13 +230,10 @@
         Melbourne School of Design annual exhibition (MSDx).
       </p>
       <div class="image">
-        <img src="img/pavilion1.png" width="100%" alt="" /><br /><br /><img
-          src="img/pavilion2.png"
-          width="100%"
-          alt=""
-        />
+        <img src="img/pavilion1.png" width="100%" alt="" /><img src="img/pavilion2.png" width="100%"
+          alt="" />
       </div>
-      <div class="spacer"></div>
+      <hr />
 
       <h4>Brick-Breaker</h4>
       <h5>2019</h5>
@@ -277,7 +252,7 @@
         casting game objects.
       </p>
       <div class="image"><img src="img/oosd.png" width="50%" alt="" /></div>
-      <div class="spacer"></div>
+      <hr />
 
       <h4>Jackalope</h4>
       <h5>2017</h5>
@@ -296,16 +271,12 @@
         company Jackalope and produce accompanying visual identity and
         advertising material. Below is a poster of a smart speakers I designed
         with the Jackalope logo in the corner. See more of this project on
-        <a
-          target="_blank"
-          href="https://www.behance.net/gallery/57165159/HomeHub-by-Jackalope"
-          ><u>Behance.</u></a
-        >
+        <a target="_blank" href="https://www.behance.net/gallery/57165159/HomeHub-by-Jackalope"><u>Behance.</u></a>
       </p>
       <div class="image">
         <img src="img/jackalope.png" width="100%" alt="" />
       </div>
-      <div class="spacer"></div>
+      <hr />
 
       <h4>Project L</h4>
       <h5>2015</h5>
@@ -321,7 +292,7 @@
         scale the objects in the world to build anything you wanted.
       </p>
       <div class="image"><img src="img/sc3.png" width="100%" alt="" /></div>
-      <div class="spacer"></div>
+      <hr />
 
       <h4>Great Balls of Fire</h4>
       <h5>2013-14</h5>
@@ -342,14 +313,10 @@
         Apple's developer fee) and even netted a few thousand downloads.
       </p>
       <div class="image">
-        <img src="img/gbof3.png" width="100%" alt="" /><br /><br /><img
-          src="img/gbof4.png"
-          width="100%"
-          alt=""
-        />
-        <br /><br /><img src="img/gbof5.png" width="100%" alt="" />
+        <img src="img/gbof3.png" width="100%" alt="" /><img src="img/gbof4.png" width="100%" alt="" />
+        <img src="img/gbof5.png" width="100%" alt="" />
       </div>
-      <div class="spacer"></div>
+      <hr />
 
       <h4>The Golden Pack</h4>
       <h5>2012-13</h5>
@@ -367,7 +334,7 @@
         texture pack was downloaded over 50,000 times, earning me over $1000.
       </p>
       <div class="image"><img src="img/tgp.png" width="100%" alt="" /></div>
-      <div class="spacer"></div>
+      <hr />
 
       <h4>EdSites</h4>
       <h5>2010</h5>
@@ -385,25 +352,27 @@
         albeit they were all my family members.
       </p>
       <div class="image"><img src="img/edsites.png" width="100%" alt="" /></div>
-      <div class="spacer"></div>
+      <hr />
       <p>
         This represents just a small selection of the projects I have worked on
         over the years. I have many more pieces of personal, university and
         design work.
       </p>
+    </section>
 
-      <hr />
-
-      <br /><br />
+    <section>
       <h1 id="contact">Contact</h1>
       <p style="text-align: center">
         Reach out on
-        <a href="https://www.linkedin.com/in/edwardhinrichsen/"
-          ><u><b>LinkedIn</b></u></a
-        >
+        <a href="https://www.linkedin.com/in/edwardhinrichsen/"><u><b>LinkedIn</b></u></a>
       </p>
-    </div>
+    </section>
+  </main>
 
-    <input type="text" id="textarea" />
-  </body>
+  <input type="text" id="textarea" />
+  <footer>
+    <div>COPYRIGHT © 2022 Edward Hinrichsen</div>
+  </footer>
+</body>
+
 </html>
