@@ -17,7 +17,7 @@ type FontInfo = {
 };
 
 const h1Font: FontInfo = (function () {
-  let size = 0.04;
+  let size = 0.05;
   let height = size;
   let width = size;
   let leading = height * 2;
