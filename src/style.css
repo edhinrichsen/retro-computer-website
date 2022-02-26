@@ -128,8 +128,7 @@ body
     margin: auto;
     margin-top: 0.3em;
     margin-bottom: 0.3em;
-    
-    width: 450px;
+
   }
 
   hr {
@@ -243,13 +242,13 @@ main {
 
   @media only screen and (max-width: 950px) {
     .image {
-      margin: 8px;
-      width: calc(100vw - 32px);
+      /* margin: 8px; */
+      width: calc(100vw - 16px);
       
     }
   }
   @media only screen and (max-width: 680px) {
-    p, .skills {
+    p, .skills, section {
       width: auto;
     }
   }
