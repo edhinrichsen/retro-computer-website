@@ -29,9 +29,25 @@ window.addEventListener("scroll", (ev) => {
 
 export default function WebGL() {
   loadAssists((assists) => {
-    var stats = new Stats();
-    stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-    // document.body.appendChild(stats.dom);
+
+    const stats = new Stats();
+    const hash = window.location.hash
+    if (hash) {
+      switch (hash.toLowerCase()) {
+        case '#fps':
+          stats.showPanel(0);
+          document.body.appendChild(stats.dom);
+          break;
+
+        case '#ms':
+          stats.showPanel(1);
+          document.body.appendChild(stats.dom);
+          break;
+
+        default:
+          break;
+      }
+    }
 
     // Canvas
     const canvas = document.querySelector("canvas.webgl") as HTMLCanvasElement;
