@@ -31,6 +31,10 @@ body
     /* display: none; */
 }
 
+.webgl:active{
+  cursor: grabbing;
+}
+
 #textarea
 {
     position: fixed;

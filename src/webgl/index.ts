@@ -27,7 +27,6 @@ window.addEventListener("scroll", (ev) => {
   // console.log(window.scrollY / document.documentElement.clientHeight);
 });
 
-
 export default function WebGL() {
   loadAssists((assists) => {
     var stats = new Stats();
@@ -93,32 +92,27 @@ export default function WebGL() {
       maxPolarAngleOffest: 0,
     };
 
-    // controls.enabled = false;
-    // controls.enableDamping = true;
-    // controls.enablePan = false;
-    // controls.enableZoom = false;
+    let mousedown = false;
+    const computerParallax = { x: 0, y: 0 };
+    canvas.addEventListener("mousemove", (event) => {
+      if (mousedown) {
+        computerParallax.x = (event.clientX / window.innerWidth - 0.5) * 2;
+        computerParallax.y = (event.clientY / window.innerHeight - 0.5) * 2;
+      }
+    });
 
-    // controls.maxDistance = 10;
-    // controls.minDistance = 2.5;
+    canvas.addEventListener("mousedown", (event) => {
+      mousedown = true;
+    });
 
-    // controls.getDistance()
+    document.addEventListener("mouseup", (event) => {
+      mousedown = false;
+    });
 
-    // controls.minAzimuthAngle = Math.PI + controlProps.minAzimuthAngleOffest;
-    // controls.maxAzimuthAngle = Math.PI + controlProps.maxAzimuthAngleOffest;
-
-    // controls.minPolarAngle = Math.PI * 0.5 + controlProps.minPolarAngleOffest;
-    // controls.maxPolarAngle = Math.PI * 0.5 + controlProps.maxPolarAngleOffest;
-
-    const computerParallax = { x: 0, y: 0, old: { x: 0, y: 0 } };
-    document.addEventListener("mousemove", (event) => {
-      const mouseX = (event.clientX / window.innerWidth - 0.5) * 2;
-      const mouseY = (event.clientY / window.innerHeight - 0.5) * -2;
-
-      computerParallax.old.x = computerParallax.x;
-      computerParallax.old.y = computerParallax.y;
-
-      computerParallax.x = mouseY * (Math.PI / 32);
-      computerParallax.y = mouseX * (Math.PI / 32);
+    document.addEventListener("touchstart", (event) => {
+      mousedown = false;
+      computerParallax.x = 0;
+      computerParallax.y = 0;
     });
 
     /**
@@ -193,7 +187,6 @@ export default function WebGL() {
     assists.keyboardMesh.material = computerMaterial;
     computerGroup.add(assists.keyboardMesh);
 
-    // assists.shadowPlaneMesh.material = new THREE.MeshBasicMaterial({ map: assists.bakeFloorTexture, blending: THREE.MultiplyBlending, transparent: true });
     assists.shadowPlaneMesh.material = new THREE.MeshBasicMaterial({
       map: assists.bakeFloorTexture,
     });
@@ -215,12 +208,6 @@ export default function WebGL() {
       const deltaTime = DeltaTime();
       const elapsedTime = clock.getElapsedTime();
 
-      // Update controls
-
-      // const zoomFac =
-      //   (controls.getDistance() - controls.minDistance) /
-      //   (controls.maxDistance - controls.minDistance);
-
       const zoomFac = valMap(scroll, [0, 1], [0, 1]);
 
       camera.position.z = valMap(
@@ -229,10 +216,6 @@ export default function WebGL() {
         [-2.5 - sizes.portraitOffset, -10 - sizes.portraitOffset]
       );
 
-      // console.log(sizes.width/sizes.height);
-
-      // camera.position.z = -2.5 + ;
-      // computerGroup.position.z = 7.5 * zoomFac;
       computerGroup.position.x = controlProps.computerHorizontal * zoomFac;
       computerGroup.position.y = valMap(
         scroll,
@@ -242,71 +225,28 @@ export default function WebGL() {
 
       computerGroup.rotation.y = controlProps.computerAngle * zoomFac;
 
-      // computerGroup.rotation.y = computerParallax.y * 0.05 + computerGroup.rotation.y * 0.95;
-
-      // computerGroup.rotation.y = computerParallax.y * 0.05 + computerGroup.rotation.y * 0.85;
-
-      camera.position.x = computerParallax.y * 0.10 + camera.position.x * 0.95;
-      camera.position.y = computerParallax.x * 0.10 + camera.position.y * 0.95;
+      const parallaxFac = valMap(scroll, [0, 1], [0.2, 1.5]);
+      camera.position.x =
+        computerParallax.x * parallaxFac * 0.1 + camera.position.x * 0.9;
+      camera.position.y =
+        computerParallax.y * parallaxFac * 0.1 + camera.position.y * 0.9;
 
       // -Math.PI, 0, Math.PI
-      camera.lookAt(new Vector3(0,0,0))
-
-      // camera.lookAt(computerGroup);
-
-      // computerGroup.rotation.y =
-      //   (computerParallax.y + controlProps.computerAngle * zoomFac) * 0.05 +
-      //   (computerParallax.old.y * 0.05 + controlProps.computerAngle * zoomFac) * 0.95;
-
-      // computerGroup.rotation.y = computerParallax.y * 0.05 + computerParallax.old.y * 0.05 +  controlProps.computerAngle * zoomFac
-
-      // (computerParallax.y + controlProps.computerAngle * zoomFac) * 0.05 +
-      // (computerParallax.old.y * 0.05 + controlProps.computerAngle * zoomFac) * 0.95;
-
-      // computerGroup.rotation.y =
-      //   (screenMeshTargetRotation.y + controlProps.computerAngle * zoomFac) * 0.05 + (controlProps.computerAngle * zoomFac) * 0.95;
-
-      // computerGroup.rotation.y =
-      // screenMeshTargetRotation.y * 0.05 + computerGroup.rotation.y * 0.95;
-
-      // canvas.style.left = `-${50*valMap(scroll, [1, 2], [0, 1])}%`
+      camera.lookAt(new Vector3(0, 0, 0));
 
       canvas.style.opacity = `${valMap(scroll, [1.25, 1.75], [1, 0])}`;
-
-      // controls.minAzimuthAngle =
-      //   Math.PI + controlProps.minAzimuthAngleOffest * zoomFac - 0.1;
-      // controls.maxAzimuthAngle =
-      //   Math.PI + controlProps.maxAzimuthAngleOffest * zoomFac + 0.1;
-
-      // controls.minPolarAngle =
-      //   Math.PI * 0.5 + controlProps.minPolarAngleOffest * zoomFac - 0.1;
-      // controls.maxPolarAngle =
-      //   Math.PI * 0.5 + controlProps.maxPolarAngleOffest * zoomFac + 0.1;
 
       if (sizes.portraitOffset > 0)
         computerGroup.rotation.z = valMap(scroll, [0, 1], [-Math.PI / 2, 0]);
       else computerGroup.rotation.z = 0;
 
       if (assists.crtMesh.morphTargetInfluences) {
-        // if (sizes.portraitOffset === 0)
         assists.crtMesh.morphTargetInfluences[0] = valMap(
           zoomFac,
           [0, 0.1],
           [0.5, 0]
         );
-        // else assists.crtMesh.morphTargetInfluences[0] = 0;
       }
-
-      // sideBar.left.style.width = `${zoomFac > 0 ? '0px' : '100px'}`;
-      // sideBar.right.style.width = `${zoomFac > 0 ? '0px' : '100px'}`;
-
-      // sizes.width = window.innerWidth / ((widthOffset * zoomFac) + 1);
-      // updateCanvasSize(sizes.width, sizes.height);
-
-      // controls.update();
-      // if (assists.screenMesh) {
-
-      // }
 
       screen.tick(deltaTime, elapsedTime);
 
