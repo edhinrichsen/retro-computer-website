@@ -201,7 +201,7 @@ body
   
 main {
     color: #525252;
-    padding-top: 200vh;
+    margin-top: 200vh;
     text-align: center;
     position: relative;
     z-index: 1;
