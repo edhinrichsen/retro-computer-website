@@ -5,6 +5,7 @@ import { ExternalsPlugin } from "webpack";
 import Screen from "./screen/";
 import Stats from "stats.js";
 import { loadAssists } from "./loader";
+import { Vector3 } from "three";
 
 function valMap(x: number, from: [number, number], to: [number, number]) {
   const y = ((x - from[0]) / (from[1] - from[0])) * (to[1] - to[0]) + to[0];
@@ -26,7 +27,7 @@ window.addEventListener("scroll", (ev) => {
   // console.log(window.scrollY / document.documentElement.clientHeight);
 });
 
-let camera: any;
+
 export default function WebGL() {
   loadAssists((assists) => {
     var stats = new Stats();
@@ -66,7 +67,7 @@ export default function WebGL() {
      * Camera
      */
     // Base camera
-    camera = new THREE.PerspectiveCamera(
+    const camera = new THREE.PerspectiveCamera(
       50,
       sizes.width / sizes.height,
       0.1,
@@ -78,7 +79,7 @@ export default function WebGL() {
     scene.add(camera);
 
     // Controls
-    const controls = new OrbitControls(camera, canvas);
+    // const controls = new OrbitControls(camera, canvas);
 
     const controlProps = {
       computerHeight: 1.5,
@@ -92,30 +93,32 @@ export default function WebGL() {
       maxPolarAngleOffest: 0,
     };
 
-    controls.enabled = false;
-    controls.enableDamping = true;
-    controls.enablePan = false;
-    controls.enableZoom = false;
+    // controls.enabled = false;
+    // controls.enableDamping = true;
+    // controls.enablePan = false;
+    // controls.enableZoom = false;
 
     // controls.maxDistance = 10;
     // controls.minDistance = 2.5;
 
     // controls.getDistance()
 
-    controls.minAzimuthAngle = Math.PI + controlProps.minAzimuthAngleOffest;
-    controls.maxAzimuthAngle = Math.PI + controlProps.maxAzimuthAngleOffest;
+    // controls.minAzimuthAngle = Math.PI + controlProps.minAzimuthAngleOffest;
+    // controls.maxAzimuthAngle = Math.PI + controlProps.maxAzimuthAngleOffest;
 
-    controls.minPolarAngle = Math.PI * 0.5 + controlProps.minPolarAngleOffest;
-    controls.maxPolarAngle = Math.PI * 0.5 + controlProps.maxPolarAngleOffest;
+    // controls.minPolarAngle = Math.PI * 0.5 + controlProps.minPolarAngleOffest;
+    // controls.maxPolarAngle = Math.PI * 0.5 + controlProps.maxPolarAngleOffest;
 
-    const screenMeshTargetRotation = { x: 0, y: Math.PI * 0.5 };
+    const computerParallax = { x: 0, y: 0, old: { x: 0, y: 0 } };
     document.addEventListener("mousemove", (event) => {
       const mouseX = (event.clientX / window.innerWidth - 0.5) * 2;
       const mouseY = (event.clientY / window.innerHeight - 0.5) * -2;
-      // console.log(mouse)
-      // console.log(camera.rotation)
-      screenMeshTargetRotation.x = mouseY * (Math.PI / 32);
-      screenMeshTargetRotation.y = mouseX * (Math.PI / 32) + Math.PI * 0.5;
+
+      computerParallax.old.x = computerParallax.x;
+      computerParallax.old.y = computerParallax.y;
+
+      computerParallax.x = mouseY * (Math.PI / 32);
+      computerParallax.y = mouseX * (Math.PI / 32);
     });
 
     /**
@@ -231,27 +234,58 @@ export default function WebGL() {
       // camera.position.z = -2.5 + ;
       // computerGroup.position.z = 7.5 * zoomFac;
       computerGroup.position.x = controlProps.computerHorizontal * zoomFac;
-      computerGroup.position.y = valMap(scroll, [0, 1], [0, controlProps.computerHeight]);
+      computerGroup.position.y = valMap(
+        scroll,
+        [0, 1],
+        [0, controlProps.computerHeight]
+      );
 
       computerGroup.rotation.y = controlProps.computerAngle * zoomFac;
+
+      // computerGroup.rotation.y = computerParallax.y * 0.05 + computerGroup.rotation.y * 0.95;
+
+      // computerGroup.rotation.y = computerParallax.y * 0.05 + computerGroup.rotation.y * 0.85;
+
+      camera.position.x = computerParallax.y * 0.10 + camera.position.x * 0.95;
+      camera.position.y = computerParallax.x * 0.10 + camera.position.y * 0.95;
+
+      // -Math.PI, 0, Math.PI
+      camera.lookAt(new Vector3(0,0,0))
+
+      // camera.lookAt(computerGroup);
+
+      // computerGroup.rotation.y =
+      //   (computerParallax.y + controlProps.computerAngle * zoomFac) * 0.05 +
+      //   (computerParallax.old.y * 0.05 + controlProps.computerAngle * zoomFac) * 0.95;
+
+      // computerGroup.rotation.y = computerParallax.y * 0.05 + computerParallax.old.y * 0.05 +  controlProps.computerAngle * zoomFac
+
+      // (computerParallax.y + controlProps.computerAngle * zoomFac) * 0.05 +
+      // (computerParallax.old.y * 0.05 + controlProps.computerAngle * zoomFac) * 0.95;
+
+      // computerGroup.rotation.y =
+      //   (screenMeshTargetRotation.y + controlProps.computerAngle * zoomFac) * 0.05 + (controlProps.computerAngle * zoomFac) * 0.95;
+
+      // computerGroup.rotation.y =
+      // screenMeshTargetRotation.y * 0.05 + computerGroup.rotation.y * 0.95;
 
       // canvas.style.left = `-${50*valMap(scroll, [1, 2], [0, 1])}%`
 
       canvas.style.opacity = `${valMap(scroll, [1.25, 1.75], [1, 0])}`;
 
-      controls.minAzimuthAngle =
-        Math.PI + controlProps.minAzimuthAngleOffest * zoomFac - 0.1;
-      controls.maxAzimuthAngle =
-        Math.PI + controlProps.maxAzimuthAngleOffest * zoomFac + 0.1;
+      // controls.minAzimuthAngle =
+      //   Math.PI + controlProps.minAzimuthAngleOffest * zoomFac - 0.1;
+      // controls.maxAzimuthAngle =
+      //   Math.PI + controlProps.maxAzimuthAngleOffest * zoomFac + 0.1;
 
-      controls.minPolarAngle =
-        Math.PI * 0.5 + controlProps.minPolarAngleOffest * zoomFac - 0.1;
-      controls.maxPolarAngle =
-        Math.PI * 0.5 + controlProps.maxPolarAngleOffest * zoomFac + 0.1;
+      // controls.minPolarAngle =
+      //   Math.PI * 0.5 + controlProps.minPolarAngleOffest * zoomFac - 0.1;
+      // controls.maxPolarAngle =
+      //   Math.PI * 0.5 + controlProps.maxPolarAngleOffest * zoomFac + 0.1;
 
       if (sizes.portraitOffset > 0)
         computerGroup.rotation.z = valMap(scroll, [0, 1], [-Math.PI / 2, 0]);
-      else computerGroup.rotation.z = 0
+      else computerGroup.rotation.z = 0;
 
       if (assists.crtMesh.morphTargetInfluences) {
         // if (sizes.portraitOffset === 0)
@@ -269,14 +303,9 @@ export default function WebGL() {
       // sizes.width = window.innerWidth / ((widthOffset * zoomFac) + 1);
       // updateCanvasSize(sizes.width, sizes.height);
 
-      controls.update();
+      // controls.update();
       // if (assists.screenMesh) {
-      //   assists.screenMesh.rotation.x =
-      //     screenMeshTargetRotation.x * 0.05 +
-      //     assists.screenMesh.rotation.x * 0.95;
-      //   assists.screenMesh.rotation.y =
-      //     screenMeshTargetRotation.y * 0.05 +
-      //     assists.screenMesh.rotation.y * 0.95;
+
       // }
 
       screen.tick(deltaTime, elapsedTime);
