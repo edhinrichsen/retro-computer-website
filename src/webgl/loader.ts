@@ -42,13 +42,13 @@ function loadAssists(callback: (assists: Assists) => any) {
     loadingItemsDOM.textContent = `Nearly There...`;
     
     console.log("Loading complete!");
-    // window.setTimeout(() => {
-    //   (loadingDOM as any).style.opacity = "0";
-    //   callback(assists as Assists);
-    // }, 200);
-    // window.setTimeout(() => {
-    //   (loadingDOM as any).style.display = "none";
-    // }, 500);
+    window.setTimeout(() => {
+      (loadingDOM as any).style.opacity = "0";
+      callback(assists as Assists);
+    }, 200);
+    window.setTimeout(() => {
+      (loadingDOM as any).style.display = "none";
+    }, 500);
   };
 
   manager.onProgress = function (url, itemsLoaded, itemsTotal) {
