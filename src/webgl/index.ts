@@ -33,16 +33,16 @@ export default function WebGL() {
     const hash = window.location.hash;
     if (hash) {
       if (hash.toLowerCase() === '#debug') {
-       
-          stats.showPanel(0);
-          document.body.appendChild(stats.dom);
 
-          const textarea = document.getElementById(
-            "textarea"
-          ) as HTMLTextAreaElement;
-          textarea.style.zIndex = "3";
-          textarea.style.opacity = "1";
-  
+        stats.showPanel(0);
+        document.body.appendChild(stats.dom);
+
+        const textarea = document.getElementById(
+          "textarea"
+        ) as HTMLTextAreaElement;
+        textarea.style.zIndex = "3";
+        textarea.style.opacity = "1";
+
       }
     }
 
@@ -105,27 +105,42 @@ export default function WebGL() {
       maxPolarAngleOffest: 0,
     };
 
-    let mousedown = false;
+    let mousedown: { x: number, y: number } | null = null;
+    function checkIfTouch(event: PointerEvent) {
+      if (event.pointerType !== 'mouse') {
+        mousedown = null;
+        computerParallax.x = 0;
+        computerParallax.y = 0;
+      }
+    }
     const computerParallax = { x: 0, y: 0 };
-    canvas.addEventListener("mousemove", (event) => {
+    window.addEventListener("pointermove", (event) => {
+      checkIfTouch(event);
       if (mousedown) {
-        computerParallax.x = (event.clientX / window.innerWidth - 0.5) * 2;
-        computerParallax.y = (event.clientY / window.innerHeight - 0.5) * 2;
+        // computerParallax.x = ((event.clientX - mousedown.x) / window.innerWidth - 0.5) * 2;
+        // computerParallax.y = ((event.clientY - mousedown.y) / window.innerHeight - 0.5) * 2;
+        computerParallax.x += (event.clientX - mousedown.x) / (window.innerWidth * 0.5);
+        computerParallax.x = valMap(computerParallax.x, [-1, 1], [-1, 1])
+
+
+        computerParallax.y += (event.clientY - mousedown.y) / (window.innerHeight * 0.5);
+        computerParallax.y = valMap(computerParallax.y, [-1, 1], [-1, 1])
+
+        console.log(computerParallax);
+
+        mousedown = { x: event.clientX, y: event.clientY };
+
       }
     });
 
-    canvas.addEventListener("mousedown", (event) => {
-      mousedown = true;
+    canvas.addEventListener('pointerdown', (event) => {
+      checkIfTouch(event);
+      mousedown = { x: event.clientX, y: event.clientY };
     });
 
-    document.addEventListener("mouseup", (event) => {
-      mousedown = false;
-    });
-
-    document.addEventListener("touchstart", (event) => {
-      mousedown = false;
-      computerParallax.x = 0;
-      computerParallax.y = 0;
+    document.addEventListener("pointerup", (event) => {
+      checkIfTouch(event);
+      mousedown = null;
     });
 
     /**
@@ -239,11 +254,10 @@ export default function WebGL() {
 
       computerGroup.rotation.y = controlProps.computerAngle * zoomFac;
 
-      const parallaxFac = valMap(scroll, [0, 1], [0.2, 1.5]);
       camera.position.x =
-        computerParallax.x * parallaxFac * 0.1 + camera.position.x * 0.9;
+        computerParallax.x * valMap(scroll, [0, 1], [0.2, 5]) * 0.1 + camera.position.x * 0.9;
       camera.position.y =
-        computerParallax.y * parallaxFac * 0.1 + camera.position.y * 0.9;
+        computerParallax.y * valMap(scroll, [0, 1], [0.2, 1.5]) * 0.1 + camera.position.y * 0.9;
 
       // -Math.PI, 0, Math.PI
       camera.lookAt(new Vector3(0, 0, 0));
