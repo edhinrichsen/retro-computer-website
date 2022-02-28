@@ -29,17 +29,21 @@ window.addEventListener("scroll", (ev) => {
 
 export default function WebGL() {
   loadAssists((assists) => {
-
     const stats = new Stats();
-    const hash = window.location.hash
+    const hash = window.location.hash;
     if (hash) {
       switch (hash.toLowerCase()) {
-        case '#fps':
+        case "#fps":
           stats.showPanel(0);
           document.body.appendChild(stats.dom);
+
+          const textarea = document.getElementById(
+            "textarea"
+          ) as HTMLTextAreaElement;
+          textarea.style.zIndex = "3";
           break;
 
-        case '#ms':
+        case "#ms":
           stats.showPanel(1);
           document.body.appendChild(stats.dom);
           break;

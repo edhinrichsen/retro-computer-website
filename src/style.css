@@ -44,7 +44,9 @@ body
     top: 0;
     right: 0;
     outline: none;
-    z-index: 3;
+    z-index: -1;
+
+    /* display: none; */
 }
 
 #loading{

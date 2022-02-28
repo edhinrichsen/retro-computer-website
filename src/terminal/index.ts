@@ -17,23 +17,46 @@ export default function Terminal(screenTextEngine: {
   // const input = Input()
   const textarea = document.getElementById("textarea") as HTMLTextAreaElement;
   textarea.value = "";
-  textarea.focus();
+  textarea.readOnly = true;
+  textarea.blur();
   textarea.onblur = () => {
     textarea.focus();
   };
 
   let oldText = "";
-  textarea.addEventListener(
-    "input",
-    function () {
-      const change = stringEditDistance(oldText, textarea.value);
-      oldText = textarea.value;
-      if (change) screenTextEngine.userInput(change, textarea.selectionStart);
-    },
-    false
-  );
+  function onInput() {
+    const change = stringEditDistance(oldText, textarea.value);
+    oldText = textarea.value;
+    if (change) screenTextEngine.userInput(change, textarea.selectionStart);
+  }
+  textarea.addEventListener("input", onInput, false);
 
+  window.addEventListener("pointerup", (ev) => {
+    if (ev.pointerType === 'mouse'){
+      textarea.readOnly = false;
+      textarea.focus();
+      textarea.setSelectionRange(lastSelection, lastSelection);
+    } else {
+      textarea.readOnly = true;
+    textarea.blur();
+    }
+  });
   window.addEventListener("keypress", (e) => {
+    if (
+      textarea.readOnly === true ||
+      document.activeElement?.id !== "textarea"
+    ) {
+      textarea.readOnly = false;
+      textarea.focus();
+      
+      if (e.key.length === 1) {
+        textarea.value = textarea.value.slice(0,lastSelection) + e.key + textarea.value.slice(lastSelection);
+        lastSelection += 1;
+        onInput();
+      }
+      textarea.setSelectionRange(lastSelection, lastSelection);
+    }
+    // textarea
     if (e.key === "Enter") {
       if (textarea.value.match(/^ *$/) === null) {
         screenTextEngine.placeMarkdown(notFound);
