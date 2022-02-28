@@ -114,7 +114,7 @@ export default function WebGL() {
       }
     }
     const computerParallax = { x: 0, y: 0 };
-    window.addEventListener("pointermove", (event) => {
+    canvas.addEventListener("pointermove", (event) => {
       checkIfTouch(event);
       if (mousedown) {
         // computerParallax.x = ((event.clientX - mousedown.x) / window.innerWidth - 0.5) * 2;
