@@ -12,7 +12,7 @@
 html,
 body
 {
-    /* overflow: hidden; */
+    /* overflow-x: hidden; */
     height: 300vh;
     background-color: #f6d4b1;
     font-family: "chill", sans-serif;
@@ -165,7 +165,7 @@ body
     align-content: center;
     justify-content: center;
     align-items: center;
-    gap: 8px;
+    gap: 16px;
   
     text-align: center;
     /* outline: 0px solid white; */
@@ -175,22 +175,18 @@ body
   
   .skills li {
     display: inline-block;
-    /* box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.2); */
-    /* box-shadow: 0 10px 45px -30px black; */
-    /* background-color: white; */
-    border-radius: 100px;
-    padding: 4px 16px;
-    /* border: #f2f0ef solid; */
-    /* border-width: 1.5px; */
-    /* box-shadow: 0px 2px 4px 0 rgba(0, 0, 0, 0.1); */
+    padding: 4px 8px;
+    /* box-shadow: 3px 3px 0px rgba(82, 82, 82, 0.25); */
+    border: dashed 1px #525252;
+    box-shadow: 1px 1px 0px #f6d4b1, 4px 4px 0px rgba(82, 82, 82, 0.25);
   }
 
   .skills li::before {
-    content: '[';
+    /* content: '['; */
   }
 
   .skills li::after {
-    content: ']';
+    /* content: ']'; */
   }
 
   .image {
@@ -203,6 +199,7 @@ body
     width: 950px;
     box-sizing: border-box;
     margin: auto;
+    box-shadow: 1px 1px 0px #f6d4b1, 6px 6px 0px rgba(82, 82, 82, 0.25);
 
   }
   
@@ -252,32 +249,31 @@ button {
   font-family: "chill", sans-serif;
   font-size: 18px;
   display: inline-block;
-  box-shadow: 0px 4px 0px rgba(82, 82, 82, 0.5);
-  /* box-shadow: 0 10px 45px -30px black; */
+  box-shadow: 1px 1px 0px #f6d4b1, 6px 6px 0px rgba(82, 82, 82, 0.25);
   background-color: #525252;
   color: #f6d4b1;
-  padding: 4px 24px;
-  border: none;
-  border-bottom: 2px #f6d4b1 solid;
   cursor: pointer;
   transition: all 0.3s;
+  border: none;
+  padding: 4px 24px;
+
 }
 
 button:hover {
   transform: scale(1.1);
-  box-shadow: 0px 8px 6px rgba(82, 82, 82, 0.25);
+  box-shadow: 1px 1px 0px #f6d4b1, 8px 8px 6px rgba(82, 82, 82, 0.25);
 }
 
 button:active {
   transform: scale(0.95);
-  box-shadow: 0px 3px 0px rgba(82, 82, 82, 0.7);
+  box-shadow: 1px 1px 0px #f6d4b1, 4px 4px 0px rgba(82, 82, 82, 0.40);
 }
 
 
   @media only screen and (max-width: 950px) {
     .image {
-      /* margin: 8px; */
-      width: calc(100vw - 16px);
+      margin: 8px;
+      width: calc(100vw - 32px);
       
     }
   }
