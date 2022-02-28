@@ -147,7 +147,8 @@ export default function WebGL() {
 
       // Update renderer
       renderer.setSize(width, height);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      // renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setPixelRatio(2);
     }
     window.addEventListener("resize", () => {
       // Update sizes
