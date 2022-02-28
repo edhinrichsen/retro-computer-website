@@ -136,7 +136,7 @@ export default function WebGL() {
       canvas: canvas,
     });
     renderer.setSize(sizes.width, sizes.height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(2);
     renderer.outputEncoding = THREE.sRGBEncoding;
     // renderer.render(sceneRTT, cameraRTT);
 
@@ -148,7 +148,7 @@ export default function WebGL() {
       // Update renderer
       renderer.setSize(width, height);
       // renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.setPixelRatio(2);
+      // renderer.setPixelRatio(2);
     }
     window.addEventListener("resize", () => {
       // Update sizes
