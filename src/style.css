@@ -1,6 +1,8 @@
 @font-face { font-family: public-pixel; src: url('../static/fonts/public-pixel.ttf'); } 
 @font-face { font-family: chill; src: url('../static/fonts/chill.otf'); } 
 
+@import url("./collapse.css");
+
 *
 {
     margin: 0;
@@ -15,9 +17,8 @@ body
     background-color: #f6d4b1;
     font-family: "chill", sans-serif;
     font-size: 18px;
-
-    scrollbar-color: #525252 #f6d4b1;
 }
+
 .webgl
 {
     position: fixed;
@@ -245,6 +246,33 @@ main {
     text-align: center;
     color: #525252;
   }
+
+  
+button {
+  font-family: "chill", sans-serif;
+  font-size: 18px;
+  display: inline-block;
+  box-shadow: 0px 4px 0px rgba(82, 82, 82, 0.5);
+  /* box-shadow: 0 10px 45px -30px black; */
+  background-color: #525252;
+  color: #f6d4b1;
+  padding: 4px 24px;
+  border: none;
+  border-bottom: 2px #f6d4b1 solid;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+button:hover {
+  transform: scale(1.1);
+  box-shadow: 0px 8px 6px rgba(82, 82, 82, 0.25);
+}
+
+button:active {
+  transform: scale(0.95);
+  box-shadow: 0px 3px 0px rgba(82, 82, 82, 0.7);
+}
+
 
   @media only screen and (max-width: 950px) {
     .image {

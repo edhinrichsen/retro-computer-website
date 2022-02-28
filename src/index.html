@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="utf-8" />
-  <title>Edward Hinrichsen – Personal Website</title>
-  <meta name="description" content="My
+  <head>
+    <meta charset="utf-8" />
+    <title>Edward Hinrichsen – Personal Website</title>
+    <meta
+      name="description"
+      content="My
     name is Edward Hinrichsen and I have recently completed a Bachelor of
     Science, majoring in Computing and Software Systems at the University of
     Melbourne. I have a passion for all things technology and design, from
-    software engineering & machine learning to UI/UX & 3D graphics." />
+    software engineering & machine learning to UI/UX & 3D graphics."
+    />
 
     <link rel="icon" type="image/png" href="/static/icon/32x32.png" />
 
@@ -22,7 +24,10 @@
       href="/static/icon/180x180.png"
     />
     <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-title" content="Edward Hinrichsen – Personal Website" />
+    <meta
+      name="apple-mobile-web-app-title"
+      content="Edward Hinrichsen – Personal Website"
+    />
     <meta
       name="apple-mobile-web-app-status-bar-style"
       content="black-translucent"
@@ -32,7 +37,10 @@
     <meta property="og:title" content="Edward Hinrichsen – Personal Website" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://edwardh.io/" />
-    <meta property="og:image" content="https://dev.edwardh.io/icon/og-img1.png" />
+    <meta
+      property="og:image"
+      content="https://dev.edwardh.io/icon/og-img1.png"
+    />
     <meta
       name="og:description"
       content="My name is Edward Hinrichsen and I have recently completed a Bachelor of Science,
@@ -41,351 +49,388 @@
       software engineering & machine learning to UI/UX & 3D graphics."
     />
     <link rel="manifest" href="/static/manifest.json" />
-</head>
+  </head>
 
-<body>
-  <div id="loading">
-    <ul id="loading-list">
-      <li>Booting Experience...</li>
-    </ul>
-  </div>
-  <div id="hero">
-    <canvas class="webgl"></canvas>
+  <body>
+    <div id="loading">
+      <ul id="loading-list">
+        <li>Booting Experience...</li>
+      </ul>
+    </div>
+    <div id="hero">
+      <canvas class="webgl"></canvas>
 
-    <!-- <div id="hero-txt">
+      <!-- <div id="hero-txt">
         <h2>Hi there, I’m</h2>
         <h1>Edward</h1>
         <h3>Computer Scientist + Designer</h3>
      
       </div> -->
-  </div>
+    </div>
 
-  <main>
-    <section>
-      <h1 id="aboutMe">Hi there</h1>
-      <p>
-        My name is Edward Hinrichsen and I have recently completed a Bachelor of
-        Science, majoring in Computing and Software Systems at the University of
-        Melbourne. I have a passion for all things technology and design, from
-        software engineering & machine learning to UI/UX & 3D graphics.
-      </p>
-      <p>
-        In addition to my love of technology and design, I am also interested in
-        education, history, economics and politics. When not studying or coding,
-        I am in the pool helping kids with disabilities learn to swim.
-      </p>
-
-      <p>
-        Below are details of some of projects I have developed over my ten years
-        of coding experience.
-      </p>
-    </section>
-
-    <section>
-      <h1 id="projects">Projects</h1>
-      <hr />
-
-      <h4>Writing Buddy</h4>
-      <h5>2021</h5>
-      <ul class="skills">
-        <li>UI/UX</li>
-        <li>Branding</li>
-        <li>Design</li>
-        <li>Accessibility</li>
-        <li>AI</li>
-        <li>Deep Learning</li>
-        <li>Algorithms & Data Structures</li>
-        <li>Web Development</li>
-        <li>Cloud Computing</li>
-      </ul>
-      <p>
-        I have dyslexia and as such, have always found writing and particularly
-        spelling difficult and tedious. While there are a number of tools on the
-        market designed to aid people with learning difficulties, based on my
-        experience, all fall short in one way or another. To fix this I
-        developed Writing Buddy, a “what you see is what you get” text editor
-        designed to help people write better, faster and with more confidence.
-      </p>
-      <button id="wbMoreBtn" onclick="toggleRB()">more...</button>
-
-      <div id="wbMore" class="more-hide">
+    <main>
+      <section>
+        <h1 id="aboutMe">Hi there</h1>
         <p>
-          Writing Buddy is built on the principle that the best way to help
-          people who struggle with writing and spelling is to reduce the amount
-          of writing and spelling they actually have to do. I achieved this by
-          developing a state of the art custom prediction engine that predicts
-          the next word, dramatically decreasing the amount of words that need
-          to be typed. This has the additional benefit of appealing to students
-          and professionals who just want to express themselves faster than
-          otherwise possible.
+          My name is Edward Hinrichsen and I have recently completed a Bachelor
+          of Science, majoring in Computing and Software Systems at the
+          University of Melbourne. I have a passion for all things technology
+          and design, from software engineering & machine learning to UI/UX & 3D
+          graphics.
         </p>
         <p>
-          Nearly every part and component of Writing Buddy is bespoke, with
-          everything from the UI/UX and branding to the prediction engine
-          designed and built by myself. The Writing Buddy editor is built in
-          TypeScript and React and the prediction engine is built with a
-          combination of deep learning and traditional computer science
-          techniques.
+          In addition to my love of technology and design, I am also interested
+          in education, history, economics and politics. When not studying or
+          coding, I am in the pool helping kids with disabilities learn to swim.
         </p>
-      </div>
 
-      <p>
-        You can check out the development build of Writing Buddy at
-        <a target="_blank" href="https://writingbuddy.org/"><u>WritingBuddy.org</u></a>
-        and it is installable as a progressive web app (PWA).
-      </p>
+        <p>
+          Below are details of some of projects I have developed over my ten
+          years of coding experience.
+        </p>
+      </section>
 
-      <div class="image">
-        <img src="img/glyph9.png" width="100%" alt="" /><img src="img/glyph8.png" width="100%" alt="" />
-      </div>
-      <hr />
+      <section>
+        <h1 id="projects">Projects</h1>
+        <hr />
 
-      <h4>My Own Programming Language</h4>
-      <h5>2021</h5>
-      <ul class="skills">
-        <li>Algorithms & Data Structures</li>
-        <li>Lexing & Tokenization</li>
-        <li>Syntactic Analysis</li>
-        <li>Parsing</li>
-        <li>Compiler & Interpreter Design</li>
-      </ul>
-      <p>
-        For a while now I have been fascinated by computer languages and when
-        over the semester break, I had a bit of time on my hands, I decided
-        to—as an academic exercise—design my own language. My language consists
-        of two components; the recursive descent parser which first lexers and
-        tokenizes the input before generating an abstract syntax tree (AST); and
-        the interpreter which traverses the AST and produces the appropriate
-        output.
-      </p>
-      <p>
-        My language currently includes features such as closures, lambda
-        expressions, first class and pure functions, making it well-suited to
-        functional programming. In addition to this I plan to add support for
-        multithreading and a stronger type system plus optimizations for
-        tail-call recursion. I am also experimenting with implementing a stack
-        based virtual machine—bytecode interpreter—to run my language.
-      </p>
-      <hr />
+        <h4>Writing Buddy</h4>
+        <h5>2021</h5>
+        <ul class="skills">
+          <li>UI/UX</li>
+          <li>Branding</li>
+          <li>Design</li>
+          <li>Accessibility</li>
+          <li>AI</li>
+          <li>Deep Learning</li>
+          <li>Algorithms & Data Structures</li>
+          <li>Web Development</li>
+          <li>Cloud Computing</li>
+        </ul>
+        <p>
+          I have dyslexia and as such, have always found writing and
+          particularly spelling difficult and tedious. While there are a number
+          of tools on the market designed to aid people with learning
+          difficulties, based on my experience, all fall short in one way or
+          another. To fix this I developed Writing Buddy, a “what you see is
+          what you get” text editor designed to help people write better, faster
+          and with more confidence.
+        </p>
+        <button
+          class="collapse-btn"
+          collapsed="true"
+          onclick="this.setAttribute('collapsed', this.getAttribute('collapsed') === 'true'? 'false' : 'true')"
+        >
+          more...
+        </button>
 
-      <h4>Glowbal</h4>
-      <h5>2020</h5>
-      <ul class="skills">
-        <li>Teamwork</li>
-        <li>Leadership</li>
-        <li>Design</li>
-        <li>Agile</li>
-        <li>Accessibility</li>
-        <li>UI/UX</li>
-        <li>Web Development</li>
-      </ul>
-      <p>
-        As part of the university subject IT Project, I was required to produce
-        an ePortfolio web app as part of a small group. We called our app
-        Glowbal and built it with TypeScript, React, Express and employed an
-        agile development process. I was a front end lead and wrote most of the
-        UI components. I was also responsible for accessibility testing and
-        ensuring users of all abilities could access our app.
-      </p>
-      <div class="image">
-        <video width="100%" controls loop autoplay>
-          <source src="img/Glowbal.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      </div>
-      <hr />
+        <div class="collapse-body">
+          <p>
+            Writing Buddy is built on the principle that the best way to help
+            people who struggle with writing and spelling is to reduce the
+            amount of writing and spelling they actually have to do. I achieved
+            this by developing a state of the art custom prediction engine that
+            predicts the next word, dramatically decreasing the amount of words
+            that need to be typed. This has the additional benefit of appealing
+            to students and professionals who just want to express themselves
+            faster than otherwise possible.
+          </p>
+          <p>
+            Nearly every part and component of Writing Buddy is bespoke, with
+            everything from the UI/UX and branding to the prediction engine
+            designed and built by myself. The Writing Buddy editor is built in
+            TypeScript and React and the prediction engine is built with a
+            combination of deep learning and traditional computer science
+            techniques.
+          </p>
+        </div>
 
-      <h4>CyberHeist</h4>
-      <h5>2020</h5>
-      <ul class="skills">
-        <li>Teamwork</li>
-        <li>Leadership</li>
-        <li>Design</li>
-        <li>User Testing</li>
-        <li>3D</li>
-        <li>Shader Programming</li>
-        <li>Cloud Computing</li>
-      </ul>
-      <p>
-        For the subject Graphics and Interaction, I worked in a team to produce
-        a time based endless runner game called CyberHeist. The game was built
-        in Unity/C# and made use of a number of Azure APIs to add online play
-        functionality. I was responsible for most of the online investigation
-        and a large amount of the game logic, shader programming and user
-        testing. CyberHeist received a final mark of over 95% and the trailer
-        can be found below.
-      </p>
-      <div class="image">
-        <iframe width="100%" height="473" src="https://www.youtube.com/embed/LvVK7j2WmfU?controls=0" frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen></iframe>
-      </div>
-      <hr />
+        <p>
+          You can check out the development build of Writing Buddy at
+          <a target="_blank" href="https://writingbuddy.org/"
+            ><u>WritingBuddy.org</u></a
+          >
+          and it is installable as a progressive web app (PWA).
+        </p>
 
-      <h4>Pavilion</h4>
-      <h5>2019</h5>
-      <ul class="skills">
-        <li>Design</li>
-        <li>Architecture</li>
-        <li>VR</li>
-        <li>Parametric Design</li>
-        <li>3D Rendering</li>
-      </ul>
-      <p>
-        At university, in addition to my computer science subjects, I completed
-        a number of architecture and design electives. In one of my favourite
-        architecture subjects we had to design a pavilion using parametric tools
-        and present it in VR with Unreal Engine. I programmatically modeled a
-        magnetic field and extracted the field lines to inform the structure of
-        my pavilion. I enjoyed this assignment so much I decided to extend
-        myself and produce a number of 3D ray traced renders some of which are
-        below. My design received first class honors and was exhibited in the
-        Melbourne School of Design annual exhibition (MSDx).
-      </p>
-      <div class="image">
-        <img src="img/pavilion1.png" width="100%" alt="" /><img src="img/pavilion2.png" width="100%"
-          alt="" />
-      </div>
-      <hr />
+        <div class="image">
+          <img src="img/glyph9.png" width="100%" alt="" /><img
+            src="img/glyph8.png"
+            width="100%"
+            alt=""
+          />
+        </div>
+        <hr />
 
-      <h4>Brick-Breaker</h4>
-      <h5>2019</h5>
-      <ul class="skills">
-        <li>Software Engineering</li>
-        <li>Object Oriented Design and Programming</li>
-        <li>GRASP & Gang of Four Patterns</li>
-      </ul>
-      <p>
-        The below screenshot is of a university assignment, where we had to
-        follow a spec and use object oriented design principles and patterns to
-        produce a brick-breaker type game in Java. I finished with time to spare
-        so decided to implement a real time lighting and particle engine from
-        scratch. The engine was capable of handling different lights at
-        different intensities, intersecting shadows and a large number of shadow
-        casting game objects.
-      </p>
-      <div class="image"><img src="img/oosd.png" width="50%" alt="" /></div>
-      <hr />
+        <h4>My Own Programming Language</h4>
+        <h5>2021</h5>
+        <ul class="skills">
+          <li>Algorithms & Data Structures</li>
+          <li>Lexing & Tokenization</li>
+          <li>Syntactic Analysis</li>
+          <li>Parsing</li>
+          <li>Compiler & Interpreter Design</li>
+        </ul>
+        <p>
+          For a while now I have been fascinated by computer languages and when
+          over the semester break, I had a bit of time on my hands, I decided
+          to—as an academic exercise—design my own language. My language
+          consists of two components; the recursive descent parser which first
+          lexers and tokenizes the input before generating an abstract syntax
+          tree (AST); and the interpreter which traverses the AST and produces
+          the appropriate output.
+        </p>
+        <p>
+          My language currently includes features such as closures, lambda
+          expressions, first class and pure functions, making it well-suited to
+          functional programming. In addition to this I plan to add support for
+          multithreading and a stronger type system plus optimizations for
+          tail-call recursion. I am also experimenting with implementing a stack
+          based virtual machine—bytecode interpreter—to run my language.
+        </p>
+        <hr />
 
-      <h4>Jackalope</h4>
-      <h5>2017</h5>
-      <ul class="skills">
-        <li>Product Design</li>
-        <li>Industrial Design</li>
-        <li>Logo Design</li>
-        <li>Visual Communication</li>
-        <li>Branding</li>
-      </ul>
-      <p>
-        In my final year of high school I took a subject called Visual
-        Communication Design (VCD). As part of VCD we were given the assignment
-        to develop and fulfill a brief for a fictional client. I gave myself the
-        brief to design a series of smart home appliances for the made up
-        company Jackalope and produce accompanying visual identity and
-        advertising material. Below is a poster of a smart speakers I designed
-        with the Jackalope logo in the corner. See more of this project on
-        <a target="_blank" href="https://www.behance.net/gallery/57165159/HomeHub-by-Jackalope"><u>Behance.</u></a>
-      </p>
-      <div class="image">
-        <img src="img/jackalope.png" width="100%" alt="" />
-      </div>
-      <hr />
+        <h4>Glowbal</h4>
+        <h5>2020</h5>
+        <ul class="skills">
+          <li>Teamwork</li>
+          <li>Leadership</li>
+          <li>Design</li>
+          <li>Agile</li>
+          <li>Accessibility</li>
+          <li>UI/UX</li>
+          <li>Web Development</li>
+        </ul>
+        <p>
+          As part of the university subject IT Project, I was required to
+          produce an ePortfolio web app as part of a small group. We called our
+          app Glowbal and built it with TypeScript, React, Express and employed
+          an agile development process. I was a front end lead and wrote most of
+          the UI components. I was also responsible for accessibility testing
+          and ensuring users of all abilities could access our app.
+        </p>
+        <div class="image">
+          <video width="100%" controls loop autoplay>
+            <source src="img/Glowbal.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+        <hr />
 
-      <h4>Project L</h4>
-      <h5>2015</h5>
-      <ul class="skills">
-        <li>Design</li>
-        <li>3D</li>
-      </ul>
-      <p>
-        Over the years I have made many games, with the screenshot below
-        representing one of them from around 2015. Probably one of the more
-        technically challenging games I have created, it was an open world
-        sandbox written in Unity, where you could interact, move, rotate and
-        scale the objects in the world to build anything you wanted.
-      </p>
-      <div class="image"><img src="img/sc3.png" width="100%" alt="" /></div>
-      <hr />
+        <h4>CyberHeist</h4>
+        <h5>2020</h5>
+        <ul class="skills">
+          <li>Teamwork</li>
+          <li>Leadership</li>
+          <li>Design</li>
+          <li>User Testing</li>
+          <li>3D</li>
+          <li>Shader Programming</li>
+          <li>Cloud Computing</li>
+        </ul>
+        <p>
+          For the subject Graphics and Interaction, I worked in a team to
+          produce a time based endless runner game called CyberHeist. The game
+          was built in Unity/C# and made use of a number of Azure APIs to add
+          online play functionality. I was responsible for most of the online
+          investigation and a large amount of the game logic, shader programming
+          and user testing. CyberHeist received a final mark of over 95% and the
+          trailer can be found below.
+        </p>
+        <div class="image">
+          <iframe
+            width="100%"
+            height="473"
+            src="https://www.youtube.com/embed/LvVK7j2WmfU?controls=0"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <hr />
 
-      <h4>Great Balls of Fire</h4>
-      <h5>2013-14</h5>
-      <ul class="skills">
-        <li>Mobile Development</li>
-        <li>iOS</li>
-        <li>Android</li>
-        <li>Design</li>
-        <li>Illustration</li>
-        <li>Branding</li>
-      </ul>
-      <p>
-        Great Balls of Fire was a game I made when I was 13 years old and is one
-        of the creations I am most proud of. It was an endless scroller where
-        you played as the titular Ball of Fire, attempting to stay in the sky by
-        jumping on air ships. It was published on the App Store and Play Store
-        and remained there for a number of years (before I got tired of paying
-        Apple's developer fee) and even netted a few thousand downloads.
-      </p>
-      <div class="image">
-        <img src="img/gbof3.png" width="100%" alt="" /><img src="img/gbof4.png" width="100%" alt="" />
-        <img src="img/gbof5.png" width="100%" alt="" />
-      </div>
-      <hr />
+        <h4>Pavilion</h4>
+        <h5>2019</h5>
+        <ul class="skills">
+          <li>Design</li>
+          <li>Architecture</li>
+          <li>VR</li>
+          <li>Parametric Design</li>
+          <li>3D Rendering</li>
+        </ul>
+        <p>
+          At university, in addition to my computer science subjects, I
+          completed a number of architecture and design electives. In one of my
+          favourite architecture subjects we had to design a pavilion using
+          parametric tools and present it in VR with Unreal Engine. I
+          programmatically modeled a magnetic field and extracted the field
+          lines to inform the structure of my pavilion. I enjoyed this
+          assignment so much I decided to extend myself and produce a number of
+          3D ray traced renders some of which are below. My design received
+          first class honors and was exhibited in the Melbourne School of Design
+          annual exhibition (MSDx).
+        </p>
+        <div class="image">
+          <img src="img/pavilion1.png" width="100%" alt="" /><img
+            src="img/pavilion2.png"
+            width="100%"
+            alt=""
+          />
+        </div>
+        <hr />
 
-      <h4>The Golden Pack</h4>
-      <h5>2012-13</h5>
-      <ul class="skills">
-        <li>Design</li>
-        <li>Illustration</li>
-      </ul>
-      <p>
-        When I was 12 years old, I played a lot of Minecraft however, I was
-        never very happy with the low resolution look of the game. I decided to
-        remedy this by creating a texture pack, which is a file containing
-        alternative looks or textures for the objects in the game. When I put my
-        work online, after some refinement I received my first 1000 downloads.
-        Spotting a business opportunity, I added ads to the download link. My
-        texture pack was downloaded over 50,000 times, earning me over $1000.
-      </p>
-      <div class="image"><img src="img/tgp.png" width="100%" alt="" /></div>
-      <hr />
+        <h4>Brick-Breaker</h4>
+        <h5>2019</h5>
+        <ul class="skills">
+          <li>Software Engineering</li>
+          <li>Object Oriented Design and Programming</li>
+          <li>GRASP & Gang of Four Patterns</li>
+        </ul>
+        <p>
+          The below screenshot is of a university assignment, where we had to
+          follow a spec and use object oriented design principles and patterns
+          to produce a brick-breaker type game in Java. I finished with time to
+          spare so decided to implement a real time lighting and particle engine
+          from scratch. The engine was capable of handling different lights at
+          different intensities, intersecting shadows and a large number of
+          shadow casting game objects.
+        </p>
+        <div class="image"><img src="img/oosd.png" width="50%" alt="" /></div>
+        <hr />
 
-      <h4>EdSites</h4>
-      <h5>2010</h5>
-      <ul class="skills">
-        <li>Design</li>
-        <li>Web Development</li>
-      </ul>
-      <p>
-        Below is one of my earliest creations daring back to 2010. As a budding
-        10 year old web designer I needed a website to showcase my work and
-        attract “clients”, so I made one! I called it EdSites and registered the
-        domain name edsites.biz with my father’s credit card and got to work.
-        All the HTML, CSS and even the JavaScript was written completely by hand
-        by me. The website was such a success that it resulted in some clients
-        albeit they were all my family members.
-      </p>
-      <div class="image"><img src="img/edsites.png" width="100%" alt="" /></div>
-      <hr />
-      <p>
-        This represents just a small selection of the projects I have worked on
-        over the years. I have many more pieces of personal, university and
-        design work.
-      </p>
-    </section>
+        <h4>Jackalope</h4>
+        <h5>2017</h5>
+        <ul class="skills">
+          <li>Product Design</li>
+          <li>Industrial Design</li>
+          <li>Logo Design</li>
+          <li>Visual Communication</li>
+          <li>Branding</li>
+        </ul>
+        <p>
+          In my final year of high school I took a subject called Visual
+          Communication Design (VCD). As part of VCD we were given the
+          assignment to develop and fulfill a brief for a fictional client. I
+          gave myself the brief to design a series of smart home appliances for
+          the made up company Jackalope and produce accompanying visual identity
+          and advertising material. Below is a poster of a smart speakers I
+          designed with the Jackalope logo in the corner. See more of this
+          project on
+          <a
+            target="_blank"
+            href="https://www.behance.net/gallery/57165159/HomeHub-by-Jackalope"
+            ><u>Behance.</u></a
+          >
+        </p>
+        <div class="image">
+          <img src="img/jackalope.png" width="100%" alt="" />
+        </div>
+        <hr />
 
-    <section>
-      <h1 id="contact">Contact</h1>
-      <p style="text-align: center">
-        Reach out on
-        <a href="https://www.linkedin.com/in/edwardhinrichsen/"><u><b>LinkedIn</b></u></a>
-      </p>
-    </section>
-  </main>
+        <h4>Project L</h4>
+        <h5>2015</h5>
+        <ul class="skills">
+          <li>Design</li>
+          <li>3D</li>
+        </ul>
+        <p>
+          Over the years I have made many games, with the screenshot below
+          representing one of them from around 2015. Probably one of the more
+          technically challenging games I have created, it was an open world
+          sandbox written in Unity, where you could interact, move, rotate and
+          scale the objects in the world to build anything you wanted.
+        </p>
+        <div class="image"><img src="img/sc3.png" width="100%" alt="" /></div>
+        <hr />
 
-  <input type="text" id="textarea" />
-  <footer>
-    <div>COPYRIGHT © 2022 Edward Hinrichsen</div>
-  </footer>
-</body>
+        <h4>Great Balls of Fire</h4>
+        <h5>2013-14</h5>
+        <ul class="skills">
+          <li>Mobile Development</li>
+          <li>iOS</li>
+          <li>Android</li>
+          <li>Design</li>
+          <li>Illustration</li>
+          <li>Branding</li>
+        </ul>
+        <p>
+          Great Balls of Fire was a game I made when I was 13 years old and is
+          one of the creations I am most proud of. It was an endless scroller
+          where you played as the titular Ball of Fire, attempting to stay in
+          the sky by jumping on air ships. It was published on the App Store and
+          Play Store and remained there for a number of years (before I got
+          tired of paying Apple's developer fee) and even netted a few thousand
+          downloads.
+        </p>
+        <div class="image">
+          <img src="img/gbof3.png" width="100%" alt="" /><img
+            src="img/gbof4.png"
+            width="100%"
+            alt=""
+          />
+          <img src="img/gbof5.png" width="100%" alt="" />
+        </div>
+        <hr />
 
+        <h4>The Golden Pack</h4>
+        <h5>2012-13</h5>
+        <ul class="skills">
+          <li>Design</li>
+          <li>Illustration</li>
+        </ul>
+        <p>
+          When I was 12 years old, I played a lot of Minecraft however, I was
+          never very happy with the low resolution look of the game. I decided
+          to remedy this by creating a texture pack, which is a file containing
+          alternative looks or textures for the objects in the game. When I put
+          my work online, after some refinement I received my first 1000
+          downloads. Spotting a business opportunity, I added ads to the
+          download link. My texture pack was downloaded over 50,000 times,
+          earning me over $1000.
+        </p>
+        <div class="image"><img src="img/tgp.png" width="100%" alt="" /></div>
+        <hr />
+
+        <h4>EdSites</h4>
+        <h5>2010</h5>
+        <ul class="skills">
+          <li>Design</li>
+          <li>Web Development</li>
+        </ul>
+        <p>
+          Below is one of my earliest creations daring back to 2010. As a
+          budding 10 year old web designer I needed a website to showcase my
+          work and attract “clients”, so I made one! I called it EdSites and
+          registered the domain name edsites.biz with my father’s credit card
+          and got to work. All the HTML, CSS and even the JavaScript was written
+          completely by hand by me. The website was such a success that it
+          resulted in some clients albeit they were all my family members.
+        </p>
+        <div class="image">
+          <img src="img/edsites.png" width="100%" alt="" />
+        </div>
+        <hr />
+        <p>
+          This represents just a small selection of the projects I have worked
+          on over the years. I have many more pieces of personal, university and
+          design work.
+        </p>
+      </section>
+
+      <section>
+        <h1 id="contact">Contact</h1>
+        <p style="text-align: center">
+          Reach out on
+          <a href="https://www.linkedin.com/in/edwardhinrichsen/"
+            ><u><b>LinkedIn</b></u></a
+          >
+        </p>
+      </section>
+    </main>
+
+    <input type="text" id="textarea" />
+    <footer>
+      <div>COPYRIGHT © 2022 Edward Hinrichsen</div>
+    </footer>
+  </body>
 </html>
