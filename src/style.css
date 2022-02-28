@@ -287,10 +287,12 @@ a:active {
 }
 
 
-  @media only screen and (max-width: 950px) {
+  @media only screen and (max-width: 980px) {
     .image {
-      margin: 8px;
-      width: calc(100vw - 32px);
+      box-sizing: border-box;
+      margin: auto;
+      /* margin: 8px; */
+      width: 95vw;
       
     }
   }
