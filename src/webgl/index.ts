@@ -114,34 +114,34 @@ export default function WebGL() {
       }
     }
     const computerParallax = { x: 0, y: 0 };
-    canvas.addEventListener("pointermove", (event) => {
-      checkIfTouch(event);
-      if (mousedown) {
-        // computerParallax.x = ((event.clientX - mousedown.x) / window.innerWidth - 0.5) * 2;
-        // computerParallax.y = ((event.clientY - mousedown.y) / window.innerHeight - 0.5) * 2;
-        computerParallax.x += (event.clientX - mousedown.x) / (window.innerWidth * 0.5);
-        computerParallax.x = valMap(computerParallax.x, [-1, 1], [-1, 1])
+    // canvas.addEventListener("pointermove", (event) => {
+    //   checkIfTouch(event);
+    //   if (mousedown) {
+    //     // computerParallax.x = ((event.clientX - mousedown.x) / window.innerWidth - 0.5) * 2;
+    //     // computerParallax.y = ((event.clientY - mousedown.y) / window.innerHeight - 0.5) * 2;
+    //     computerParallax.x += (event.clientX - mousedown.x) / (window.innerWidth * 0.5);
+    //     computerParallax.x = valMap(computerParallax.x, [-1, 1], [-1, 1])
 
 
-        computerParallax.y += (event.clientY - mousedown.y) / (window.innerHeight * 0.5);
-        computerParallax.y = valMap(computerParallax.y, [-1, 1], [-1, 1])
+    //     computerParallax.y += (event.clientY - mousedown.y) / (window.innerHeight * 0.5);
+    //     computerParallax.y = valMap(computerParallax.y, [-1, 1], [-1, 1])
 
-        console.log(computerParallax);
+    //     console.log(computerParallax);
 
-        mousedown = { x: event.clientX, y: event.clientY };
+    //     mousedown = { x: event.clientX, y: event.clientY };
 
-      }
-    });
+    //   }
+    // });
 
-    canvas.addEventListener('pointerdown', (event) => {
-      checkIfTouch(event);
-      mousedown = { x: event.clientX, y: event.clientY };
-    });
+    // canvas.addEventListener('pointerdown', (event) => {
+    //   checkIfTouch(event);
+    //   mousedown = { x: event.clientX, y: event.clientY };
+    // });
 
-    document.addEventListener("pointerup", (event) => {
-      checkIfTouch(event);
-      mousedown = null;
-    });
+    // document.addEventListener("pointerup", (event) => {
+    //   checkIfTouch(event);
+    //   mousedown = null;
+    // });
 
     /**
      * Renderer
