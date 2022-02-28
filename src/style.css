@@ -269,6 +269,23 @@ button:active {
   box-shadow: 1px 1px 0px #f6d4b1, 4px 4px 0px rgba(82, 82, 82, 0.40);
 }
 
+a {
+  display: inline-block;
+  color: inherit;
+  text-decoration-style: solid;
+  text-decoration-thickness: 2px;
+  transition: all 0.3s;
+}
+a:hover {
+  transform: scale(1.1);
+  box-shadow: 1px 1px 0px #f6d4b1, 4px 4px 0px rgba(82, 82, 82, 0.25);
+}
+
+a:active {
+  transform: scale(1);
+  box-shadow: 1px 1px 0px #f6d4b1, 3px 3px 0px rgba(82, 82, 82, 0.40);
+}
+
 
   @media only screen and (max-width: 950px) {
     .image {
