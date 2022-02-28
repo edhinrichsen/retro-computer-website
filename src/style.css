@@ -12,8 +12,7 @@
 html,
 body
 {
-    /* overflow-x: hidden; */
-    height: 300vh;
+    overflow-x: hidden;
     background-color: #f6d4b1;
     font-family: "chill", sans-serif;
     font-size: 18px;
