@@ -45,8 +45,7 @@ body
     right: 0;
     outline: none;
     z-index: -1;
-
-    /* display: none; */
+    opacity: 0;
 }
 
 #loading{

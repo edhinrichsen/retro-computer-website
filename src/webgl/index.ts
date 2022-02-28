@@ -32,8 +32,8 @@ export default function WebGL() {
     const stats = new Stats();
     const hash = window.location.hash;
     if (hash) {
-      switch (hash.toLowerCase()) {
-        case "#fps":
+      if (hash.toLowerCase() === '#debug') {
+       
           stats.showPanel(0);
           document.body.appendChild(stats.dom);
 
@@ -41,15 +41,8 @@ export default function WebGL() {
             "textarea"
           ) as HTMLTextAreaElement;
           textarea.style.zIndex = "3";
-          break;
-
-        case "#ms":
-          stats.showPanel(1);
-          document.body.appendChild(stats.dom);
-          break;
-
-        default:
-          break;
+          textarea.style.opacity = "1";
+  
       }
     }
 
