@@ -20,7 +20,9 @@ function loadAssists(callback: (assists: Assists) => any) {
   const assists: any = {};
 
   const loadingDOM = document.querySelector("#loading");
-  const loadingListDOM = document.querySelector("#loading-list");
+  const loadingItemsDOM = document.querySelector("#loading-items");
+  const loadingBarDOM = document.querySelector("#loading-bar-progress");
+  
   const manager = new THREE.LoadingManager();
 
   manager.onStart = function (url, itemsLoaded, itemsTotal) {
@@ -36,20 +38,23 @@ function loadAssists(callback: (assists: Assists) => any) {
   };
 
   manager.onLoad = function () {
+    if (!loadingItemsDOM) return;
+    loadingItemsDOM.textContent = `Nearly There...`;
+    
     console.log("Loading complete!");
     window.setTimeout(() => {
       (loadingDOM as any).style.opacity = "0";
       callback(assists as Assists);
-    }, 500);
+    }, 200);
     window.setTimeout(() => {
       (loadingDOM as any).style.display = "none";
-    }, 1000);
+    }, 500);
   };
 
   manager.onProgress = function (url, itemsLoaded, itemsTotal) {
-    const node = document.createElement("li");
-    node.append(`${itemsLoaded} of ${itemsTotal} File Loaded: ${url}`);
-    loadingListDOM?.append(node);
+    if (!loadingItemsDOM  || !loadingBarDOM) return;
+    (loadingBarDOM as HTMLElement).style.transform = `scaleX(${itemsLoaded/itemsTotal})`
+    loadingItemsDOM.textContent = `${itemsLoaded} of ${itemsTotal} File Loaded: ${url}`
     console.log(
       "Loading file: " +
       url +
@@ -89,7 +94,7 @@ function loadAssists(callback: (assists: Assists) => any) {
   // textureLoader.load("/textures/HandleRubberSmooth001_GLOSS_3K.jpg", (tex) => {
   //   tex.
   //   assists.glossMap = tex;
-    
+
   // })
 
   const cubeTextureLoader = new THREE.CubeTextureLoader(manager);
@@ -130,7 +135,7 @@ function loadAssists(callback: (assists: Assists) => any) {
     assists.shadowPlaneMesh = gltf.scene.children.find(m => m.name === "ShadowPlane")
     // assists.crtMesh.morphTargetInfluences[ 0 ] = 1;
     // console.log(assists.crtMesh.geometry.morphAttributes);
-    
+
 
     // console.log(gltf)
   });
