@@ -33,6 +33,7 @@ nav {
 
 
   .menu-body {
+    background-color: #525252;
     color: #f6d4b1;
     font-size: 2em;
     font-family: "public-pixel", monospace;
@@ -51,6 +52,7 @@ nav {
     padding-left: 50px;
     overflow: hidden;
     box-sizing: border-box;
+    opacity: 0;
   }
 
   .menu-body a {
@@ -63,5 +65,5 @@ transform: none;}
   .active .menu-body {
     left: 0px;
     right: 0px;
-    background-color: #525252;
+    opacity: 1;
   }
