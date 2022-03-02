@@ -4,7 +4,7 @@ const MiniCSSExtractPlugin = require("mini-css-extract-plugin");
 const path = require("path");
 
 module.exports = {
-  entry: path.resolve(__dirname, "../src/script.js"),
+  entry: path.resolve(__dirname, "../src/script.ts"),
   output: {
     hashFunction: "xxhash64",
     filename: "bundle.[contenthash].js",
@@ -36,6 +36,13 @@ module.exports = {
         use: ["babel-loader"],
       },
 
+      // TS
+      {
+        test: /\.ts$/,
+        exclude: /node_modules/,
+        use: ["ts-loader"],
+      },
+
       // CSS
       {
         test: /\.css$/,
@@ -64,9 +71,21 @@ module.exports = {
         test: /\.(glsl|vs|fs|vert|frag)$/,
         type: "asset/source",
         generator: {
-          filename: "assets/images/[hash][ext]",
+          filename: "assets/shaders/[hash][ext]",
+        },
+      },
+
+      // MARKDOWN
+      {
+        test: /\.md$/,
+        type: "asset/source",
+        generator: {
+          filename: "assets/markdown/[hash][ext]",
         },
       },
     ],
+  },
+  resolve: {
+    extensions: ['.ts', '.js'],
   },
 };

@@ -1,0 +1,20 @@
+.collapse-btn[collapsed="true"] + .collapse-body {
+  opacity: 0;
+  font-size: 0;
+  transition: opacity 0.4s, font-size 0.3s 0.4s;
+}
+
+.collapse-btn[collapsed="true"] + .collapse-body p {
+  padding: 0 !important;
+  transition: padding 0.3s 0.3s;
+}
+
+.collapse-btn[collapsed="false"] + .collapse-body {
+  font-size: inherit;
+  opacity: 1;
+  transition: opacity 0.3s 0.3s, font-size 0.3s;
+}
+
+.collapse-btn[collapsed="false"] + .collapse-body p {
+  transition: padding 0.3s;
+}

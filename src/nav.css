@@ -1,0 +1,69 @@
+nav {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    background-color: antiquewhite;
+    width: 0px;
+    z-index: 5;
+  }
+
+  .active {
+    background-color: aquamarine;
+  }
+
+  nav button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+    z-index: 1;
+  }
+
+  .active button {
+    left: 40px;
+    /* opacity: 0; */
+    box-shadow: 1px 1px 0px #525252, 6px 6px 0px rgba(246, 212, 177, 0.7);
+    background-color: #f6d4b1;
+    color: #525252;
+}
+
+.active button:hover {
+    box-shadow: 1px 1px 0px #525252, 8px 8px 6px rgba(246, 212, 177, 0.5);
+}
+
+
+
+  .menu-body {
+    background-color: #525252;
+    color: #f6d4b1;
+    font-size: 2em;
+    font-family: "public-pixel", monospace;
+    text-decoration: none !important;
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    left: -100px;
+    right: 100vw;
+    z-index: 0;
+    transition: all 0.7s;
+    display: inline-flex;
+    gap: 16px;
+    flex-direction: column;
+    padding-top: 70px;
+    padding-left: 50px;
+    overflow: hidden;
+    box-sizing: border-box;
+    opacity: 0;
+  }
+
+  .menu-body a {
+
+    text-decoration: none !important;}
+
+    .menu-body a:hover {
+transform: none;}
+  
+  .active .menu-body {
+    left: 0px;
+    right: 0px;
+    opacity: 1;
+  }
