@@ -2,6 +2,8 @@
 @font-face { font-family: chill; src: url('../static/fonts/chill.otf'); } 
 
 @import url("./collapse.css");
+@import url("./nav.css");
+
 
 *
 {
@@ -56,7 +58,7 @@ body
     left: 0;
     right: 0;
     padding: 10vw;
-    z-index: 2;
+    z-index: 6;
     transition: opacity 0.3s;
     display: flex;
     flex-direction: column;
@@ -183,9 +185,9 @@ transition: transform 0.2s;
   .skills,
   p {
     padding: 16px;
-    margin: auto;
     text-align: justify;
-    width: 680px;
+    /* width: 680px; */
+    width: clamp(0px,95vw,680px);
     margin: auto;
     box-sizing: border-box;
 
@@ -227,10 +229,11 @@ transition: transform 0.2s;
     gap: 8px;
     border: dashed 2px #525252;
     padding: 8px;
-    width: 950px;
     box-sizing: border-box;
+    width: clamp(0px,95vw,950px);
     margin: auto;
     box-shadow: 1px 1px 0px #f6d4b1, 6px 6px 0px rgba(82, 82, 82, 0.25);
+
 
   }
   
@@ -245,17 +248,18 @@ main {
 
   section {
     padding-bottom: 64px;
-    margin: auto;
     margin-bottom: 80px;
-    /* box-shadow: 0 10px 40px -40px black; */
+    position: relative;
+  }
+
+  section::after {
+    content: '';
+    /* display: block; */
     border-bottom: dashed 2px #525252;
-    /* border-style: dashed; */
-    /* width: 90%; */
-    width: fit-content;
-    
-    /* height: 100px; */
-    /* margin-top: -90px; */
-    /* margin-bottom: 70px; */
+    position: absolute;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: clamp(0px,95vw,680px);
   }
 
   section:last-of-type {
@@ -267,7 +271,7 @@ main {
     display: flex;
     gap: 32px;
     flex-direction: column;
-    border-top: dashed 1px #525252;
+    /* border-top: dashed 1px #525252; */
     font-size: 12px;
     margin: 0px 32px 0 32px;
     padding: 32px 0px;
@@ -320,15 +324,15 @@ a:active {
 
   @media only screen and (max-width: 980px) {
     .image {
-      box-sizing: border-box;
+      /* box-sizing: border-box;
       margin: auto;
-      /* margin: 8px; */
-      width: 95vw;
+      margin: 8px;
+      width: 95vw; */
       
     }
   }
   @media only screen and (max-width: 680px) {
-    p, .skills, section {
+    /* p, .skills, section {
       width: auto;
-    }
+    } */
   }

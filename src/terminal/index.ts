@@ -14,14 +14,16 @@ export default function Terminal(screenTextEngine: {
   placeMarkdown: (md: string) => void;
   placeTerminalPrompt: (str: string) => void;
 }) {
+
+  const canvas = document.querySelector("canvas.webgl") as HTMLCanvasElement;
   // const input = Input()
   const textarea = document.getElementById("textarea") as HTMLTextAreaElement;
   textarea.value = "";
   textarea.readOnly = true;
   textarea.blur();
-  textarea.onblur = () => {
-    textarea.focus();
-  };
+  // textarea.onblur = () => {
+  //   textarea.focus();
+  // };
 
   let oldText = "";
   function onInput() {
@@ -31,7 +33,7 @@ export default function Terminal(screenTextEngine: {
   }
   textarea.addEventListener("input", onInput, false);
 
-  window.addEventListener("pointerup", (ev) => {
+  canvas.addEventListener("pointerup", (ev) => {
     if (ev.pointerType === 'mouse'){
       textarea.readOnly = false;
       textarea.focus();
