@@ -48,15 +48,15 @@
 
 
 
-    <button class="menu-btn" collapsed="true">
+    <button class="menu-btn" onclick="toggleMenu()">
       &#9776;
     </button>
 
-    <div class="menu-body">
-      <a href="#home">Home</a>
-      <a href="#aboutMe">About</a>
-      <a href="#projects">Projects</a>
-      <a href="#contact">Contact</a>
+    <div class="menu-body" onclick="closeMenu()">
+      <a href="#home" onclick="closeMenu()">Home</a>
+      <a href="#aboutMe" onclick="closeMenu()">About</a>
+      <a href="#projects" onclick="closeMenu()">Projects</a>
+      <a href="#contact" onclick="closeMenu()">Contact</a>
     </div>
 
     <!-- <div class="menu">
@@ -402,6 +402,20 @@
     <div>Developed + Designed by Edward Hinrichsen</div>
     <div>COPYRIGHT © 2022 Edward Hinrichsen</div>
   </footer>
+  <script>
+    function closeMenu() {
+      document.getElementsByTagName("nav")[0].classList.remove(["active"]);
+    }
+
+    function toggleMenu() {
+      const nav = document.getElementsByTagName("nav")[0];
+      if (nav.classList.contains("active")) {
+        nav.classList.remove(["active"]);
+      } else {
+        nav.classList.add("active");
+      }
+    }
+  </script>
 </body>
 
 </html>
