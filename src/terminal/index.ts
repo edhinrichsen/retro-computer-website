@@ -13,6 +13,7 @@ export default function Terminal(screenTextEngine: {
   userInput: (change: Change, selectionPos: number) => void;
   placeMarkdown: (md: string) => void;
   placeTerminalPrompt: (str: string) => void;
+  scroll: (lines: number) => void;
 }) {
 
   const canvas = document.querySelector("canvas.webgl") as HTMLCanvasElement;
@@ -62,8 +63,10 @@ export default function Terminal(screenTextEngine: {
     if (e.key === "Enter") {
       if (textarea.value.match(/^ *$/) === null) {
         screenTextEngine.placeMarkdown(notFound);
+        screenTextEngine.scroll(2)
       } else {
         screenTextEngine.placeMarkdown(newLine);
+        screenTextEngine.scroll(1)
       }
 
       textarea.value = "";
@@ -71,6 +74,19 @@ export default function Terminal(screenTextEngine: {
       const change = stringEditDistance(oldText, textarea.value);
       oldText = textarea.value;
       if (change) screenTextEngine.userInput(change, textarea.selectionStart);
+    }
+  });
+
+  window.addEventListener("keydown", (e) => {
+    switch (e.key) {
+      case "ArrowUp":
+        e.preventDefault()
+        screenTextEngine.scroll(-1);
+        break;
+      case "ArrowDown":
+        e.preventDefault()
+        screenTextEngine.scroll(1);
+        break;
     }
   });
 

@@ -72,6 +72,9 @@ export default function ScreenTextEngine(
   h3Font.font = assists.chillFont;
   paragraphFont.font = assists.chillFont;
 
+  const textGroup = new THREE.Group()
+  sceneRTT.add(textGroup);
+
   const onFontLoad = () => {
     if (h1Font.font && h2Font.font && h3Font.font) {
       // placeHTML(startText, titleFont);
@@ -85,7 +88,7 @@ export default function ScreenTextEngine(
     new THREE.MeshBasicMaterial({ color: textColor })
   );
   caret.position.z = -0.1;
-  sceneRTT.add(caret);
+  textGroup.add(caret);
 
   let charUnderCaret: THREE.Group | undefined = undefined;
   function updateCharUnderCaret(isBlack: boolean) {
@@ -212,7 +215,7 @@ export default function ScreenTextEngine(
 
     // chars.push({ char: charObj, fixed: fixed });
 
-    sceneRTT.add(charObj);
+    textGroup.add(charObj);
 
     if (props.updateCharNextLoc) {
       charNextLoc.x = strLen + x;
@@ -381,7 +384,7 @@ export default function ScreenTextEngine(
 
   function delChar(charsTODel: THREE.Group[]) {
     for (const c of charsTODel) {
-      sceneRTT.remove(c);
+      textGroup.remove(c);
     }
   }
 
@@ -464,6 +467,11 @@ export default function ScreenTextEngine(
     updateCaret(selectionPos);
   }
 
+  function scroll(lines: number) {
+    textGroup.position.y += lines * h2Font.leading;
+    if (textGroup.position.y < 0) textGroup.position.y = 0;
+  }
+
   function tick(deltaTime: number, elapsedTime: number) {
     if (caretTimeSinceUpdate > 1 && Math.floor(elapsedTime * 2) % 2 == 0) {
       caret.visible = false;
@@ -478,5 +486,5 @@ export default function ScreenTextEngine(
 
   onFontLoad();
 
-  return { tick, userInput, placeMarkdown, placeTerminalPrompt };
+  return { tick, userInput, placeMarkdown, placeTerminalPrompt, scroll };
 }
