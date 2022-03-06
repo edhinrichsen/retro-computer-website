@@ -28,9 +28,9 @@ const h1Font: FontInfo = (function () {
 const h2Font: FontInfo = (function () {
   const size = 0.04;
   const height = size;
-  const width = size * 0.8;
+  const width = size * 1.1;
   const leading = height * 2;
-  const tracking = width * 0.22;
+  const tracking = width * 0;
   return { font: undefined, size, height, width, leading, tracking };
 })();
 
@@ -72,6 +72,9 @@ export default function ScreenTextEngine(
   h3Font.font = assists.chillFont;
   paragraphFont.font = assists.chillFont;
 
+  const textGroup = new THREE.Group();
+  sceneRTT.add(textGroup);
+
   const onFontLoad = () => {
     if (h1Font.font && h2Font.font && h3Font.font) {
       // placeHTML(startText, titleFont);
@@ -81,11 +84,12 @@ export default function ScreenTextEngine(
   };
 
   const caret = new THREE.Mesh(
-    new THREE.PlaneBufferGeometry(h2Font.size, h2Font.size * 1.6),
+    // new THREE.PlaneBufferGeometry(h2Font.size, h2Font.size * 1.6),
+    new THREE.PlaneBufferGeometry(h2Font.width, h2Font.height),
     new THREE.MeshBasicMaterial({ color: textColor })
   );
   caret.position.z = -0.1;
-  sceneRTT.add(caret);
+  textGroup.add(caret);
 
   let charUnderCaret: THREE.Group | undefined = undefined;
   function updateCharUnderCaret(isBlack: boolean) {
@@ -212,7 +216,7 @@ export default function ScreenTextEngine(
 
     // chars.push({ char: charObj, fixed: fixed });
 
-    sceneRTT.add(charObj);
+    textGroup.add(charObj);
 
     if (props.updateCharNextLoc) {
       charNextLoc.x = strLen + x;
@@ -381,7 +385,7 @@ export default function ScreenTextEngine(
 
   function delChar(charsTODel: THREE.Group[]) {
     for (const c of charsTODel) {
-      sceneRTT.remove(c);
+      textGroup.remove(c);
     }
   }
 
@@ -408,6 +412,10 @@ export default function ScreenTextEngine(
             font: h2Font,
             updateCharNextLoc: false,
           });
+          const box = new THREE.Box3().setFromObject(textObj.children[0]);
+          const w = box.max.x - box.min.x;
+          const h = box.max.y - box.min.y;
+          console.log("char dimentions", { width: w, height: h });
 
           inputBuffer.push(textObj);
           updateCharPos();
@@ -464,6 +472,11 @@ export default function ScreenTextEngine(
     updateCaret(selectionPos);
   }
 
+  function scroll(lines: number) {
+    textGroup.position.y += lines * h2Font.leading;
+    if (textGroup.position.y < 0) textGroup.position.y = 0;
+  }
+
   function tick(deltaTime: number, elapsedTime: number) {
     if (caretTimeSinceUpdate > 1 && Math.floor(elapsedTime * 2) % 2 == 0) {
       caret.visible = false;
@@ -478,5 +491,5 @@ export default function ScreenTextEngine(
 
   onFontLoad();
 
-  return { tick, userInput, placeMarkdown, placeTerminalPrompt };
+  return { tick, userInput, placeMarkdown, placeTerminalPrompt, scroll };
 }

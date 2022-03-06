@@ -3,8 +3,8 @@
   src: url("../static/fonts/public-pixel.ttf");
 }
 @font-face {
-  font-family: chill;
-  src: url("../static/fonts/chill.otf");
+  font-family: kongtext;
+  src: url("../static/fonts/kongtext.ttf");
 }
 
 @import url("./collapse.css");
@@ -19,8 +19,8 @@ html,
 body {
   overflow-x: hidden;
   background-color: #f6d4b1;
-  font-family: "chill", sans-serif;
-  font-size: 18px;
+  font-family: "kongtext", sans-serif;
+  font-size: 14px;
 }
 
 .webgl {
@@ -128,7 +128,7 @@ h1 {
   color: #f6d4b1;
   background-color: #525252;
   font-family: "public-pixel", monospace;
-  font-size: 2em;
+  font-size: 2.5em;
   padding: 16px;
   padding-top: 4px;
   padding-bottom: 8px;
@@ -139,7 +139,7 @@ h1 {
 
 h2 {
   display: inline-block;
-  font-size: 1.2em;
+  font-size: 1.5em;
   text-align: center;
   color: #f6d4b1;
   background-color: #525252;
@@ -153,7 +153,7 @@ h2 {
 }
 
 h3 {
-  font-size: 1.2em;
+  font-size: 1.5em;
   text-align: center;
   color: #525252;
   /* background-color: #525252; */
@@ -179,7 +179,8 @@ hr {
 .skills,
 p {
   padding: 16px;
-  text-align: justify;
+  line-height: 1.5em;
+  text-align: left;
   /* width: 680px; */
   width: clamp(0px, 95vw, 680px);
   margin: auto;
@@ -262,7 +263,7 @@ footer {
   gap: 32px;
   flex-direction: column;
   /* border-top: dashed 1px #525252; */
-  font-size: 12px;
+  font-size: 14px;
   margin: 0px 32px 0 32px;
   padding: 32px 0px;
   text-align: center;
@@ -270,8 +271,8 @@ footer {
 }
 
 button {
-  font-family: "chill", sans-serif;
-  font-size: 18px;
+  font-family: "kongtext", sans-serif;
+  font-size: 14px;
   display: inline-block;
   box-shadow: 1px 1px 0px #f6d4b1, 6px 6px 0px rgba(82, 82, 82, 0.25);
   background-color: #525252;

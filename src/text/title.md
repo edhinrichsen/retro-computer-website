@@ -8,5 +8,6 @@
 ##        the University of Melbourne
 ##
 ###     Scroll to get started
+## user:~> curl edwardh.io
 
 

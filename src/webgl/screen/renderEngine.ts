@@ -16,7 +16,7 @@ export default function ScreenRenderEngine(
   renderer: THREE.WebGLRenderer,
   sceneRTT: THREE.Scene
 ) {
-  const resolution = 512 + 64;
+  const resolution = 256;
   // const resolution = 768
   // const resolution = 512
 

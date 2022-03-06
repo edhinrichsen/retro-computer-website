@@ -71,7 +71,7 @@ function loadAssists(callback: (assists: Assists) => any) {
   fontLoader.load("/fonts/public-pixel.json", (font) => {
     assists.publicPixelFont = font;
   });
-  fontLoader.load("/fonts/chill.json", (font) => {
+  fontLoader.load("/fonts/SourceCodePro_Bold.json", (font) => {
     assists.chillFont = font;
   });
 

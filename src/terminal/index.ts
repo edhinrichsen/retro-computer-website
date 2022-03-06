@@ -13,8 +13,8 @@ export default function Terminal(screenTextEngine: {
   userInput: (change: Change, selectionPos: number) => void;
   placeMarkdown: (md: string) => void;
   placeTerminalPrompt: (str: string) => void;
+  scroll: (lines: number) => void;
 }) {
-
   const canvas = document.querySelector("canvas.webgl") as HTMLCanvasElement;
   // const input = Input()
   const textarea = document.getElementById("textarea") as HTMLTextAreaElement;
@@ -34,13 +34,13 @@ export default function Terminal(screenTextEngine: {
   textarea.addEventListener("input", onInput, false);
 
   canvas.addEventListener("pointerup", (ev) => {
-    if (ev.pointerType === 'mouse'){
+    if (ev.pointerType === "mouse") {
       textarea.readOnly = false;
       textarea.focus();
       textarea.setSelectionRange(lastSelection, lastSelection);
     } else {
       textarea.readOnly = true;
-    textarea.blur();
+      textarea.blur();
     }
   });
   window.addEventListener("keypress", (e) => {
@@ -50,27 +50,47 @@ export default function Terminal(screenTextEngine: {
     ) {
       textarea.readOnly = false;
       textarea.focus();
-      
+
       if (e.key.length === 1) {
-        textarea.value = textarea.value.slice(0,lastSelection) + e.key + textarea.value.slice(lastSelection);
+        textarea.value =
+          textarea.value.slice(0, lastSelection) +
+          e.key +
+          textarea.value.slice(lastSelection);
         lastSelection += 1;
         onInput();
       }
       textarea.setSelectionRange(lastSelection, lastSelection);
     }
     // textarea
-    if (e.key === "Enter") {
-      if (textarea.value.match(/^ *$/) === null) {
-        screenTextEngine.placeMarkdown(notFound);
-      } else {
-        screenTextEngine.placeMarkdown(newLine);
-      }
+    console.log(e.key);
+    switch (e.key) {
+      case "Enter":
+        if (textarea.value.match(/^ *$/) === null) {
+          screenTextEngine.placeMarkdown(notFound);
+          screenTextEngine.scroll(2);
+        } else {
+          screenTextEngine.placeMarkdown(newLine);
+          screenTextEngine.scroll(1);
+        }
+        textarea.value = "";
+        screenTextEngine.placeTerminalPrompt("root:~>");
+        const change = stringEditDistance(oldText, textarea.value);
+        oldText = textarea.value;
+        if (change) screenTextEngine.userInput(change, textarea.selectionStart);
+        break;
+    }
+  });
 
-      textarea.value = "";
-      screenTextEngine.placeTerminalPrompt("root:~>");
-      const change = stringEditDistance(oldText, textarea.value);
-      oldText = textarea.value;
-      if (change) screenTextEngine.userInput(change, textarea.selectionStart);
+  window.addEventListener("keydown", (e) => {
+    switch (e.key) {
+      case "ArrowUp":
+        e.preventDefault()
+        screenTextEngine.scroll(-1);
+        break;
+      case "ArrowDown":
+        e.preventDefault()
+        screenTextEngine.scroll(1);
+        break;
     }
   });
 
