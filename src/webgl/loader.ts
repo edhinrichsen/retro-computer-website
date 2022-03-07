@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { Font, FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
+import { mergeBufferGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 
 type Assists = {
   screenMesh: THREE.Mesh;
@@ -22,25 +23,25 @@ function loadAssists(callback: (assists: Assists) => any) {
   const loadingDOM = document.querySelector("#loading");
   const loadingItemsDOM = document.querySelector("#loading-items");
   const loadingBarDOM = document.querySelector("#loading-bar-progress");
-  
+
   const manager = new THREE.LoadingManager();
 
   manager.onStart = function (url, itemsLoaded, itemsTotal) {
     console.log(
       "Started loading file: " +
-      url +
-      ".\nLoaded " +
-      itemsLoaded +
-      " of " +
-      itemsTotal +
-      " files."
+        url +
+        ".\nLoaded " +
+        itemsLoaded +
+        " of " +
+        itemsTotal +
+        " files."
     );
   };
 
   manager.onLoad = function () {
     if (!loadingItemsDOM) return;
     loadingItemsDOM.textContent = `Nearly There...`;
-    
+
     console.log("Loading complete!");
     window.setTimeout(() => {
       (loadingDOM as any).style.opacity = "0";
@@ -52,17 +53,19 @@ function loadAssists(callback: (assists: Assists) => any) {
   };
 
   manager.onProgress = function (url, itemsLoaded, itemsTotal) {
-    if (!loadingItemsDOM  || !loadingBarDOM) return;
-    (loadingBarDOM as HTMLElement).style.transform = `scaleX(${itemsLoaded/itemsTotal})`
-    loadingItemsDOM.textContent = `${itemsLoaded} of ${itemsTotal} File Loaded: ${url}`
+    if (!loadingItemsDOM || !loadingBarDOM) return;
+    (loadingBarDOM as HTMLElement).style.transform = `scaleX(${
+      itemsLoaded / itemsTotal
+    })`;
+    loadingItemsDOM.textContent = `${itemsLoaded} of ${itemsTotal} File Loaded: ${url}`;
     console.log(
       "Loading file: " +
-      url +
-      ".\nLoaded " +
-      itemsLoaded +
-      " of " +
-      itemsTotal +
-      " files."
+        url +
+        ".\nLoaded " +
+        itemsLoaded +
+        " of " +
+        itemsTotal +
+        " files."
     );
   };
 
@@ -81,15 +84,15 @@ function loadAssists(callback: (assists: Assists) => any) {
   const textureLoader = new THREE.TextureLoader(manager);
   textureLoader.load("/textures/bake.jpg", (tex) => {
     tex.flipY = false;
-    tex.encoding = THREE.sRGBEncoding
+    tex.encoding = THREE.sRGBEncoding;
     assists.bakeTexture = tex;
-  })
+  });
 
   textureLoader.load("/textures/bake_floor.jpg", (tex) => {
     tex.flipY = false;
-    tex.encoding = THREE.sRGBEncoding
+    tex.encoding = THREE.sRGBEncoding;
     assists.bakeFloorTexture = tex;
-  })
+  });
 
   // textureLoader.load("/textures/HandleRubberSmooth001_GLOSS_3K.jpg", (tex) => {
   //   tex.
@@ -127,17 +130,28 @@ function loadAssists(callback: (assists: Assists) => any) {
   gltfLoader.load("/models/Commodore710_33.glb", (gltf) => {
     // gltfLoader.load("/models/screen2.glb", (gltf) => {
     // assists.screenMesh = gltf.scene.children[0] as any;
-    const computer = new THREE.Group()
-    assists.screenMesh = gltf.scene.children.find(m => m.name === "Screen")
-    assists.computerMesh = gltf.scene.children.find(m => m.name === "Computer")
-    assists.crtMesh = gltf.scene.children.find(m => m.name === "CRT")
-    assists.keyboardMesh = gltf.scene.children.find(m => m.name === "Keyboard")
-    assists.shadowPlaneMesh = gltf.scene.children.find(m => m.name === "ShadowPlane")
+    const computer = new THREE.Group();
+    assists.screenMesh = gltf.scene.children.find((m) => m.name === "Screen");
+    assists.computerMesh = gltf.scene.children.find(
+      (m) => m.name === "Computer"
+    );
+    assists.crtMesh = gltf.scene.children.find((m) => m.name === "CRT");
+    assists.keyboardMesh = gltf.scene.children.find(
+      (m) => m.name === "Keyboard"
+    );
+    assists.shadowPlaneMesh = gltf.scene.children.find(
+      (m) => m.name === "ShadowPlane"
+    );
     // assists.crtMesh.morphTargetInfluences[ 0 ] = 1;
     // console.log(assists.crtMesh.geometry.morphAttributes);
 
 
-    // console.log(gltf)
+    // assists.computerMesh.geometry.translate(0.5,0.5,0.5)
+    // assists.keyboardMesh.geometry = mergeBufferGeometries([
+    //   assists.computerMesh.geometry,
+    //   assists.keyboardMesh.geometry,
+    // ]);
+ 
   });
 }
 

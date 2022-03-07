@@ -3,6 +3,7 @@ import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import * as THREE from "three";
 import { Assists } from "../loader";
 import { Change } from "../../terminal";
+import { mergeBufferGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 
 const textColor = "#f99021";
 const screenWidth = 1.396;
@@ -72,8 +73,37 @@ export default function ScreenTextEngine(
   h3Font.font = assists.chillFont;
   paragraphFont.font = assists.chillFont;
 
-  const textGroup = new THREE.Group()
-  sceneRTT.add(textGroup);
+  const rootGroup = new THREE.Group();
+  sceneRTT.add(rootGroup);
+  const textColorMesh = new THREE.Mesh(
+    new TextGeometry("", {
+      font: h1Font.font as any,
+      size: h1Font.size,
+      height: 0.0001,
+      curveSegments: 12,
+      bevelEnabled: false,
+    }),
+    new THREE.MeshBasicMaterial({ color: textColor })
+  );
+  rootGroup.add(textColorMesh);
+
+  const textBlackMesh = new THREE.Mesh(
+    new TextGeometry("", {
+      font: h1Font.font as any,
+      size: h1Font.size,
+      height: 0.0001,
+      curveSegments: 12,
+      bevelEnabled: false,
+    }),
+    new THREE.MeshBasicMaterial({ color: 0x000000 })
+  );
+  rootGroup.add(textBlackMesh);
+
+  const bgMesh = new THREE.Mesh(
+    new THREE.PlaneBufferGeometry(0,0),
+    new THREE.MeshBasicMaterial({ color: textColor })
+  );
+  rootGroup.add(bgMesh);
 
   const onFontLoad = () => {
     if (h1Font.font && h2Font.font && h3Font.font) {
@@ -88,7 +118,7 @@ export default function ScreenTextEngine(
     new THREE.MeshBasicMaterial({ color: textColor })
   );
   caret.position.z = -0.1;
-  textGroup.add(caret);
+  rootGroup.add(caret);
 
   let charUnderCaret: THREE.Group | undefined = undefined;
   function updateCharUnderCaret(isBlack: boolean) {
@@ -176,8 +206,8 @@ export default function ScreenTextEngine(
 
     const charObj = new THREE.Group();
     // m.scale.y = height;hh
-    charObj.position.x = x;
-    charObj.position.y = -y;
+    // charObj.position.x = x;
+    // charObj.position.y = -y;
 
     const textGeometry = new TextGeometry(props.str, {
       font: props.font.font as any,
@@ -186,36 +216,54 @@ export default function ScreenTextEngine(
       curveSegments: 12,
       bevelEnabled: false,
     });
-    const textMaterial = new THREE.MeshBasicMaterial({ color: textColor });
-    const text = new THREE.Mesh(textGeometry, textMaterial);
-    text.position.set(0, -props.font.height, -0.001);
-    charObj.add(text);
+    textGeometry.translate(x, -props.font.height - y, -0.001);
+
+    function mergeGeometries(
+      baceMesh: THREE.Mesh,
+      geometries: THREE.BufferGeometry[]
+    ) {
+      const baceGeometry = baceMesh.geometry;
+      geometries.push(baceGeometry)
+      baceMesh.geometry = mergeBufferGeometries(geometries);
+      baceGeometry.dispose()
+    }
+
+   
+    // const textMaterial = new THREE.MeshBasicMaterial({ color: textColor });
 
     if (props.highlight) {
-      const background = new THREE.Mesh(
-        new THREE.PlaneGeometry(
+      const background = 
+        new THREE.PlaneBufferGeometry(
           strLen + props.font.tracking * 2,
           props.font.height + props.font.leading / 2,
           1,
           1
-        ),
-        new THREE.MeshBasicMaterial({ color: textColor })
-      );
+        );
 
-      textMaterial.color.set("black");
-      // background.position.x = 0.5;
-      background.position.set(
-        strLen / 2 - props.font.tracking / 2,
-        -props.font.height / 2,
-        -0.01
-      );
-      // background.scale.x = 0.05;
-      charObj.add(background);
+        background.translate(
+            (strLen / 2 - props.font.tracking / 2) + x,
+            (-props.font.height / 2) - y,
+            -0.01
+          );
+
+      mergeGeometries(textBlackMesh, [textGeometry])
+      mergeGeometries(bgMesh, [background])
+
+      // textMaterial.color.set("black");
+      // // background.position.x = 0.5;
+      // background.position.set(
+      //   strLen / 2 - props.font.tracking / 2,
+      //   -props.font.height / 2,
+      //   -0.01
+      // );
+      // charObj.add(background);
+    } else {
+      mergeGeometries(textColorMesh, [textGeometry])
     }
 
     // chars.push({ char: charObj, fixed: fixed });
 
-    textGroup.add(charObj);
+    rootGroup.add(charObj);
 
     if (props.updateCharNextLoc) {
       charNextLoc.x = strLen + x;
@@ -384,7 +432,7 @@ export default function ScreenTextEngine(
 
   function delChar(charsTODel: THREE.Group[]) {
     for (const c of charsTODel) {
-      textGroup.remove(c);
+      rootGroup.remove(c);
     }
   }
 
@@ -468,8 +516,8 @@ export default function ScreenTextEngine(
   }
 
   function scroll(lines: number) {
-    textGroup.position.y += lines * h2Font.leading;
-    if (textGroup.position.y < 0) textGroup.position.y = 0;
+    rootGroup.position.y += lines * h2Font.leading;
+    if (rootGroup.position.y < 0) rootGroup.position.y = 0;
   }
 
   function tick(deltaTime: number, elapsedTime: number) {
