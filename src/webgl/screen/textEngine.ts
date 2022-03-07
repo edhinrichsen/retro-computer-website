@@ -99,11 +99,11 @@ export default function ScreenTextEngine(
   );
   rootGroup.add(textBlackMesh);
 
-  const bgMesh = new THREE.Mesh(
-    new THREE.PlaneBufferGeometry(0,0),
+  const textBgMesh = new THREE.Mesh(
+    new THREE.PlaneBufferGeometry(0, 0),
     new THREE.MeshBasicMaterial({ color: textColor })
   );
-  rootGroup.add(bgMesh);
+  rootGroup.add(textBgMesh);
 
   const onFontLoad = () => {
     if (h1Font.font && h2Font.font && h3Font.font) {
@@ -178,14 +178,18 @@ export default function ScreenTextEngine(
     y: 0,
   };
 
-  function placeStr(props: {
+  function generateGeometry(props: {
     str: string;
     font: FontInfo;
     highlight?: boolean;
     wrap?: boolean;
     isWord?: boolean;
     updateCharNextLoc?: boolean;
-  }) {
+  }): {
+    colorText: null | TextGeometry;
+    blackText: null | TextGeometry;
+    bg: null | THREE.PlaneBufferGeometry;
+  } {
     props.wrap = props.wrap !== undefined ? props.wrap : false;
     props.isWord = props.isWord !== undefined ? props.isWord : false;
     props.updateCharNextLoc =
@@ -204,10 +208,15 @@ export default function ScreenTextEngine(
       x = 0;
     }
 
-    const charObj = new THREE.Group();
-    // m.scale.y = height;hh
-    // charObj.position.x = x;
-    // charObj.position.y = -y;
+    const returnObj: {
+      colorText: null | TextGeometry;
+      blackText: null | TextGeometry;
+      bg: null | THREE.PlaneBufferGeometry;
+    } = {
+      colorText: null,
+      blackText: null,
+      bg: null,
+    };
 
     const textGeometry = new TextGeometry(props.str, {
       font: props.font.font as any,
@@ -218,83 +227,50 @@ export default function ScreenTextEngine(
     });
     textGeometry.translate(x, -props.font.height - y, -0.001);
 
-    function mergeGeometries(
-      baceMesh: THREE.Mesh,
-      geometries: THREE.BufferGeometry[]
-    ) {
-      const baceGeometry = baceMesh.geometry;
-      geometries.push(baceGeometry)
-      baceMesh.geometry = mergeBufferGeometries(geometries);
-      baceGeometry.dispose()
-    }
-
-   
-    // const textMaterial = new THREE.MeshBasicMaterial({ color: textColor });
-
     if (props.highlight) {
-      const background = 
-        new THREE.PlaneBufferGeometry(
-          strLen + props.font.tracking * 2,
-          props.font.height + props.font.leading / 2,
-          1,
-          1
-        );
+      const background = new THREE.PlaneBufferGeometry(
+        strLen + props.font.tracking * 2,
+        props.font.height + props.font.leading / 2,
+        1,
+        1
+      );
 
-        background.translate(
-            (strLen / 2 - props.font.tracking / 2) + x,
-            (-props.font.height / 2) - y,
-            -0.01
-          );
+      background.translate(
+        strLen / 2 - props.font.tracking / 2 + x,
+        -props.font.height / 2 - y,
+        -0.01
+      );
 
-      mergeGeometries(textBlackMesh, [textGeometry])
-      mergeGeometries(bgMesh, [background])
-
-      // textMaterial.color.set("black");
-      // // background.position.x = 0.5;
-      // background.position.set(
-      //   strLen / 2 - props.font.tracking / 2,
-      //   -props.font.height / 2,
-      //   -0.01
-      // );
-      // charObj.add(background);
+      returnObj.blackText = textGeometry;
+      returnObj.bg = background;
     } else {
-      mergeGeometries(textColorMesh, [textGeometry])
+      returnObj.colorText = textGeometry;
     }
-
-    // chars.push({ char: charObj, fixed: fixed });
-
-    rootGroup.add(charObj);
 
     if (props.updateCharNextLoc) {
       charNextLoc.x = strLen + x;
       charNextLoc.y = y;
     }
 
-    return charObj;
+    return returnObj;
+    // return textGeometry;
 
     // return [width + tracking + x, y, charObj];
+  }
+
+  function mergeGeometriesWithMesh(
+    baceMesh: THREE.Mesh,
+    geometries: THREE.BufferGeometry[]
+  ) {
+    const baceGeometry = baceMesh.geometry;
+    geometries.push(baceGeometry);
+    baceMesh.geometry = mergeBufferGeometries(geometries);
+    baceGeometry.dispose();
   }
 
   function placeLinebreak(font: FontInfo) {
     charNextLoc.x = 0;
     charNextLoc.y += font.leading;
-  }
-
-  function placeWords(
-    text: string,
-    font: FontInfo,
-    highlight: boolean = false
-  ) {
-    const words = text.split(" ");
-    for (let word of words) {
-      placeStr({
-        str: word + " ",
-        font: font,
-        highlight: highlight,
-        wrap: true,
-        isWord: true,
-      });
-    }
   }
 
   type MDtoken = {
@@ -371,20 +347,46 @@ export default function ScreenTextEngine(
     }
     console.log(tokens);
 
+    const textColorGeometry: TextGeometry[] = [];
+    const textBlackGeometry: TextGeometry[] = [];
+    const textBgGeometry: THREE.PlaneBufferGeometry[] = [];
+
     for (let i = 0; i < tokens.length; i++) {
       const t = tokens[i];
+      const geometry = []
       switch (t.type) {
         case "h1":
-          placeStr({ str: t.value, font: h1Font, highlight: t.emphasis });
+          geometry.push(generateGeometry({
+            str: t.value,
+            font: h1Font,
+            highlight: t.emphasis,
+          }));
           break;
         case "h2":
-          placeStr({ str: t.value, font: h2Font, highlight: t.emphasis });
+          geometry.push(generateGeometry({
+            str: t.value,
+            font: h2Font,
+            highlight: t.emphasis,
+          }));
           break;
         case "h3":
-          placeStr({ str: t.value, font: h3Font, highlight: t.emphasis });
+          geometry.push(generateGeometry({
+            str: t.value,
+            font: h3Font,
+            highlight: t.emphasis,
+          }));
           break;
         case "p":
-          placeWords(t.value, paragraphFont);
+          const words = t.value.split(" ");
+          for (let word of words) {
+            geometry.push(generateGeometry({
+              str: word + " ",
+              font: paragraphFont,
+              highlight: t.emphasis,
+              wrap: true,
+              isWord: true,
+            }));
+          }
           break;
         case "br":
           let font = breakFont;
@@ -410,7 +412,16 @@ export default function ScreenTextEngine(
           placeLinebreak(font);
           break;
       }
+      for (const g of geometry){
+        if (g.colorText) textColorGeometry.push(g.colorText)
+        if (g.blackText) textBlackGeometry.push(g.blackText)
+        if (g.bg) textBgGeometry.push(g.bg)
+      }
     }
+
+    mergeGeometriesWithMesh(textColorMesh, textColorGeometry)
+    mergeGeometriesWithMesh(textBlackMesh, textBlackGeometry)
+    mergeGeometriesWithMesh(textBgMesh, textBgGeometry)
   }
 
   let terminalPromptOffset = 0;
@@ -419,9 +430,9 @@ export default function ScreenTextEngine(
     //   charNextLoc.y = inputBuffer[inputBuffer.length - 1].position.y;
     inputBuffer = [];
     for (const char of str) {
-      inputBuffer.push(
-        placeStr({ str: char, font: h2Font, updateCharNextLoc: false })
-      );
+      // inputBuffer.push(
+      //   generateGeometry({ str: char, font: h2Font, updateCharNextLoc: false })
+      // );
     }
     terminalPromptOffset = 0;
     updateCharPos();
@@ -454,13 +465,13 @@ export default function ScreenTextEngine(
       if (change.loc === "end") {
         caret.visible = true;
         for (const char of change.str) {
-          const textObj = placeStr({
+          const textObj = generateGeometry({
             str: char,
             font: h2Font,
             updateCharNextLoc: false,
           });
 
-          inputBuffer.push(textObj);
+          // inputBuffer.push(textObj);
           updateCharPos();
         }
       } else if (typeof change.loc === "number") {
@@ -468,15 +479,15 @@ export default function ScreenTextEngine(
         // charNextLoc.y = inputBuffer[change.loc].position.y;
 
         const newChars: THREE.Group[] = [];
-        for (const char of change.str) {
-          newChars.push(
-            placeStr({
-              str: char,
-              font: h2Font,
-              updateCharNextLoc: false,
-            })
-          );
-        }
+        // for (const char of change.str) {
+        //   newChars.push(
+        //     generateGeometry({
+        //       str: char,
+        //       font: h2Font,
+        //       updateCharNextLoc: false,
+        //     })
+        //   );
+        // }
         inputBuffer = [
           ...inputBuffer.slice(0, change.loc),
           ...newChars,
