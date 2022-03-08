@@ -83,7 +83,7 @@ export default function ScreenTextEngine(
       curveSegments: 12,
       bevelEnabled: false,
     }),
-    new THREE.MeshBasicMaterial({ color: textColor })
+    new THREE.MeshBasicMaterial({ color: "#567567" })
   );
   rootGroup.add(textColorMesh);
 
@@ -225,7 +225,10 @@ export default function ScreenTextEngine(
       curveSegments: 12,
       bevelEnabled: false,
     });
-    textGeometry.translate(x, -props.font.height - y, -0.001);
+
+    if (props.updateCharNextLoc)
+      textGeometry.translate(x, -props.font.height - y, -0.001);
+    else textGeometry.translate(0, -props.font.height, -0.001);
 
     if (props.highlight) {
       const background = new THREE.PlaneBufferGeometry(
@@ -353,39 +356,47 @@ export default function ScreenTextEngine(
 
     for (let i = 0; i < tokens.length; i++) {
       const t = tokens[i];
-      const geometry = []
+      const geometry = [];
       switch (t.type) {
         case "h1":
-          geometry.push(generateGeometry({
-            str: t.value,
-            font: h1Font,
-            highlight: t.emphasis,
-          }));
+          geometry.push(
+            generateGeometry({
+              str: t.value,
+              font: h1Font,
+              highlight: t.emphasis,
+            })
+          );
           break;
         case "h2":
-          geometry.push(generateGeometry({
-            str: t.value,
-            font: h2Font,
-            highlight: t.emphasis,
-          }));
+          geometry.push(
+            generateGeometry({
+              str: t.value,
+              font: h2Font,
+              highlight: t.emphasis,
+            })
+          );
           break;
         case "h3":
-          geometry.push(generateGeometry({
-            str: t.value,
-            font: h3Font,
-            highlight: t.emphasis,
-          }));
+          geometry.push(
+            generateGeometry({
+              str: t.value,
+              font: h3Font,
+              highlight: t.emphasis,
+            })
+          );
           break;
         case "p":
           const words = t.value.split(" ");
           for (let word of words) {
-            geometry.push(generateGeometry({
-              str: word + " ",
-              font: paragraphFont,
-              highlight: t.emphasis,
-              wrap: true,
-              isWord: true,
-            }));
+            geometry.push(
+              generateGeometry({
+                str: word + " ",
+                font: paragraphFont,
+                highlight: t.emphasis,
+                wrap: true,
+                isWord: true,
+              })
+            );
           }
           break;
         case "br":
@@ -412,31 +423,37 @@ export default function ScreenTextEngine(
           placeLinebreak(font);
           break;
       }
-      for (const g of geometry){
-        if (g.colorText) textColorGeometry.push(g.colorText)
-        if (g.blackText) textBlackGeometry.push(g.blackText)
-        if (g.bg) textBgGeometry.push(g.bg)
+      for (const g of geometry) {
+        if (g.colorText) textColorGeometry.push(g.colorText);
+        if (g.blackText) textBlackGeometry.push(g.blackText);
+        if (g.bg) textBgGeometry.push(g.bg);
       }
     }
 
-    mergeGeometriesWithMesh(textColorMesh, textColorGeometry)
-    mergeGeometriesWithMesh(textBlackMesh, textBlackGeometry)
-    mergeGeometriesWithMesh(textBgMesh, textBgGeometry)
+    mergeGeometriesWithMesh(textColorMesh, textColorGeometry);
+    mergeGeometriesWithMesh(textBlackMesh, textBlackGeometry);
+    mergeGeometriesWithMesh(textBgMesh, textBgGeometry);
   }
 
   let terminalPromptOffset = 0;
   function placeTerminalPrompt(str: string) {
     // if (inputBuffer.length > 0)
     //   charNextLoc.y = inputBuffer[inputBuffer.length - 1].position.y;
-    inputBuffer = [];
+    const inputBuffer = [];
     for (const char of str) {
-      // inputBuffer.push(
-      //   generateGeometry({ str: char, font: h2Font, updateCharNextLoc: false })
-      // );
+      const colorText = generateGeometry({
+        str: char,
+        font: h2Font,
+        updateCharNextLoc: false,
+      }).colorText;
+      if (colorText) inputBuffer.push(colorText);
     }
     terminalPromptOffset = 0;
-    updateCharPos();
-    inputBuffer = [];
+    updateCharPos(inputBuffer, (obj, x, y) => {
+      (obj as TextGeometry).translate(x, y, 0);
+    });
+    mergeGeometriesWithMesh(textColorMesh, inputBuffer);
+    // inputBuffer = [];
     terminalPromptOffset = str.length + 1;
     updateCaret(0);
   }
@@ -447,16 +464,20 @@ export default function ScreenTextEngine(
     }
   }
 
-  function updateCharPos() {
+  function updateCharPos(
+    inputBuffer: THREE.Group[] | TextGeometry[],
+    helper: (obj: THREE.Group | TextGeometry, x: number, y: number) => void
+  ) {
     const charWidth = h2Font.width + h2Font.tracking;
     const charsPerLine = Math.floor(screenWidth / charWidth);
     for (let i = 0; i < inputBuffer.length; i++) {
-      inputBuffer[i].position.x =
+      const x =
         charNextLoc.x + charWidth * ((i + terminalPromptOffset) % charsPerLine);
-      inputBuffer[i].position.y = -(
+      const y = -(
         charNextLoc.y +
         h2Font.leading * Math.floor((i + terminalPromptOffset) / charsPerLine)
       );
+      helper(inputBuffer[i], x, y);
     }
   }
 
@@ -472,7 +493,7 @@ export default function ScreenTextEngine(
           });
 
           // inputBuffer.push(textObj);
-          updateCharPos();
+          // ----updateCharPos();
         }
       } else if (typeof change.loc === "number") {
         // charNextLoc.x = inputBuffer[change.loc].position.x;
@@ -493,13 +514,13 @@ export default function ScreenTextEngine(
           ...newChars,
           ...inputBuffer.slice(change.loc, inputBuffer.length),
         ];
-        updateCharPos();
+        // -----updateCharPos();
       }
     } else if (change.type === "del") {
       if (change.loc === "end") {
         const charsTODel = inputBuffer.slice(-change.str.length);
         inputBuffer = inputBuffer.slice(0, -change.str.length);
-        updateCharPos();
+        // -----updateCharPos();
 
         delChar(charsTODel);
       } else if (typeof change.loc === "number") {
@@ -520,7 +541,7 @@ export default function ScreenTextEngine(
             inputBuffer.length
           ),
         ];
-        updateCharPos();
+        // -----updateCharPos();
       }
     }
     updateCaret(selectionPos);
