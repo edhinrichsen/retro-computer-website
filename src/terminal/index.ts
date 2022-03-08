@@ -14,6 +14,7 @@ export default function Terminal(screenTextEngine: {
   placeMarkdown: (md: string) => void;
   placeTerminalPrompt: (str: string) => void;
   scroll: (lines: number) => void;
+  freezeInput: () => void;
 }) {
 
   const canvas = document.querySelector("canvas.webgl") as HTMLCanvasElement;
@@ -61,6 +62,7 @@ export default function Terminal(screenTextEngine: {
     }
     // textarea
     if (e.key === "Enter") {
+      screenTextEngine.freezeInput()
       if (textarea.value.match(/^ *$/) === null) {
         screenTextEngine.placeMarkdown(notFound);
         screenTextEngine.scroll(2)
