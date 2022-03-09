@@ -21,7 +21,7 @@ function valMap(x: number, from: [number, number], to: [number, number]) {
   return y;
 }
 
-let scroll = 0;
+let scroll = window.scrollY / document.documentElement.clientHeight;
 window.addEventListener("scroll", (ev) => {
   scroll = window.scrollY / document.documentElement.clientHeight;
   // console.log(window.scrollY / document.documentElement.clientHeight);
@@ -174,10 +174,10 @@ export default function WebGL() {
       updateCanvasSize(sizes.width, sizes.height);
       sizes.portraitOffset = valMap(
         sizes.height / sizes.width,
-        [0.75, 1.75],
-        [0, 2]
+        [0.8, 1.8],
+        [0, 2.5]
       );
-      console.log(sizes.portraitOffset);
+      console.log(sizes.height / sizes.width);
     });
 
     const screen = Screen(assists, renderer);
@@ -264,7 +264,7 @@ export default function WebGL() {
 
       canvas.style.opacity = `${valMap(scroll, [1.25, 1.75], [1, 0])}`;
 
-      if (sizes.portraitOffset > 0)
+      if (sizes.portraitOffset > 0.5)
         computerGroup.rotation.z = valMap(scroll, [0, 1], [-Math.PI / 2, 0]);
       else computerGroup.rotation.z = 0;
 

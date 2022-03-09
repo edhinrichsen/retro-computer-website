@@ -29,6 +29,7 @@ export default function Screen(
     "user:~$"
   );
 
+  
   const screenRenderEngine = ScreenRenderEngine(assists, renderer, sceneRTT);
 
   // window.addEventListener("keydown", (ev) => {
