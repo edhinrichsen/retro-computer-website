@@ -13,7 +13,7 @@ export default function Terminal(screenTextEngine: {
   userInput: (change: Change, selectionPos: number) => void;
   placeMarkdown: (md: string) => void;
   placeTerminalPrompt: (str: string) => void;
-  scroll: (lines: number) => void;
+  scroll: (lines: number, updateMaxScroll?: boolean) => void;
   freezeInput: () => void;
 }) {
 
@@ -72,7 +72,7 @@ export default function Terminal(screenTextEngine: {
       }
 
       textarea.value = "";
-      screenTextEngine.placeTerminalPrompt("root:~>");
+      screenTextEngine.placeTerminalPrompt("user:~$");
       const change = stringEditDistance(oldText, textarea.value);
       oldText = textarea.value;
       if (change) screenTextEngine.userInput(change, textarea.selectionStart);
@@ -83,11 +83,11 @@ export default function Terminal(screenTextEngine: {
     switch (e.key) {
       case "ArrowUp":
         e.preventDefault()
-        screenTextEngine.scroll(-1);
+        screenTextEngine.scroll(-1, false);
         break;
       case "ArrowDown":
         e.preventDefault()
-        screenTextEngine.scroll(1);
+        screenTextEngine.scroll(1, false);
         break;
     }
   });

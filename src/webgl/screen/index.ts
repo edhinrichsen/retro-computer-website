@@ -26,7 +26,7 @@ export default function Screen(
     assists,
     sceneRTT,
     titleText,
-    "user:~>"
+    "user:~$"
   );
 
   const screenRenderEngine = ScreenRenderEngine(assists, renderer, sceneRTT);

@@ -467,6 +467,7 @@ export default function ScreenTextEngine(
     }
   }
 
+  let oldNumberOfInputLines = 0;
   function updateCharPos(
     inputBuffer: THREE.Mesh[] | TextGeometry[],
     helper: (obj: THREE.Mesh | TextGeometry, x: number, y: number) => void
@@ -482,6 +483,14 @@ export default function ScreenTextEngine(
       );
       helper(inputBuffer[i], x, y);
     }
+
+    // Scroll if more then one line
+    const newNumberOfInputLines = Math.floor(
+      (inputBuffer.length + terminalPromptOffset) / charsPerLine
+    );
+    if (newNumberOfInputLines > oldNumberOfInputLines)
+      scroll(newNumberOfInputLines - oldNumberOfInputLines);
+    oldNumberOfInputLines = newNumberOfInputLines;
   }
 
   function userInput(change: Change, selectionPos: number) {
@@ -588,11 +597,26 @@ export default function ScreenTextEngine(
       (c.material as THREE.Material).dispose();
     }
     mergeGeometriesWithMesh(textColorMesh, textGeometry);
+
+    const charWidth = h2Font.width + h2Font.tracking;
+    const charsPerLine = Math.floor(screenWidth / charWidth);
+    const newNumberOfInputLines = Math.floor(
+      (inputBuffer.length + terminalPromptOffset) / charsPerLine
+    );
+    charNextLoc.y +=  h2Font.leading * newNumberOfInputLines
+    // inputBuffer = [];
   }
 
-  function scroll(lines: number) {
+  // const maxScrollOffset = 0.88;
+  let maxScroll = rootGroup.position.y;
+  function scroll(lines: number, updateMaxScroll = true) {
     rootGroup.position.y += lines * h2Font.leading;
+    if (updateMaxScroll && rootGroup.position.y > maxScroll)
+      maxScroll = rootGroup.position.y;
+
     if (rootGroup.position.y < 0) rootGroup.position.y = 0;
+    if (rootGroup.position.y > maxScroll) rootGroup.position.y = maxScroll;
+    console.log("xxxxxxxxxx", maxScroll);
   }
 
   function tick(deltaTime: number, elapsedTime: number) {
