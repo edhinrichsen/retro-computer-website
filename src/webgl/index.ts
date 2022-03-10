@@ -21,11 +21,12 @@ function valMap(x: number, from: [number, number], to: [number, number]) {
   return y;
 }
 
+let viewHeight = document.documentElement.clientHeight
 let scroll = window.scrollY / document.documentElement.clientHeight;
 window.addEventListener("scroll", (ev) => {
-  scroll = window.scrollY / document.documentElement.clientHeight;
+  scroll = window.scrollY / viewHeight;
   // console.log(window.scrollY / document.documentElement.clientHeight);
-});
+},{passive: true});
 
 export default function WebGL() {
   loadAssists((assists) => {
@@ -131,17 +132,17 @@ export default function WebGL() {
         mousedown = { x: event.clientX, y: event.clientY };
 
       }
-    });
+    },{passive: true});
 
     canvas.addEventListener('pointerdown', (event) => {
       checkIfTouch(event);
       mousedown = { x: event.clientX, y: event.clientY };
-    });
+    },{passive: true});
 
     document.addEventListener("pointerup", (event) => {
       checkIfTouch(event);
       mousedown = null;
-    });
+    },{passive: true});
 
     /**
      * Renderer
@@ -168,8 +169,8 @@ export default function WebGL() {
     window.addEventListener("resize", () => {
       // Update sizes
 
+      viewHeight = document.documentElement.clientHeight
       sizes.width = document.documentElement.clientWidth;
-      // sizes.width = window.innerWidth / (widthOffset + 1);
       sizes.height = window.innerHeight;
       updateCanvasSize(sizes.width, sizes.height);
       sizes.portraitOffset = valMap(
@@ -177,8 +178,7 @@ export default function WebGL() {
         [0.8, 1.8],
         [0, 2.5]
       );
-      console.log(sizes.height / sizes.width);
-    });
+    },{passive: true});
 
     const screen = Screen(assists, renderer);
 
@@ -229,12 +229,13 @@ export default function WebGL() {
     /**
      * Animate
      */
-
+ 
     const clock = new THREE.Clock();
     const tick = () => {
       stats.begin();
 
       const deltaTime = DeltaTime();
+      
       const elapsedTime = clock.getElapsedTime();
 
       const zoomFac = valMap(scroll, [0, 1], [0, 1]);

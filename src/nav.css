@@ -7,31 +7,34 @@ nav {
   z-index: 5;
 }
 
-.active {
-  background-color: aquamarine;
-}
-
 nav button {
   position: fixed;
   top: 20px;
   left: 20px;
   z-index: 1;
+  opacity: 1;
+}
+
+html[data-scroll='0'] nav button  {
+  opacity: 0;
 }
 
 .active button {
   left: 40px;
   /* opacity: 0; */
-  box-shadow: 1px 1px 0px #525252, 6px 6px 0px rgba(246, 212, 177, 0.7);
+  box-shadow: 6px 6px 0px rgba(246, 212, 177, 0.7);
   background-color: #f6d4b1;
   color: #525252;
+  border-color: #525252;
 }
 
 .active button:hover {
-  box-shadow: 1px 1px 0px #525252, 8px 8px 6px rgba(246, 212, 177, 0.5);
+  box-shadow: 8px 8px 6px rgba(246, 212, 177, 0.5);
 }
 
+
 .active button:active {
-  box-shadow: 1px 1px 0px #525252, 4px 4px 0px rgba(246, 212, 177, 0.7);
+  box-shadow: 4px 4px 0px rgba(246, 212, 177, 0.7);
 }
 
 .menu-body {
@@ -69,4 +72,34 @@ nav button {
   left: 0px;
   right: 0px;
   opacity: 1;
+}
+
+#tip-scroll{
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "chill", sans-serif;
+  font-size: 14px;
+  box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.75);
+  background-color: #525252;
+  color: #f6d4b1;
+  transition: all 0.3s;
+  padding: 4px 24px;
+  border: #f6d4b1 solid 1px;
+  pointer-events: none;
+  display: none;
+  opacity: 0;
+}
+
+html[data-scroll='0'] #tip-scroll {
+  opacity: 1;
+}
+
+
+@media (orientation: portrait) {
+  #tip-scroll{
+    display: block;
+  }
+  
 }

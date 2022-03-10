@@ -273,23 +273,23 @@ button {
   font-family: "chill", sans-serif;
   font-size: 18px;
   display: inline-block;
-  box-shadow: 1px 1px 0px #f6d4b1, 6px 6px 0px rgba(82, 82, 82, 0.25);
+  box-shadow: 6px 6px 0px rgba(82, 82, 82, 0.25);
   background-color: #525252;
   color: #f6d4b1;
   cursor: pointer;
   transition: all 0.3s;
-  border: none;
   padding: 4px 24px;
+  border: #f6d4b1 solid 1px;
 }
 
 button:hover {
   transform: scale(1.1);
-  box-shadow: 1px 1px 0px #f6d4b1, 8px 8px 6px rgba(82, 82, 82, 0.25);
+  box-shadow: 8px 8px 6px rgba(82, 82, 82, 0.25);
 }
 
 button:active {
   transform: scale(0.95);
-  box-shadow: 1px 1px 0px #f6d4b1, 4px 4px 0px rgba(82, 82, 82, 0.4);
+  box-shadow: 4px 4px 0px rgba(82, 82, 82, 0.4);
 }
 
 a {
