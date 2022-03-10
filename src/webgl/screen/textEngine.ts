@@ -503,6 +503,7 @@ export default function ScreenTextEngine(
       obj.position.set(x, y, 0);
       rootGroup.add(obj);
     };
+    scrollToEnd();
 
     if (change.type === "add") {
       if (change.loc === "end") {
@@ -603,20 +604,22 @@ export default function ScreenTextEngine(
     const newNumberOfInputLines = Math.floor(
       (inputBuffer.length + terminalPromptOffset) / charsPerLine
     );
-    charNextLoc.y +=  h2Font.leading * newNumberOfInputLines
+    charNextLoc.y += h2Font.leading * newNumberOfInputLines;
     // inputBuffer = [];
   }
 
-  // const maxScrollOffset = 0.88;
   let maxScroll = rootGroup.position.y;
   function scroll(lines: number, updateMaxScroll = true) {
     rootGroup.position.y += lines * h2Font.leading;
-    if (updateMaxScroll && rootGroup.position.y > maxScroll)
-      maxScroll = rootGroup.position.y;
+    if (updateMaxScroll) {
+      maxScroll += lines * h2Font.leading;
+    }
 
     if (rootGroup.position.y < 0) rootGroup.position.y = 0;
     if (rootGroup.position.y > maxScroll) rootGroup.position.y = maxScroll;
-    console.log("xxxxxxxxxx", maxScroll);
+  }
+  function scrollToEnd() {
+    if (rootGroup.position.y !== maxScroll) rootGroup.position.y = maxScroll;
   }
 
   function tick(deltaTime: number, elapsedTime: number) {
