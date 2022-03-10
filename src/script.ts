@@ -4,8 +4,12 @@ import WebGL from "./webgl";
 WebGL();
 
 const root = document.documentElement;
-root.dataset.scroll = window.scrollY as any;
-window.addEventListener("scroll", (ev) => {
-    root.dataset.scroll = window.scrollY as any;
 
-},{passive: true});
+function onScroll() {
+    if (window.scrollY > 10)
+        root.dataset.scroll = 'true';
+    else root.dataset.scroll = 'false';
+
+}
+onScroll();
+window.addEventListener("scroll", onScroll, { passive: true });
