@@ -503,7 +503,6 @@ export default function ScreenTextEngine(
       obj.position.set(x, y, 0);
       rootGroup.add(obj);
     };
-    scrollToEnd();
 
     if (change.type === "add") {
       if (change.loc === "end") {
@@ -642,6 +641,7 @@ export default function ScreenTextEngine(
     placeMarkdown,
     placeTerminalPrompt,
     scroll,
+    scrollToEnd,
     freezeInput,
   };
 }
