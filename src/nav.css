@@ -17,6 +17,7 @@ nav button {
 
 html[data-scroll='0'] nav button  {
   opacity: 0;
+  pointer-events: none;
 }
 
 .active button {
@@ -26,7 +27,10 @@ html[data-scroll='0'] nav button  {
   background-color: #f6d4b1;
   color: #525252;
   border-color: #525252;
+  opacity: 1 !important;
+  pointer-events: all !important;
 }
+
 
 .active button:hover {
   box-shadow: 8px 8px 6px rgba(246, 212, 177, 0.5);
@@ -96,6 +100,9 @@ html[data-scroll='0'] #tip-scroll {
   opacity: 1;
 }
 
+.active #tip-scroll{
+  opacity: 0 !important;
+}
 
 @media (orientation: portrait) {
   #tip-scroll{
