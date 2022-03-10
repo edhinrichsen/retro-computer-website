@@ -3,6 +3,7 @@ import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import * as THREE from "three";
 import { Assists } from "../loader";
 import { Change } from "../../terminal";
+import { mergeBufferGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 
 const textColor = "#f99021";
 const screenWidth = 1.396;
@@ -72,6 +73,41 @@ export default function ScreenTextEngine(
   h3Font.font = assists.chillFont;
   paragraphFont.font = assists.chillFont;
 
+  const rootGroup = new THREE.Group();
+  sceneRTT.add(rootGroup);
+
+  const textMaterial = new THREE.MeshBasicMaterial({ color: textColor });
+
+  const textColorMesh = new THREE.Mesh(
+    new TextGeometry("", {
+      font: h1Font.font as any,
+      size: h1Font.size,
+      height: 0.0001,
+      curveSegments: 12,
+      bevelEnabled: false,
+    }),
+    textMaterial
+  );
+  rootGroup.add(textColorMesh);
+
+  const textBlackMesh = new THREE.Mesh(
+    new TextGeometry("", {
+      font: h1Font.font as any,
+      size: h1Font.size,
+      height: 0.0001,
+      curveSegments: 12,
+      bevelEnabled: false,
+    }),
+    new THREE.MeshBasicMaterial({ color: 0x000000 })
+  );
+  rootGroup.add(textBlackMesh);
+
+  const textBgMesh = new THREE.Mesh(
+    new THREE.PlaneBufferGeometry(0, 0),
+    new THREE.MeshBasicMaterial({ color: textColor })
+  );
+  rootGroup.add(textBgMesh);
+
   const onFontLoad = () => {
     if (h1Font.font && h2Font.font && h3Font.font) {
       // placeHTML(startText, titleFont);
@@ -82,18 +118,16 @@ export default function ScreenTextEngine(
 
   const caret = new THREE.Mesh(
     new THREE.PlaneBufferGeometry(h2Font.size, h2Font.size * 1.6),
-    new THREE.MeshBasicMaterial({ color: textColor })
+    textMaterial
   );
   caret.position.z = -0.1;
-  sceneRTT.add(caret);
+  rootGroup.add(caret);
 
-  let charUnderCaret: THREE.Group | undefined = undefined;
+  let charUnderCaret: THREE.Mesh | undefined = undefined;
   function updateCharUnderCaret(isBlack: boolean) {
     if (charUnderCaret)
-      (
-        (charUnderCaret.children[0] as THREE.Mesh)
-          .material as THREE.MeshBasicMaterial
-      ).color = new THREE.Color(isBlack ? "black" : textColor);
+      (charUnderCaret.material as THREE.MeshBasicMaterial).color =
+        new THREE.Color(isBlack ? "black" : textColor);
   }
 
   let caretTimeSinceUpdate = 1;
@@ -139,20 +173,24 @@ export default function ScreenTextEngine(
     caretTimeSinceUpdate = 0;
   }
 
-  let inputBuffer: THREE.Group[] = [];
+  let inputBuffer: THREE.Mesh[] = [];
   const charNextLoc = {
     x: 0,
     y: 0,
   };
 
-  function placeStr(props: {
+  function generateGeometry(props: {
     str: string;
     font: FontInfo;
     highlight?: boolean;
     wrap?: boolean;
     isWord?: boolean;
     updateCharNextLoc?: boolean;
-  }) {
+  }): {
+    colorText: undefined | TextGeometry;
+    blackText: undefined | TextGeometry;
+    bg: undefined | THREE.PlaneBufferGeometry;
+  } {
     props.wrap = props.wrap !== undefined ? props.wrap : false;
     props.isWord = props.isWord !== undefined ? props.isWord : false;
     props.updateCharNextLoc =
@@ -171,10 +209,15 @@ export default function ScreenTextEngine(
       x = 0;
     }
 
-    const charObj = new THREE.Group();
-    // m.scale.y = height;hh
-    charObj.position.x = x;
-    charObj.position.y = -y;
+    const returnObj: {
+      colorText: undefined | TextGeometry;
+      blackText: undefined | TextGeometry;
+      bg: undefined | THREE.PlaneBufferGeometry;
+    } = {
+      colorText: undefined,
+      blackText: undefined,
+      bg: undefined,
+    };
 
     const textGeometry = new TextGeometry(props.str, {
       font: props.font.font as any,
@@ -183,67 +226,55 @@ export default function ScreenTextEngine(
       curveSegments: 12,
       bevelEnabled: false,
     });
-    const textMaterial = new THREE.MeshBasicMaterial({ color: textColor });
-    const text = new THREE.Mesh(textGeometry, textMaterial);
-    text.position.set(0, -props.font.height, -0.001);
-    charObj.add(text);
+
+    if (props.updateCharNextLoc)
+      textGeometry.translate(x, -props.font.height - y, -0.001);
+    else textGeometry.translate(0, -props.font.height, -0.001);
 
     if (props.highlight) {
-      const background = new THREE.Mesh(
-        new THREE.PlaneGeometry(
-          strLen + props.font.tracking * 2,
-          props.font.height + props.font.leading / 2,
-          1,
-          1
-        ),
-        new THREE.MeshBasicMaterial({ color: textColor })
+      const background = new THREE.PlaneBufferGeometry(
+        strLen + props.font.tracking * 2,
+        props.font.height + props.font.leading / 2,
+        1,
+        1
       );
 
-      textMaterial.color.set("black");
-      // background.position.x = 0.5;
-      background.position.set(
-        strLen / 2 - props.font.tracking / 2,
-        -props.font.height / 2,
+      background.translate(
+        strLen / 2 - props.font.tracking / 2 + x,
+        -props.font.height / 2 - y,
         -0.01
       );
-      // background.scale.x = 0.05;
-      charObj.add(background);
+
+      returnObj.blackText = textGeometry;
+      returnObj.bg = background;
+    } else {
+      returnObj.colorText = textGeometry;
     }
-
-    // chars.push({ char: charObj, fixed: fixed });
-
-    sceneRTT.add(charObj);
 
     if (props.updateCharNextLoc) {
       charNextLoc.x = strLen + x;
       charNextLoc.y = y;
     }
 
-    return charObj;
+    return returnObj;
+    // return textGeometry;
 
     // return [width + tracking + x, y, charObj];
+  }
+
+  function mergeGeometriesWithMesh(
+    baceMesh: THREE.Mesh,
+    geometries: THREE.BufferGeometry[]
+  ) {
+    const baceGeometry = baceMesh.geometry;
+    geometries.push(baceGeometry);
+    baceMesh.geometry = mergeBufferGeometries(geometries);
+    baceGeometry.dispose();
   }
 
   function placeLinebreak(font: FontInfo) {
     charNextLoc.x = 0;
     charNextLoc.y += font.leading;
-  }
-
-  function placeWords(
-    text: string,
-    font: FontInfo,
-    highlight: boolean = false
-  ) {
-    const words = text.split(" ");
-    for (let word of words) {
-      placeStr({
-        str: word + " ",
-        font: font,
-        highlight: highlight,
-        wrap: true,
-        isWord: true,
-      });
-    }
   }
 
   type MDtoken = {
@@ -320,20 +351,54 @@ export default function ScreenTextEngine(
     }
     console.log(tokens);
 
+    const textColorGeometry: TextGeometry[] = [];
+    const textBlackGeometry: TextGeometry[] = [];
+    const textBgGeometry: THREE.PlaneBufferGeometry[] = [];
+
     for (let i = 0; i < tokens.length; i++) {
       const t = tokens[i];
+      const geometry = [];
       switch (t.type) {
         case "h1":
-          placeStr({ str: t.value, font: h1Font, highlight: t.emphasis });
+          geometry.push(
+            generateGeometry({
+              str: t.value,
+              font: h1Font,
+              highlight: t.emphasis,
+            })
+          );
           break;
         case "h2":
-          placeStr({ str: t.value, font: h2Font, highlight: t.emphasis });
+          geometry.push(
+            generateGeometry({
+              str: t.value,
+              font: h2Font,
+              highlight: t.emphasis,
+            })
+          );
           break;
         case "h3":
-          placeStr({ str: t.value, font: h3Font, highlight: t.emphasis });
+          geometry.push(
+            generateGeometry({
+              str: t.value,
+              font: h3Font,
+              highlight: t.emphasis,
+            })
+          );
           break;
         case "p":
-          placeWords(t.value, paragraphFont);
+          const words = t.value.split(" ");
+          for (let word of words) {
+            geometry.push(
+              generateGeometry({
+                str: word + " ",
+                font: paragraphFont,
+                highlight: t.emphasis,
+                wrap: true,
+                isWord: true,
+              })
+            );
+          }
           break;
         case "br":
           let font = breakFont;
@@ -359,71 +424,121 @@ export default function ScreenTextEngine(
           placeLinebreak(font);
           break;
       }
+      for (const g of geometry) {
+        if (g.colorText) textColorGeometry.push(g.colorText);
+        if (g.blackText) textBlackGeometry.push(g.blackText);
+        if (g.bg) textBgGeometry.push(g.bg);
+      }
     }
+
+    mergeGeometriesWithMesh(textColorMesh, textColorGeometry);
+    mergeGeometriesWithMesh(textBlackMesh, textBlackGeometry);
+    mergeGeometriesWithMesh(textBgMesh, textBgGeometry);
   }
 
   let terminalPromptOffset = 0;
   function placeTerminalPrompt(str: string) {
     // if (inputBuffer.length > 0)
     //   charNextLoc.y = inputBuffer[inputBuffer.length - 1].position.y;
-    inputBuffer = [];
+    const inputBuffer = [];
     for (const char of str) {
-      inputBuffer.push(
-        placeStr({ str: char, font: h2Font, updateCharNextLoc: false })
-      );
+      const colorText = generateGeometry({
+        str: char,
+        font: h2Font,
+        updateCharNextLoc: false,
+      }).colorText;
+      if (colorText) inputBuffer.push(colorText);
     }
     terminalPromptOffset = 0;
-    updateCharPos();
-    inputBuffer = [];
+    updateCharPos(inputBuffer, (obj, x, y) => {
+      (obj as TextGeometry).translate(x, y, 0);
+    });
+    mergeGeometriesWithMesh(textColorMesh, inputBuffer);
+    // inputBuffer = [];
     terminalPromptOffset = str.length + 1;
     updateCaret(0);
   }
 
-  function delChar(charsTODel: THREE.Group[]) {
+  function delChar(charsTODel: THREE.Mesh[]) {
     for (const c of charsTODel) {
-      sceneRTT.remove(c);
+      rootGroup.remove(c);
+      c.geometry.dispose();
+      (c.material as THREE.Material).dispose();
     }
   }
 
-  function updateCharPos() {
+  let oldNumberOfInputLines = 0;
+  function updateCharPos(
+    inputBuffer: THREE.Mesh[] | TextGeometry[],
+    helper: (obj: THREE.Mesh | TextGeometry, x: number, y: number) => void
+  ) {
     const charWidth = h2Font.width + h2Font.tracking;
     const charsPerLine = Math.floor(screenWidth / charWidth);
     for (let i = 0; i < inputBuffer.length; i++) {
-      inputBuffer[i].position.x =
+      const x =
         charNextLoc.x + charWidth * ((i + terminalPromptOffset) % charsPerLine);
-      inputBuffer[i].position.y = -(
+      const y = -(
         charNextLoc.y +
         h2Font.leading * Math.floor((i + terminalPromptOffset) / charsPerLine)
       );
+      helper(inputBuffer[i], x, y);
     }
+
+    // Scroll if more then one line
+    const newNumberOfInputLines = Math.floor(
+      (inputBuffer.length + terminalPromptOffset) / charsPerLine
+    );
+    if (newNumberOfInputLines > oldNumberOfInputLines)
+      scroll(newNumberOfInputLines - oldNumberOfInputLines);
+    oldNumberOfInputLines = newNumberOfInputLines;
   }
 
   function userInput(change: Change, selectionPos: number) {
+    const updateCharPosHelper = (
+      obj: THREE.Mesh | TextGeometry,
+      x: number,
+      y: number
+    ) => {
+      obj = obj as THREE.Mesh;
+      obj.position.set(x, y, 0);
+      rootGroup.add(obj);
+    };
+
     if (change.type === "add") {
       if (change.loc === "end") {
         caret.visible = true;
         for (const char of change.str) {
-          const textObj = placeStr({
-            str: char,
-            font: h2Font,
-            updateCharNextLoc: false,
-          });
+          const textObj = new THREE.Mesh(
+            generateGeometry({
+              str: char,
+              font: h2Font,
+              updateCharNextLoc: false,
+            }).colorText,
+            textMaterial.clone()
+          );
 
           inputBuffer.push(textObj);
-          updateCharPos();
+          updateCharPos(inputBuffer, (obj, x, y) => {
+            obj = obj as THREE.Mesh;
+            obj.position.set(x, y, 0);
+            rootGroup.add(obj);
+          });
         }
       } else if (typeof change.loc === "number") {
         // charNextLoc.x = inputBuffer[change.loc].position.x;
         // charNextLoc.y = inputBuffer[change.loc].position.y;
 
-        const newChars: THREE.Group[] = [];
+        const newChars: THREE.Mesh[] = [];
         for (const char of change.str) {
           newChars.push(
-            placeStr({
-              str: char,
-              font: h2Font,
-              updateCharNextLoc: false,
-            })
+            new THREE.Mesh(
+              generateGeometry({
+                str: char,
+                font: h2Font,
+                updateCharNextLoc: false,
+              }).colorText,
+              textMaterial.clone()
+            )
           );
         }
         inputBuffer = [
@@ -431,14 +546,21 @@ export default function ScreenTextEngine(
           ...newChars,
           ...inputBuffer.slice(change.loc, inputBuffer.length),
         ];
-        updateCharPos();
+        updateCharPos(inputBuffer, (obj, x, y) => {
+          obj = obj as THREE.Mesh;
+          obj.position.set(x, y, 0);
+          rootGroup.add(obj);
+        });
+        updateCharPos(inputBuffer, updateCharPosHelper);
       }
     } else if (change.type === "del") {
       if (change.loc === "end") {
         const charsTODel = inputBuffer.slice(-change.str.length);
         inputBuffer = inputBuffer.slice(0, -change.str.length);
-        updateCharPos();
-
+        updateCharPos(inputBuffer, (obj, x, y) => {
+          obj = obj as THREE.Mesh;
+          obj.position.set(x, y, 0);
+        });
         delChar(charsTODel);
       } else if (typeof change.loc === "number") {
         // charNextLoc.x = inputBuffer[change.loc].position.x;
@@ -458,10 +580,45 @@ export default function ScreenTextEngine(
             inputBuffer.length
           ),
         ];
-        updateCharPos();
+        updateCharPos(inputBuffer, (obj, x, y) => {
+          obj = obj as THREE.Mesh;
+          obj.position.set(x, y, 0);
+        });
       }
     }
     updateCaret(selectionPos);
+  }
+
+  function freezeInput() {
+    const textGeometry = [];
+    for (const c of inputBuffer) {
+      c.geometry.translate(c.position.x, c.position.y, 0);
+      textGeometry.push(c.geometry);
+      (c.material as THREE.Material).dispose();
+    }
+    mergeGeometriesWithMesh(textColorMesh, textGeometry);
+
+    const charWidth = h2Font.width + h2Font.tracking;
+    const charsPerLine = Math.floor(screenWidth / charWidth);
+    const newNumberOfInputLines = Math.floor(
+      (inputBuffer.length + terminalPromptOffset) / charsPerLine
+    );
+    charNextLoc.y += h2Font.leading * newNumberOfInputLines;
+    // inputBuffer = [];
+  }
+
+  let maxScroll = rootGroup.position.y;
+  function scroll(lines: number, updateMaxScroll = true) {
+    rootGroup.position.y += lines * h2Font.leading;
+    if (updateMaxScroll) {
+      maxScroll += lines * h2Font.leading;
+    }
+
+    if (rootGroup.position.y < 0) rootGroup.position.y = 0;
+    if (rootGroup.position.y > maxScroll) rootGroup.position.y = maxScroll;
+  }
+  function scrollToEnd() {
+    if (rootGroup.position.y !== maxScroll) rootGroup.position.y = maxScroll;
   }
 
   function tick(deltaTime: number, elapsedTime: number) {
@@ -478,5 +635,13 @@ export default function ScreenTextEngine(
 
   onFontLoad();
 
-  return { tick, userInput, placeMarkdown, placeTerminalPrompt };
+  return {
+    tick,
+    userInput,
+    placeMarkdown,
+    placeTerminalPrompt,
+    scroll,
+    scrollToEnd,
+    freezeInput,
+  };
 }

@@ -1,4 +1,4 @@
-## user:~> curl edwardh.io
+## user:~$ curl edwardh.io
 
 
 #  Hi there,
