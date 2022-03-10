@@ -127,7 +127,7 @@ function loadAssists(callback: (assists: Assists) => any) {
 
   // Mesh
   const gltfLoader = new GLTFLoader(manager);
-  gltfLoader.load("/models/Commodore710_33.glb", (gltf) => {
+  gltfLoader.load("/models/Commodore710_34.glb", (gltf) => {
     // gltfLoader.load("/models/screen2.glb", (gltf) => {
     // assists.screenMesh = gltf.scene.children[0] as any;
     const computer = new THREE.Group();
