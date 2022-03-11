@@ -450,6 +450,7 @@ export default function ScreenTextEngine(
       if (colorText) inputBuffer.push(colorText);
     }
     terminalPromptOffset = 0;
+    oldNumberOfInputLines = 0;
     updateCharPos(inputBuffer, (obj, x, y) => {
       (obj as TextGeometry).translate(x, y, 0);
     });
@@ -490,19 +491,11 @@ export default function ScreenTextEngine(
     );
     if (newNumberOfInputLines > oldNumberOfInputLines)
       scroll(newNumberOfInputLines - oldNumberOfInputLines);
+    else scroll(newNumberOfInputLines - oldNumberOfInputLines);
     oldNumberOfInputLines = newNumberOfInputLines;
   }
 
   function userInput(change: Change, selectionPos: number) {
-    const updateCharPosHelper = (
-      obj: THREE.Mesh | TextGeometry,
-      x: number,
-      y: number
-    ) => {
-      obj = obj as THREE.Mesh;
-      obj.position.set(x, y, 0);
-      rootGroup.add(obj);
-    };
 
     if (change.type === "add") {
       if (change.loc === "end") {
@@ -551,7 +544,6 @@ export default function ScreenTextEngine(
           obj.position.set(x, y, 0);
           rootGroup.add(obj);
         });
-        updateCharPos(inputBuffer, updateCharPosHelper);
       }
     } else if (change.type === "del") {
       if (change.loc === "end") {
