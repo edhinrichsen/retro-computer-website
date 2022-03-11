@@ -32,6 +32,7 @@ export default function Terminal(screenTextEngine: {
     const change = stringEditDistance(oldText, textarea.value);
     oldText = textarea.value;
     if (change) screenTextEngine.userInput(change, textarea.selectionStart);
+    screenTextEngine.scrollToEnd();
   }
   textarea.addEventListener("input", onInput, false);
 
@@ -106,7 +107,6 @@ export default function Terminal(screenTextEngine: {
       { type: "none", loc: "none", str: "" },
       textarea.selectionStart
     );
-    screenTextEngine.scrollToEnd();
   });
 
   function stringEditDistance(oldStr: string, newStr: string) {
