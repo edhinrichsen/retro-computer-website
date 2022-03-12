@@ -3,6 +3,7 @@ import Input from "./input";
 import notFound from "../text/notFound.md";
 // @ts-ignore
 import newLine from "../text/newLine.md";
+import Bash from "./bash";
 export type Change = {
   type: "add" | "del" | "none";
   loc: number | "end" | "none";
@@ -26,6 +27,17 @@ export default function Terminal(screenTextEngine: {
   // textarea.onblur = () => {
   //   textarea.focus();
   // };
+
+  const bash = Bash((s, format = false) => {
+    if (format) screenTextEngine.placeMarkdown(s);
+    else
+      screenTextEngine.placeMarkdown(
+        `
+
+## ${s}
+`
+      );
+  });
 
   let oldText = "";
   function onInput() {
@@ -68,7 +80,8 @@ export default function Terminal(screenTextEngine: {
     if (e.key === "Enter") {
       screenTextEngine.freezeInput();
       if (textarea.value.match(/^ *$/) === null) {
-        screenTextEngine.placeMarkdown(notFound);
+        bash.input(textarea.value);
+        // screenTextEngine.placeMarkdown(notFound);
         screenTextEngine.scroll(2);
         screenTextEngine.scrollToEnd();
       } else {
