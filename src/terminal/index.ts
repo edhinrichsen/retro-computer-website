@@ -13,7 +13,7 @@ export default function Terminal(screenTextEngine: {
   tick: (deltaTime: number, elapsedTime: number) => void;
   userInput: (change: Change, selectionPos: number) => void;
   placeMarkdown: (md: string) => void;
-  placeTerminalPrompt: (str: string) => void;
+  placeText: (str: string) => number;
   scroll: (lines: number, updateMaxScroll?: boolean) => void;
   scrollToEnd: () => void;
   freezeInput: () => void;
@@ -28,15 +28,19 @@ export default function Terminal(screenTextEngine: {
   //   textarea.focus();
   // };
 
-  const bash = Bash((s, format = false) => {
-    if (format) screenTextEngine.placeMarkdown(s);
-    else
+  const bash = Bash((s, md = false) => {
+    if (md)
       screenTextEngine.placeMarkdown(
         `
 
 ## ${s}
 `
       );
+    else {
+      const numOfLines = screenTextEngine.placeText(s);
+      console.log("numOfLines", numOfLines);
+      screenTextEngine.scroll(numOfLines);
+    }
   });
 
   let oldText = "";
@@ -79,19 +83,10 @@ export default function Terminal(screenTextEngine: {
     // textarea
     if (e.key === "Enter") {
       screenTextEngine.freezeInput();
-      if (textarea.value.match(/^ *$/) === null) {
-        bash.input(textarea.value);
-        // screenTextEngine.placeMarkdown(notFound);
-        screenTextEngine.scroll(2);
-        screenTextEngine.scrollToEnd();
-      } else {
-        screenTextEngine.placeMarkdown(newLine);
-        screenTextEngine.scroll(1);
-        screenTextEngine.scrollToEnd();
-      }
+      bash.input(textarea.value);
+      screenTextEngine.scrollToEnd();
 
       textarea.value = "";
-      screenTextEngine.placeTerminalPrompt("user:~$");
       const change = stringEditDistance(oldText, textarea.value);
       oldText = textarea.value;
       if (change) screenTextEngine.userInput(change, textarea.selectionStart);
