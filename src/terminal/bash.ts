@@ -33,8 +33,8 @@ export default function Bash(print: (s: string, md?: boolean) => void) {
     },
   };
 
-  const cmdNotFound = () => {
-    print("\ncommand not found");
+  const cmdNotFound = (cmdName: string) => {
+    print(`\nedsh:${cmdName}:command not found`);
   };
 
   const prompt = () => {
@@ -58,7 +58,7 @@ export default function Bash(print: (s: string, md?: boolean) => void) {
     if (cmd) {
       const app: undefined | ((args: string[]) => {}) = (apps as any)[cmdName];
       if (app) app(cmdArgs);
-      else cmdNotFound();
+      else cmdNotFound(cmdName);
     }
 
     prompt();
