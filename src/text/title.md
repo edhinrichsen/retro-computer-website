@@ -7,6 +7,6 @@
 ##     — Computer Science graduate of
 ##        the University of Melbourne
 ##
-###   *Scroll* or type Help to get started
+###   *Scroll* or type "help" to get started
 
 
