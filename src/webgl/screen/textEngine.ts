@@ -283,6 +283,8 @@ export default function ScreenTextEngine(
     value: string;
   };
   function placeMarkdown(md: string) {
+    const yBefore = charNextLoc.y;
+
     const tokens: MDtoken[] = [];
 
     let currentToken: undefined | MDtoken = undefined;
@@ -434,6 +436,9 @@ export default function ScreenTextEngine(
     mergeGeometriesWithMesh(textColorMesh, textColorGeometry);
     mergeGeometriesWithMesh(textBlackMesh, textBlackGeometry);
     mergeGeometriesWithMesh(textBgMesh, textBgGeometry);
+
+    const yAfter = charNextLoc.y - yBefore;
+    return yAfter;
   }
 
   let terminalPromptOffset = 0;
@@ -469,11 +474,10 @@ export default function ScreenTextEngine(
 
       const overFlow = Math.floor(inputBuffer.length / charsPerLine);
 
-      for (let i = 0; i < overFlow; i++){
+      for (let i = 0; i < overFlow; i++) {
         numOfLines += 1;
         placeLinebreak(h2Font);
       }
-        
 
       // numOfLines += Math.floor(overFlow);
 
@@ -521,8 +525,8 @@ export default function ScreenTextEngine(
         (inputBuffer.length + terminalPromptOffset) / charsPerLine
       );
       if (newNumberOfInputLines > oldNumberOfInputLines)
-        scroll(newNumberOfInputLines - oldNumberOfInputLines);
-      else scroll(newNumberOfInputLines - oldNumberOfInputLines);
+        scroll(newNumberOfInputLines - oldNumberOfInputLines, "lines");
+      else scroll(newNumberOfInputLines - oldNumberOfInputLines, "lines");
       oldNumberOfInputLines = newNumberOfInputLines;
     }
   }
@@ -647,11 +651,15 @@ export default function ScreenTextEngine(
   }
 
   let maxScroll = rootGroup.position.y;
-  function scroll(lines: number, updateMaxScroll = true) {
-    rootGroup.position.y += lines * h2Font.leading;
+  function scroll(val: number, units: "lines" | "px", updateMaxScroll = true) {
+    let amount = val;
+    if (units === "lines") amount *= h2Font.leading;
+    rootGroup.position.y += amount;
     if (updateMaxScroll) {
-      maxScroll += lines * h2Font.leading;
+      maxScroll += amount;
     }
+    console.log('scroll', amount);
+    
 
     if (rootGroup.position.y < 0) rootGroup.position.y = 0;
     if (rootGroup.position.y > maxScroll) rootGroup.position.y = maxScroll;

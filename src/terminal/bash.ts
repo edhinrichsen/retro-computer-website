@@ -1,6 +1,8 @@
 // @ts-ignore
 import helpMD from "../text/help.md";
 import FileSystemBash from "./fileSystemBash";
+// @ts-ignore
+import aboutMD from "../text/about.md";
 
 export default function Bash(print: (s: string, md?: boolean) => void) {
   const fileSystem = FileSystemBash();
@@ -30,6 +32,9 @@ export default function Bash(print: (s: string, md?: boolean) => void) {
             break;
         }
       }
+    },
+    show: (args: string[]) => {
+      print(aboutMD,true)
     },
   };
 

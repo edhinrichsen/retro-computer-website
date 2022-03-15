@@ -12,9 +12,13 @@ export type Change = {
 export default function Terminal(screenTextEngine: {
   tick: (deltaTime: number, elapsedTime: number) => void;
   userInput: (change: Change, selectionPos: number) => void;
-  placeMarkdown: (md: string) => void;
+  placeMarkdown: (md: string) => number;
   placeText: (str: string) => number;
-  scroll: (lines: number, updateMaxScroll?: boolean) => void;
+  scroll: (
+    val: number,
+    units: "lines" | "px",
+    updateMaxScroll?: boolean
+  ) => void;
   scrollToEnd: () => void;
   freezeInput: () => void;
 }) {
@@ -29,17 +33,13 @@ export default function Terminal(screenTextEngine: {
   // };
 
   const bash = Bash((s, md = false) => {
-    if (md)
-      screenTextEngine.placeMarkdown(
-        `
-
-## ${s}
-`
-      );
-    else {
+    if (md) {
+      const numOfpx = screenTextEngine.placeMarkdown(s);
+      screenTextEngine.scroll(numOfpx, "px");
+    } else {
       const numOfLines = screenTextEngine.placeText(s);
       console.log("numOfLines", numOfLines);
-      screenTextEngine.scroll(numOfLines);
+      screenTextEngine.scroll(numOfLines, "lines");
     }
   });
 
@@ -97,11 +97,11 @@ export default function Terminal(screenTextEngine: {
     switch (e.key) {
       case "ArrowUp":
         e.preventDefault();
-        screenTextEngine.scroll(-1, false);
+        screenTextEngine.scroll(-1, "lines", false);
         break;
       case "ArrowDown":
         e.preventDefault();
-        screenTextEngine.scroll(1, false);
+        screenTextEngine.scroll(1, "lines", false);
         break;
     }
   });
