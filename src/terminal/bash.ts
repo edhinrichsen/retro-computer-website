@@ -18,14 +18,14 @@ export default function Bash(print: (s: string, md?: boolean) => void) {
       print(out);
     },
     cd: (args: string[]) => {
-      if (args.length === 0 || args[0] === '') {
-        fileSystem.goHome()
+      if (args.length === 0 || args[0] === "") {
+        fileSystem.goHome();
       } else {
         switch (args[0]) {
-          case '..':
-            fileSystem.goUp()
+          case "..":
+            fileSystem.goUp();
             break;
-        
+
           default:
             break;
         }
@@ -33,11 +33,11 @@ export default function Bash(print: (s: string, md?: boolean) => void) {
     },
   };
 
-  const cmdNotFound = (cmdName: string) => {
+  function cmdNotFound(cmdName: string) {
     print(`\nedsh:${cmdName}:command not found`);
-  };
+  }
 
-  const prompt = () => {
+  function prompt() {
     const path = fileSystem.getPath();
     let out = "";
     for (let i = 0; i < path.length; i++) {
@@ -46,7 +46,7 @@ export default function Bash(print: (s: string, md?: boolean) => void) {
     }
     if (out === "/home/user") print(`\nuser:~$`);
     else print(`\nuser:${out} $`);
-  };
+  }
 
   function input(cmd: string) {
     cmd = cmd.replaceAll(/\s+/g, " ");

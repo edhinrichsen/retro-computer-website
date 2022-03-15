@@ -464,9 +464,18 @@ export default function ScreenTextEngine(
         },
         false
       );
+
       mergeGeometriesWithMesh(textColorMesh, inputBuffer);
 
-      numOfLines += Math.floor(inputBuffer.length / charsPerLine);
+      const overFlow = Math.floor(inputBuffer.length / charsPerLine);
+
+      for (let i = 0; i < overFlow; i++){
+        numOfLines += 1;
+        placeLinebreak(h2Font);
+      }
+        
+
+      // numOfLines += Math.floor(overFlow);
 
       if (i < strWithNewline.length - 1) {
         placeLinebreak(h2Font);
@@ -495,6 +504,7 @@ export default function ScreenTextEngine(
   ) {
     const charWidth = h2Font.width + h2Font.tracking;
     const charsPerLine = Math.floor(screenWidth / charWidth);
+
     for (let i = 0; i < inputBuffer.length; i++) {
       const x =
         charNextLoc.x + charWidth * ((i + terminalPromptOffset) % charsPerLine);
