@@ -51,15 +51,17 @@ export default function FileSystemBash() {
     return [disk, home, user];
   }
 
-  function goto(path: FolderBash[], newPath: string[]) {
+  function goto(path: (FolderBash | FileBash)[], newPath: string) {
     path = [...path];
 
+    const newPathArray = newPath.split("/");
     // remove trailling slash
-    if (newPath.length > 0 && newPath.at(-1) === "") newPath.pop();
+    if (newPathArray.length > 0 && newPathArray.at(-1) === "")
+      newPathArray.pop();
 
-    console.log("path", newPath);
+    console.log("path", newPathArray);
 
-    for (const p of newPath) {
+    for (const p of newPathArray) {
       switch (p) {
         case "":
           // go to root
@@ -74,28 +76,19 @@ export default function FileSystemBash() {
           break;
         default:
           // goto next location
-          const next = (path.at(-1) as any as FolderBash).children.find(
-            (m) => m.name === p
-          ) as FolderBash;
-          if (next && next.children !== undefined) {
-            path.push(next);
-          } else return undefined;
+          const currentFolder = path.at(-1);
+          if (!currentFolder || !("children" in currentFolder))
+            return undefined;
+
+          const next = currentFolder.children.find((m) => m.name === p);
+          if (!next) return undefined;
+
+          path.push(next);
           break;
       }
     }
     return path;
   }
 
-  function get(path: FolderBash[], filePath: string[]) {
-    const fileName = filePath.pop();
-    const fileLoc = goto(path, filePath);
-    if (fileLoc) {
-      const fileFolder = fileLoc.pop();
-      const file = fileFolder?.children.find((m) => m.name === fileName);
-      return file;
-    }
-    return undefined;
-  }
-
-  return { getChildren, goHome, goto, get };
+  return { getChildren, goHome, goto };
 }

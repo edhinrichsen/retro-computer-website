@@ -25,20 +25,37 @@ export default function Bash(print: (s: string, md?: boolean) => void) {
         path = fileSystem.goHome();
         return;
       }
-      const operation = fileSystem.goto(path, args[0].split("/"));
+      const operation = fileSystem.goto(path, args[0]);
       console.log(operation);
 
-      if (operation) path = operation;
-      else print(`\ncd: No such file or directory`);
+      if (!operation) {
+        print(`\nNo such file or directory`);
+        return;
+      }
+      if (!("children" in (operation.at(-1) as any))) {
+        print(`\n${operation.at(-1)?.name}:not a directory`);
+        return;
+      }
+      
+      path = operation as any;
     },
     show: (args: string[]) => {
       if (args.length === 0) {
-        print(`\nshow: Missing filename`);
+        print(`\nMissing filename`);
         return;
       }
-      const file = fileSystem.get(path, args[0].split("/"));
-      if (file && "data" in file) print(file.data, true);
-      else print(`\nshow: No such file or directory`);
+      const file = fileSystem.goto(path, args[0])?.at(-1);
+      if (!file) {
+        print(`\nNo such file or directory`);
+        return
+      }
+
+      if (!("data" in file)) {
+        print(`\n${file.name}:not a file`);
+        return
+      }
+
+      print(file.data, true);
     },
     echo: (args: string[]) => {
       const str = args.join(" ");
@@ -47,7 +64,7 @@ export default function Bash(print: (s: string, md?: boolean) => void) {
   };
 
   function cmdNotFound(cmdName: string) {
-    print(`\nedsh:${cmdName}:command not found`);
+    print(`\n${cmdName}:command not found`);
   }
 
   function prompt() {
