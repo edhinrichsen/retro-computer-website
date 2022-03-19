@@ -1,8 +1,5 @@
-import Input from "./input";
 // @ts-ignore
-import notFound from "../text/notFound.md";
-// @ts-ignore
-import newLine from "../text/newLine.md";
+import titleText from "../text/title.md";
 import Bash from "./bash";
 export type Change = {
   type: "add" | "del" | "none";
@@ -28,9 +25,11 @@ export default function Terminal(screenTextEngine: {
   textarea.value = "";
   textarea.readOnly = true;
   textarea.blur();
-  // textarea.onblur = () => {
-  //   textarea.focus();
-  // };
+
+  // screenTextEngine.placeText("Welcome to ED-Linux 1.0 LTS");
+  screenTextEngine.placeMarkdown('## Welcome to ED-Linux 1.0 LTS');
+  screenTextEngine.placeMarkdown(titleText);
+  screenTextEngine.placeText("\nuser:~$");
 
   const bash = Bash((s, md = false) => {
     if (md) {

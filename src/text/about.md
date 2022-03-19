@@ -8,4 +8,4 @@ My name is Edward Hinrichsen and I have recently completed a Bachelor of Science
 
 In addition to my love of technology and design, I am also interested in education, history, economics and politics. When not studying or coding, I am in the pool helping kids with disabilities learn to swim.
 
-Below are details of some of projects I have developed over my ten years of coding experience. 
+Below are details of some of projects I have developed over my ten years of coding experience.

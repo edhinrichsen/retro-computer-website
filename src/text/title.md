@@ -1,4 +1,5 @@
-## user:~$ curl edwardh.io
+
+
 
 
 #  Hi there,
@@ -8,5 +9,3 @@
 ##        the University of Melbourne
 ##
 ###   *Scroll* or type "help" to get started
-
-

@@ -65,8 +65,6 @@ const breakFont: FontInfo = (function () {
 export default function ScreenTextEngine(
   assists: Assists,
   sceneRTT: THREE.Scene,
-  startText: string,
-  startTerminalPrompt: string
 ) {
   h1Font.font = assists.publicPixelFont;
   h2Font.font = assists.chillFont;
@@ -107,14 +105,6 @@ export default function ScreenTextEngine(
     new THREE.MeshBasicMaterial({ color: textColor })
   );
   rootGroup.add(textBgMesh);
-
-  const onFontLoad = () => {
-    if (h1Font.font && h2Font.font && h3Font.font) {
-      // placeHTML(startText, titleFont);
-      placeMarkdown(startText);
-      placeText(startTerminalPrompt);
-    }
-  };
 
   const caret = new THREE.Mesh(
     new THREE.PlaneBufferGeometry(h2Font.size, h2Font.size * 1.6),
@@ -679,9 +669,7 @@ export default function ScreenTextEngine(
 
     caretTimeSinceUpdate += deltaTime;
   }
-
-  onFontLoad();
-
+  
   return {
     tick,
     userInput,

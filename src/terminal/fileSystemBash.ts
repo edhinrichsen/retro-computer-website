@@ -1,7 +1,33 @@
 export type FileBash = { name: string; data: string };
 export type FolderBash = { name: string; children: (FolderBash | FileBash)[] };
 // @ts-ignore
+import titleMD from "../text/title.md";
+// @ts-ignore
 import aboutMD from "../text/about.md";
+// @ts-ignore
+import writingBuddyMD from "../text/writing-buddy.md";
+// @ts-ignore
+import myOwnProgrammingLanguageMD from "../text/my-own-programming-language.md";
+// @ts-ignore
+import glowbalMD from "../text/glowbal.md";
+// @ts-ignore
+import cyberHeist from "../text/cyber-heist.md";
+// @ts-ignore
+import pavilionMD from "../text/pavilion.md";
+// @ts-ignore
+import brickBreakerMD from "../text/brick-breaker.md";
+// @ts-ignore
+import jackalopeMD from "../text/jackalope.md";
+// @ts-ignore
+import projectLMD from "../text/project-l.md";
+// @ts-ignore
+import greatBallsOfFireMD from "../text/great-balls-of-fire.md";
+// @ts-ignore
+import theGoldenPackMD from "../text/the-golden-pack.md";
+// @ts-ignore
+import edsitesMD from "../text/edsites.md";
+// @ts-ignore
+import contactMD from "../text/contact.md";
 
 const disk: FolderBash = {
   name: "/",
@@ -14,21 +40,27 @@ const disk: FolderBash = {
         {
           name: "user",
           children: [
-            { name: "Home", children: [{ name: "home.md", data: "text" }] },
-            { name: "About", children: [{ name: "about.md", data: aboutMD }] },
+            { name: "title", children: [{ name: "title.md", data: titleMD }] },
+            { name: "about", children: [{ name: "about.md", data: aboutMD }] },
             {
-              name: "Projects",
+              name: "projects",
               children: [
-                { name: "writing-buddy.md", data: "text" },
-                { name: "my-own-programming-language.md", data: "text" },
-                { name: "glowbal.md", data: "text" },
-                { name: "cyber-heist.md", data: "text" },
-                { name: "pavilion.md", data: "text" },
+                { name: "writing-buddy.md", data: writingBuddyMD },
+                { name: "my-own-programming-language.md", data: myOwnProgrammingLanguageMD },
+                { name: "glowbal.md", data: glowbalMD },
+                { name: "cyber-heist.md", data: cyberHeist },
+                { name: "pavilion.md", data: pavilionMD },
+                { name: "brick-breaker.md", data: brickBreakerMD },
+                { name: "jackalope.md", data: jackalopeMD },
+                { name: "project-l.md", data: projectLMD },
+                { name: "great-balls-of-fire.md", data: greatBallsOfFireMD },
+                { name: "the-golden-pack.md", data: theGoldenPackMD },
+                { name: "edsites.md", data: edsitesMD },
               ],
             },
             {
-              name: "Contact",
-              children: [{ name: "contact.md", data: "text" }],
+              name: "contact",
+              children: [{ name: "contact.md", data: contactMD }],
             },
           ],
         },
