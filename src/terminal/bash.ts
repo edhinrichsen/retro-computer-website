@@ -26,10 +26,10 @@ export default function Bash(print: (s: string, md?: boolean) => void) {
         const path = args[0].split("/");
         console.log("path", path);
 
-        for (const p of path) {
-          switch (p) {
+        for (let i = 0; i < path.length; i++) {
+          switch (path[i]) {
             case "":
-              fileSystem.goRoot();
+              if (i === 0 || i < path.length - 1) fileSystem.goRoot();
               break;
             case "..":
               fileSystem.goUp();
@@ -38,7 +38,7 @@ export default function Bash(print: (s: string, md?: boolean) => void) {
               // current folder
               break;
             default:
-              fileSystem.goTo(p);
+              fileSystem.goTo(path[i]);
               break;
           }
         }
@@ -60,8 +60,8 @@ export default function Bash(print: (s: string, md?: boolean) => void) {
       out += path[i].name;
       if (i !== 0 && i < path.length - 1) out += "/";
     }
-    out = out.replace(/^\/home\/user/, '~')
-    if (out !== "~") out += ' ';
+    out = out.replace(/^\/home\/user/, "~");
+    if (out !== "~") out += " ";
     print(`\nuser:${out}$`);
   }
 
