@@ -25,12 +25,24 @@ export default function Bash(print: (s: string, md?: boolean) => void) {
         path = fileSystem.goHome();
         return;
       }
-      const operation = fileSystem.goto(path, args[0]);
+      const operation = fileSystem.goto(path, args[0].split("/"));
+      console.log(operation);
+
       if (operation) path = operation;
       else print(`\ncd: No such file or directory`);
     },
     show: (args: string[]) => {
-      print(aboutMD, true);
+      if (args.length === 0) {
+        print(`\nshow: Missing filename`);
+        return;
+      }
+      const file = fileSystem.get(path, args[0].split("/"));
+      if (file && "data" in file) print(file.data, true);
+      else print(`\nshow: No such file or directory`);
+    },
+    echo: (args: string[]) => {
+      const str = args.join(" ");
+      print(`\n${str}`);
     },
   };
 

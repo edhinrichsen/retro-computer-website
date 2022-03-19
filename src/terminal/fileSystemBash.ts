@@ -1,5 +1,7 @@
 export type FileBash = { name: string; data: string };
 export type FolderBash = { name: string; children: (FolderBash | FileBash)[] };
+// @ts-ignore
+import aboutMD from "../text/about.md";
 
 const disk: FolderBash = {
   name: "/",
@@ -13,7 +15,7 @@ const disk: FolderBash = {
           name: "user",
           children: [
             { name: "Home", children: [{ name: "home.md", data: "text" }] },
-            { name: "About", children: [{ name: "about.md", data: "text" }] },
+            { name: "About", children: [{ name: "about.md", data: aboutMD }] },
             {
               name: "Projects",
               children: [
@@ -49,16 +51,15 @@ export default function FileSystemBash() {
     return [disk, home, user];
   }
 
-  function goto(path: FolderBash[], newPath: string) {
-    const newPathArray = newPath.split("/");
+  function goto(path: FolderBash[], newPath: string[]) {
+    path = [...path];
 
     // remove trailling slash
-    if (newPathArray.length > 0 && newPathArray.at(-1) === "")
-      newPathArray.pop();
+    if (newPath.length > 0 && newPath.at(-1) === "") newPath.pop();
 
-    console.log("path", newPathArray);
+    console.log("path", newPath);
 
-    for (const p of newPathArray) {
+    for (const p of newPath) {
       switch (p) {
         case "":
           // go to root
@@ -85,5 +86,16 @@ export default function FileSystemBash() {
     return path;
   }
 
-  return { getChildren, goHome, goto };
+  function get(path: FolderBash[], filePath: string[]) {
+    const fileName = filePath.pop();
+    const fileLoc = goto(path, filePath);
+    if (fileLoc) {
+      const fileFolder = fileLoc.pop();
+      const file = fileFolder?.children.find((m) => m.name === fileName);
+      return file;
+    }
+    return undefined;
+  }
+
+  return { getChildren, goHome, goto, get };
 }
