@@ -32,6 +32,10 @@ export default function Bash(print: (s: string, md?: boolean) => void) {
     show: (args: string[]) => {
       print(aboutMD, true);
     },
+    echo: (args: string[]) => {
+      const str = args.join(" ");
+      print(`\n${str}`);
+    },
   };
 
   function cmdNotFound(cmdName: string) {
@@ -50,15 +54,48 @@ export default function Bash(print: (s: string, md?: boolean) => void) {
   }
 
   function input(cmd: string) {
+    cmd = cmd.replace(/^\s+/, "");
     cmd = cmd.replaceAll(/\s+/g, " ");
-    const cmdSplit = cmd.split(" ");
-    const cmdName = cmdSplit[0];
-    const cmdArgs: string[] = cmdSplit.slice(1);
-    console.log("cmd", cmdName, cmdArgs);
 
-    if (cmd) {
+    const cmdArray = cmd.split("");
+
+    const args: string[] = [];
+    let currentArg: string[] = [];
+
+    let inQuoteBlock: undefined | `'` | `"` = undefined;
+    while (cmdArray.length > 0) {
+      const elm = cmdArray.shift();
+
+      if (inQuoteBlock) {
+        if (elm === inQuoteBlock) {
+          inQuoteBlock = undefined;
+          args.push(currentArg.join(""));
+          currentArg = [];
+        } else if (elm) {
+          currentArg.push(elm);
+        }
+        continue;
+      }
+
+      if (elm === " ") {
+        args.push(currentArg.join(""));
+        currentArg = [];
+      } else if (elm === `'` || elm === `"`) {
+        inQuoteBlock = elm;
+        args.push(currentArg.join(""));
+        currentArg = [];
+      } else if (elm) {
+        currentArg.push(elm);
+      }
+    }
+    if (currentArg.length > 0) args.push(currentArg.join(""));
+
+    console.log("cmd", args);
+    const cmdName = args.shift();
+
+    if (cmdName) {
       const app: undefined | ((args: string[]) => {}) = (apps as any)[cmdName];
-      if (app) app(cmdArgs);
+      if (app) app(args);
       else cmdNotFound(cmdName);
     }
 
