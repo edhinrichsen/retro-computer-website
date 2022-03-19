@@ -127,7 +127,7 @@ export default function WebGL() {
         computerParallax.y += (event.clientY - mousedown.y) / (window.innerHeight * 0.5);
         computerParallax.y = valMap(computerParallax.y, [-1, 1], [-1, 1])
 
-        console.log(computerParallax);
+        // console.log(computerParallax);
 
         mousedown = { x: event.clientX, y: event.clientY };
 

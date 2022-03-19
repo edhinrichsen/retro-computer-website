@@ -158,7 +158,7 @@ export default function ScreenTextEngine(
         charUnderCaret = inputBuffer[pos];
       }
     }
-    console.log(charPos);
+    // console.log(charPos);
 
     let x = charPos.x + h2Font.size / 2;
     let y = charPos.y - h2Font.size / 1.9;
@@ -351,7 +351,7 @@ export default function ScreenTextEngine(
     if (currentToken !== undefined) {
       tokens.push(currentToken);
     }
-    console.log(tokens);
+    // console.log(tokens);
 
     const textColorGeometry: TextGeometry[] = [];
     const textBlackGeometry: TextGeometry[] = [];
@@ -610,7 +610,7 @@ export default function ScreenTextEngine(
           change.loc + change.str.length
         );
         delChar(charsTODel);
-        console.log(charsTODel);
+        // console.log(charsTODel);
 
         inputBuffer = [
           ...inputBuffer.slice(0, change.loc),
@@ -658,7 +658,7 @@ export default function ScreenTextEngine(
     if (updateMaxScroll) {
       maxScroll += amount;
     }
-    console.log('scroll', amount);
+    // console.log('scroll', amount);
     
 
     if (rootGroup.position.y < 0) rootGroup.position.y = 0;

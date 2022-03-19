@@ -7,7 +7,7 @@ import ScreenTextEngine from "./textEngine";
 import titleText from "../../text/title.md";
 import { Assists } from "../loader";
 import Terminal from "../../terminal";
-console.log(titleText);
+// console.log(titleText);
 
 export default function Screen(
   assists: Assists,

@@ -38,7 +38,7 @@ export default function Terminal(screenTextEngine: {
       screenTextEngine.scroll(numOfpx, "px");
     } else {
       const numOfLines = screenTextEngine.placeText(s);
-      console.log("numOfLines", numOfLines);
+      // console.log("numOfLines", numOfLines);
       screenTextEngine.scroll(numOfLines, "lines");
     }
   });
@@ -129,9 +129,9 @@ export default function Terminal(screenTextEngine: {
     let np = 0;
 
     if (lenDiff === 0) {
-      console.log("same");
+      // console.log("same");
     } else if (lenDiff > 0) {
-      console.log("del");
+      // console.log("del");
       change.type = "del";
       while (op < oldStr.length || np < newStr.length) {
         if (op >= oldStr.length) {
@@ -150,7 +150,7 @@ export default function Terminal(screenTextEngine: {
         }
       }
     } else if (lenDiff < 0) {
-      console.log("add");
+      // console.log("add");
       change.type = "add";
       while (op < oldStr.length || np < newStr.length) {
         if (np >= newStr.length) {
@@ -169,7 +169,7 @@ export default function Terminal(screenTextEngine: {
         }
       }
     }
-    console.log("change: ", change);
+    // console.log("change: ", change);
     return change;
   }
 }

@@ -41,10 +41,14 @@ const drive: FolderBash = {
 export default function FileSystemBash() {
   let path = [drive];
   goHome();
-  
+
   function ls() {
     return (path[path.length - 1] as any).children;
   }
+  function goRoot() {
+    path = [drive];
+  }
+
   function goHome() {
     const home = drive.children.find((m) => m.name === "home") as FolderBash;
     const user = home.children.find((m) => m.name === "user") as FolderBash;
@@ -55,9 +59,18 @@ export default function FileSystemBash() {
     if (path.length > 1) path.pop();
   }
 
+  function goTo(file: string) {
+    const next = (path[path.length - 1] as any as FolderBash).children.find(
+      (m) => m.name === file
+    ) as FolderBash;
+    if (next && next.children !== undefined) {
+      path.push(next);
+    }
+  }
+
   function getPath() {
     return path;
   }
 
-  return { ls, goHome, getPath, goUp };
+  return { ls, goHome, getPath, goUp, goRoot, goTo };
 }

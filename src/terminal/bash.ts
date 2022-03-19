@@ -23,18 +23,29 @@ export default function Bash(print: (s: string, md?: boolean) => void) {
       if (args.length === 0 || args[0] === "") {
         fileSystem.goHome();
       } else {
-        switch (args[0]) {
-          case "..":
-            fileSystem.goUp();
-            break;
+        const path = args[0].split("/");
+        console.log("path", path);
 
-          default:
-            break;
+        for (const p of path) {
+          switch (p) {
+            case "":
+              fileSystem.goRoot();
+              break;
+            case "..":
+              fileSystem.goUp();
+              break;
+            case ".":
+              // current folder
+              break;
+            default:
+              fileSystem.goTo(p);
+              break;
+          }
         }
       }
     },
     show: (args: string[]) => {
-      print(aboutMD,true)
+      print(aboutMD, true);
     },
   };
 
@@ -49,8 +60,9 @@ export default function Bash(print: (s: string, md?: boolean) => void) {
       out += path[i].name;
       if (i !== 0 && i < path.length - 1) out += "/";
     }
-    if (out === "/home/user") print(`\nuser:~$`);
-    else print(`\nuser:${out} $`);
+    out = out.replace(/^\/home\/user/, '~')
+    if (out !== "~") out += ' ';
+    print(`\nuser:${out}$`);
   }
 
   function input(cmd: string) {
