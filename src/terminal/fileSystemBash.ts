@@ -1,7 +1,7 @@
 export type FileBash = { name: string; data: string };
 export type FolderBash = { name: string; children: (FolderBash | FileBash)[] };
 
-const drive: FolderBash = {
+const disk: FolderBash = {
   name: "/",
   children: [
     { name: "bin", children: [] },
@@ -39,38 +39,51 @@ const drive: FolderBash = {
 };
 
 export default function FileSystemBash() {
-  let path = [drive];
-  goHome();
-
-  function ls() {
+  function getChildren(path: FolderBash[]) {
     return (path[path.length - 1] as any).children;
-  }
-  function goRoot() {
-    path = [drive];
   }
 
   function goHome() {
-    const home = drive.children.find((m) => m.name === "home") as FolderBash;
+    const home = disk.children.find((m) => m.name === "home") as FolderBash;
     const user = home.children.find((m) => m.name === "user") as FolderBash;
-    path = [drive, home, user];
+    return [disk, home, user];
   }
 
-  function goUp() {
-    if (path.length > 1) path.pop();
-  }
+  function goto(path: FolderBash[], newPath: string) {
+    const newPathArray = newPath.split("/");
 
-  function goTo(file: string) {
-    const next = (path[path.length - 1] as any as FolderBash).children.find(
-      (m) => m.name === file
-    ) as FolderBash;
-    if (next && next.children !== undefined) {
-      path.push(next);
+    // remove trailling slash
+    if (newPathArray.length > 0 && newPathArray.at(-1) === "")
+      newPathArray.pop();
+
+    console.log("path", newPathArray);
+
+    for (const p of newPathArray) {
+      switch (p) {
+        case "":
+          // go to root
+          path = [disk];
+          break;
+        case "..":
+          // go up a folder
+          if (path.length > 1) path.pop();
+          break;
+        case ".":
+          // current folder
+          break;
+        default:
+          // goto next location
+          const next = (path.at(-1) as any as FolderBash).children.find(
+            (m) => m.name === p
+          ) as FolderBash;
+          if (next && next.children !== undefined) {
+            path.push(next);
+          } else return undefined;
+          break;
+      }
     }
-  }
-
-  function getPath() {
     return path;
   }
 
-  return { ls, goHome, getPath, goUp, goRoot, goTo };
+  return { getChildren, goHome, goto };
 }

@@ -6,6 +6,7 @@ import aboutMD from "../text/about.md";
 
 export default function Bash(print: (s: string, md?: boolean) => void) {
   const fileSystem = FileSystemBash();
+  let path = fileSystem.goHome();
 
   const apps = {
     help: (args: string[]) => {
@@ -13,7 +14,7 @@ export default function Bash(print: (s: string, md?: boolean) => void) {
     },
     ls: (args: string[]) => {
       let out = "\n";
-      const files = fileSystem.ls();
+      const files = fileSystem.getChildren(path);
       for (const f of files) {
         out += `${f.name}\n`;
       }
@@ -21,28 +22,12 @@ export default function Bash(print: (s: string, md?: boolean) => void) {
     },
     cd: (args: string[]) => {
       if (args.length === 0 || args[0] === "") {
-        fileSystem.goHome();
-      } else {
-        const path = args[0].split("/");
-        console.log("path", path);
-
-        for (let i = 0; i < path.length; i++) {
-          switch (path[i]) {
-            case "":
-              if (i === 0 || i < path.length - 1) fileSystem.goRoot();
-              break;
-            case "..":
-              fileSystem.goUp();
-              break;
-            case ".":
-              // current folder
-              break;
-            default:
-              fileSystem.goTo(path[i]);
-              break;
-          }
-        }
+        path = fileSystem.goHome();
+        return;
       }
+      const operation = fileSystem.goto(path, args[0]);
+      if (operation) path = operation;
+      else print(`\ncd: No such file or directory`);
     },
     show: (args: string[]) => {
       print(aboutMD, true);
@@ -54,7 +39,6 @@ export default function Bash(print: (s: string, md?: boolean) => void) {
   }
 
   function prompt() {
-    const path = fileSystem.getPath();
     let out = "";
     for (let i = 0; i < path.length; i++) {
       out += path[i].name;
