@@ -1,13 +1,9 @@
 import * as THREE from "three";
 import ScreenRenderEngine from "./renderEngine";
 import ScreenTextEngine from "./textEngine";
-
-// @ts-ignore
-// import titleText from "../../text/about.md";
-import titleText from "../../text/title.md";
 import { Assists } from "../loader";
 import Terminal from "../../terminal";
-console.log(titleText);
+// console.log(titleText);
 
 export default function Screen(
   assists: Assists,
@@ -25,17 +21,9 @@ export default function Screen(
   const screenTextEngine = ScreenTextEngine(
     assists,
     sceneRTT,
-    titleText,
-    "user:~$"
   );
 
-  
   const screenRenderEngine = ScreenRenderEngine(assists, renderer, sceneRTT);
-
-  // window.addEventListener("keydown", (ev) => {
-  //   // ev.key
-  //   userInput(ev.key);
-  // });
 
   Terminal(screenTextEngine);
 

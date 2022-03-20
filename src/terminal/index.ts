@@ -1,8 +1,6 @@
-import Input from "./input";
 // @ts-ignore
-import notFound from "../text/notFound.md";
-// @ts-ignore
-import newLine from "../text/newLine.md";
+import titleText from "../text/title.md";
+import Bash from "./bash";
 export type Change = {
   type: "add" | "del" | "none";
   loc: number | "end" | "none";
@@ -11,9 +9,16 @@ export type Change = {
 export default function Terminal(screenTextEngine: {
   tick: (deltaTime: number, elapsedTime: number) => void;
   userInput: (change: Change, selectionPos: number) => void;
-  placeMarkdown: (md: string) => void;
-  placeTerminalPrompt: (str: string) => void;
-  scroll: (lines: number, updateMaxScroll?: boolean) => void;
+  placeMarkdown: (md: string) => number;
+  placeText: (str: string) => number;
+  scroll(
+    val: number,
+    units: "lines" | "px",
+    options?: {
+      updateMaxScroll: boolean;
+      moveView: boolean;
+    }
+  ): void;
   scrollToEnd: () => void;
   freezeInput: () => void;
 }) {
@@ -23,9 +28,29 @@ export default function Terminal(screenTextEngine: {
   textarea.value = "";
   textarea.readOnly = true;
   textarea.blur();
-  // textarea.onblur = () => {
-  //   textarea.focus();
-  // };
+
+  // screenTextEngine.placeText("Welcome to ED-Linux 1.0 LTS");
+  screenTextEngine.placeMarkdown("## Welcome to ED-Linux 1.0 LTS");
+  screenTextEngine.placeMarkdown(titleText);
+  screenTextEngine.placeText("\nuser:~$");
+
+  const bash = Bash((s, md = false) => {
+    if (md) {
+      const numOfpx = screenTextEngine.placeMarkdown(s);
+      screenTextEngine.scroll(numOfpx, "px", {
+        updateMaxScroll: true,
+        moveView: false,
+      });
+      screenTextEngine.scroll(12, "lines", {
+        updateMaxScroll: false,
+        moveView: true,
+      });
+    } else {
+      const numOfLines = screenTextEngine.placeText(s);
+      // console.log("numOfLines", numOfLines);
+      screenTextEngine.scroll(numOfLines, "lines");
+    }
+  });
 
   let oldText = "";
   function onInput() {
@@ -67,18 +92,10 @@ export default function Terminal(screenTextEngine: {
     // textarea
     if (e.key === "Enter") {
       screenTextEngine.freezeInput();
-      if (textarea.value.match(/^ *$/) === null) {
-        screenTextEngine.placeMarkdown(notFound);
-        screenTextEngine.scroll(2);
-        screenTextEngine.scrollToEnd();
-      } else {
-        screenTextEngine.placeMarkdown(newLine);
-        screenTextEngine.scroll(1);
-        screenTextEngine.scrollToEnd();
-      }
+      bash.input(textarea.value);
+      // screenTextEngine.scrollToEnd();
 
       textarea.value = "";
-      screenTextEngine.placeTerminalPrompt("user:~$");
       const change = stringEditDistance(oldText, textarea.value);
       oldText = textarea.value;
       if (change) screenTextEngine.userInput(change, textarea.selectionStart);
@@ -89,11 +106,17 @@ export default function Terminal(screenTextEngine: {
     switch (e.key) {
       case "ArrowUp":
         e.preventDefault();
-        screenTextEngine.scroll(-1, false);
+        screenTextEngine.scroll(-1, "lines", {
+          moveView: true,
+          updateMaxScroll: false,
+        });
         break;
       case "ArrowDown":
         e.preventDefault();
-        screenTextEngine.scroll(1, false);
+        screenTextEngine.scroll(1, "lines", {
+          moveView: true,
+          updateMaxScroll: false,
+        });
         break;
     }
   });
@@ -121,9 +144,9 @@ export default function Terminal(screenTextEngine: {
     let np = 0;
 
     if (lenDiff === 0) {
-      console.log("same");
+      // console.log("same");
     } else if (lenDiff > 0) {
-      console.log("del");
+      // console.log("del");
       change.type = "del";
       while (op < oldStr.length || np < newStr.length) {
         if (op >= oldStr.length) {
@@ -142,7 +165,7 @@ export default function Terminal(screenTextEngine: {
         }
       }
     } else if (lenDiff < 0) {
-      console.log("add");
+      // console.log("add");
       change.type = "add";
       while (op < oldStr.length || np < newStr.length) {
         if (np >= newStr.length) {
@@ -161,7 +184,7 @@ export default function Terminal(screenTextEngine: {
         }
       }
     }
-    console.log("change: ", change);
+    // console.log("change: ", change);
     return change;
   }
 }

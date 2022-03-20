@@ -64,9 +64,7 @@ const breakFont: FontInfo = (function () {
 
 export default function ScreenTextEngine(
   assists: Assists,
-  sceneRTT: THREE.Scene,
-  startText: string,
-  startTerminalPrompt: string
+  sceneRTT: THREE.Scene
 ) {
   h1Font.font = assists.publicPixelFont;
   h2Font.font = assists.chillFont;
@@ -107,14 +105,6 @@ export default function ScreenTextEngine(
     new THREE.MeshBasicMaterial({ color: textColor })
   );
   rootGroup.add(textBgMesh);
-
-  const onFontLoad = () => {
-    if (h1Font.font && h2Font.font && h3Font.font) {
-      // placeHTML(startText, titleFont);
-      placeMarkdown(startText);
-      placeTerminalPrompt(startTerminalPrompt);
-    }
-  };
 
   const caret = new THREE.Mesh(
     new THREE.PlaneBufferGeometry(h2Font.size, h2Font.size * 1.6),
@@ -158,7 +148,7 @@ export default function ScreenTextEngine(
         charUnderCaret = inputBuffer[pos];
       }
     }
-    console.log(charPos);
+    // console.log(charPos);
 
     let x = charPos.x + h2Font.size / 2;
     let y = charPos.y - h2Font.size / 1.9;
@@ -283,6 +273,8 @@ export default function ScreenTextEngine(
     value: string;
   };
   function placeMarkdown(md: string) {
+    const yBefore = charNextLoc.y;
+
     const tokens: MDtoken[] = [];
 
     let currentToken: undefined | MDtoken = undefined;
@@ -349,7 +341,7 @@ export default function ScreenTextEngine(
     if (currentToken !== undefined) {
       tokens.push(currentToken);
     }
-    console.log(tokens);
+    // console.log(tokens);
 
     const textColorGeometry: TextGeometry[] = [];
     const textBlackGeometry: TextGeometry[] = [];
@@ -434,30 +426,60 @@ export default function ScreenTextEngine(
     mergeGeometriesWithMesh(textColorMesh, textColorGeometry);
     mergeGeometriesWithMesh(textBlackMesh, textBlackGeometry);
     mergeGeometriesWithMesh(textBgMesh, textBgGeometry);
+
+    const yAfter = charNextLoc.y - yBefore;
+    return yAfter;
   }
 
   let terminalPromptOffset = 0;
-  function placeTerminalPrompt(str: string) {
-    // if (inputBuffer.length > 0)
-    //   charNextLoc.y = inputBuffer[inputBuffer.length - 1].position.y;
-    const inputBuffer = [];
-    for (const char of str) {
-      const colorText = generateGeometry({
-        str: char,
-        font: h2Font,
-        updateCharNextLoc: false,
-      }).colorText;
-      if (colorText) inputBuffer.push(colorText);
+  function placeText(str: string) {
+    const charWidth = h2Font.width + h2Font.tracking;
+    const charsPerLine = Math.floor(screenWidth / charWidth);
+
+    let numOfLines = 0;
+
+    const strWithNewline = str.split("\n");
+
+    for (let i = 0; i < strWithNewline.length; i++) {
+      const inputBuffer = [];
+      for (const char of strWithNewline[i]) {
+        const colorText = generateGeometry({
+          str: char,
+          font: h2Font,
+          updateCharNextLoc: false,
+        }).colorText;
+        if (colorText) inputBuffer.push(colorText);
+      }
+      terminalPromptOffset = 0;
+      oldNumberOfInputLines = 0;
+      updateCharPos(
+        inputBuffer,
+        (obj, x, y) => {
+          (obj as TextGeometry).translate(x, y, 0);
+        },
+        false
+      );
+
+      mergeGeometriesWithMesh(textColorMesh, inputBuffer);
+
+      const overFlow = Math.floor(inputBuffer.length / charsPerLine);
+
+      for (let i = 0; i < overFlow; i++) {
+        numOfLines += 1;
+        placeLinebreak(h2Font);
+      }
+
+      // numOfLines += Math.floor(overFlow);
+
+      if (i < strWithNewline.length - 1) {
+        placeLinebreak(h2Font);
+        numOfLines += 1;
+      } else {
+        terminalPromptOffset = strWithNewline[i].length + 1;
+        updateCaret(0);
+      }
     }
-    terminalPromptOffset = 0;
-    oldNumberOfInputLines = 0;
-    updateCharPos(inputBuffer, (obj, x, y) => {
-      (obj as TextGeometry).translate(x, y, 0);
-    });
-    mergeGeometriesWithMesh(textColorMesh, inputBuffer);
-    // inputBuffer = [];
-    terminalPromptOffset = str.length + 1;
-    updateCaret(0);
+    return numOfLines;
   }
 
   function delChar(charsTODel: THREE.Mesh[]) {
@@ -471,10 +493,12 @@ export default function ScreenTextEngine(
   let oldNumberOfInputLines = 0;
   function updateCharPos(
     inputBuffer: THREE.Mesh[] | TextGeometry[],
-    helper: (obj: THREE.Mesh | TextGeometry, x: number, y: number) => void
+    helper: (obj: THREE.Mesh | TextGeometry, x: number, y: number) => void,
+    shouldScroll: boolean
   ) {
     const charWidth = h2Font.width + h2Font.tracking;
     const charsPerLine = Math.floor(screenWidth / charWidth);
+
     for (let i = 0; i < inputBuffer.length; i++) {
       const x =
         charNextLoc.x + charWidth * ((i + terminalPromptOffset) % charsPerLine);
@@ -486,17 +510,18 @@ export default function ScreenTextEngine(
     }
 
     // Scroll if more then one line
-    const newNumberOfInputLines = Math.floor(
-      (inputBuffer.length + terminalPromptOffset) / charsPerLine
-    );
-    if (newNumberOfInputLines > oldNumberOfInputLines)
-      scroll(newNumberOfInputLines - oldNumberOfInputLines);
-    else scroll(newNumberOfInputLines - oldNumberOfInputLines);
-    oldNumberOfInputLines = newNumberOfInputLines;
+    if (shouldScroll) {
+      const newNumberOfInputLines = Math.floor(
+        (inputBuffer.length + terminalPromptOffset) / charsPerLine
+      );
+      if (newNumberOfInputLines > oldNumberOfInputLines)
+        scroll(newNumberOfInputLines - oldNumberOfInputLines, "lines");
+      else scroll(newNumberOfInputLines - oldNumberOfInputLines, "lines");
+      oldNumberOfInputLines = newNumberOfInputLines;
+    }
   }
 
   function userInput(change: Change, selectionPos: number) {
-
     if (change.type === "add") {
       if (change.loc === "end") {
         caret.visible = true;
@@ -511,11 +536,15 @@ export default function ScreenTextEngine(
           );
 
           inputBuffer.push(textObj);
-          updateCharPos(inputBuffer, (obj, x, y) => {
-            obj = obj as THREE.Mesh;
-            obj.position.set(x, y, 0);
-            rootGroup.add(obj);
-          });
+          updateCharPos(
+            inputBuffer,
+            (obj, x, y) => {
+              obj = obj as THREE.Mesh;
+              obj.position.set(x, y, 0);
+              rootGroup.add(obj);
+            },
+            true
+          );
         }
       } else if (typeof change.loc === "number") {
         // charNextLoc.x = inputBuffer[change.loc].position.x;
@@ -539,20 +568,28 @@ export default function ScreenTextEngine(
           ...newChars,
           ...inputBuffer.slice(change.loc, inputBuffer.length),
         ];
-        updateCharPos(inputBuffer, (obj, x, y) => {
-          obj = obj as THREE.Mesh;
-          obj.position.set(x, y, 0);
-          rootGroup.add(obj);
-        });
+        updateCharPos(
+          inputBuffer,
+          (obj, x, y) => {
+            obj = obj as THREE.Mesh;
+            obj.position.set(x, y, 0);
+            rootGroup.add(obj);
+          },
+          true
+        );
       }
     } else if (change.type === "del") {
       if (change.loc === "end") {
         const charsTODel = inputBuffer.slice(-change.str.length);
         inputBuffer = inputBuffer.slice(0, -change.str.length);
-        updateCharPos(inputBuffer, (obj, x, y) => {
-          obj = obj as THREE.Mesh;
-          obj.position.set(x, y, 0);
-        });
+        updateCharPos(
+          inputBuffer,
+          (obj, x, y) => {
+            obj = obj as THREE.Mesh;
+            obj.position.set(x, y, 0);
+          },
+          true
+        );
         delChar(charsTODel);
       } else if (typeof change.loc === "number") {
         // charNextLoc.x = inputBuffer[change.loc].position.x;
@@ -563,7 +600,7 @@ export default function ScreenTextEngine(
           change.loc + change.str.length
         );
         delChar(charsTODel);
-        console.log(charsTODel);
+        // console.log(charsTODel);
 
         inputBuffer = [
           ...inputBuffer.slice(0, change.loc),
@@ -572,10 +609,14 @@ export default function ScreenTextEngine(
             inputBuffer.length
           ),
         ];
-        updateCharPos(inputBuffer, (obj, x, y) => {
-          obj = obj as THREE.Mesh;
-          obj.position.set(x, y, 0);
-        });
+        updateCharPos(
+          inputBuffer,
+          (obj, x, y) => {
+            obj = obj as THREE.Mesh;
+            obj.position.set(x, y, 0);
+          },
+          true
+        );
       }
     }
     updateCaret(selectionPos);
@@ -600,11 +641,19 @@ export default function ScreenTextEngine(
   }
 
   let maxScroll = rootGroup.position.y;
-  function scroll(lines: number, updateMaxScroll = true) {
-    rootGroup.position.y += lines * h2Font.leading;
-    if (updateMaxScroll) {
-      maxScroll += lines * h2Font.leading;
+  function scroll(
+    val: number,
+    units: "lines" | "px",
+    options = {
+      updateMaxScroll: true,
+      moveView: true,
     }
+  ) {
+    let amount = val;
+    if (units === "lines") amount *= h2Font.leading;
+    if (options.moveView) rootGroup.position.y += amount;
+    if (options.updateMaxScroll) maxScroll += amount;
+
 
     if (rootGroup.position.y < 0) rootGroup.position.y = 0;
     if (rootGroup.position.y > maxScroll) rootGroup.position.y = maxScroll;
@@ -625,13 +674,11 @@ export default function ScreenTextEngine(
     caretTimeSinceUpdate += deltaTime;
   }
 
-  onFontLoad();
-
   return {
     tick,
     userInput,
     placeMarkdown,
-    placeTerminalPrompt,
+    placeText,
     scroll,
     scrollToEnd,
     freezeInput,

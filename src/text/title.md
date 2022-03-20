@@ -1,4 +1,5 @@
-## user:~$ curl edwardh.io
+
+
 
 
 #  Hi there,
@@ -7,6 +8,4 @@
 ##     — Computer Science graduate of
 ##        the University of Melbourne
 ##
-###     Scroll to get started
-
-
+###   *Scroll* or type "help" to get started
