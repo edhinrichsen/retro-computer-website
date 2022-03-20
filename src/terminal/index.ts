@@ -11,11 +11,14 @@ export default function Terminal(screenTextEngine: {
   userInput: (change: Change, selectionPos: number) => void;
   placeMarkdown: (md: string) => number;
   placeText: (str: string) => number;
-  scroll: (
+  scroll(
     val: number,
     units: "lines" | "px",
-    updateMaxScroll?: boolean
-  ) => void;
+    options?: {
+      updateMaxScroll: boolean;
+      moveView: boolean;
+    }
+  ): void;
   scrollToEnd: () => void;
   freezeInput: () => void;
 }) {
@@ -27,14 +30,21 @@ export default function Terminal(screenTextEngine: {
   textarea.blur();
 
   // screenTextEngine.placeText("Welcome to ED-Linux 1.0 LTS");
-  screenTextEngine.placeMarkdown('## Welcome to ED-Linux 1.0 LTS');
+  screenTextEngine.placeMarkdown("## Welcome to ED-Linux 1.0 LTS");
   screenTextEngine.placeMarkdown(titleText);
   screenTextEngine.placeText("\nuser:~$");
 
   const bash = Bash((s, md = false) => {
     if (md) {
       const numOfpx = screenTextEngine.placeMarkdown(s);
-      screenTextEngine.scroll(numOfpx, "px");
+      screenTextEngine.scroll(numOfpx, "px", {
+        updateMaxScroll: true,
+        moveView: false,
+      });
+      screenTextEngine.scroll(12, "lines", {
+        updateMaxScroll: false,
+        moveView: true,
+      });
     } else {
       const numOfLines = screenTextEngine.placeText(s);
       // console.log("numOfLines", numOfLines);
@@ -83,7 +93,7 @@ export default function Terminal(screenTextEngine: {
     if (e.key === "Enter") {
       screenTextEngine.freezeInput();
       bash.input(textarea.value);
-      screenTextEngine.scrollToEnd();
+      // screenTextEngine.scrollToEnd();
 
       textarea.value = "";
       const change = stringEditDistance(oldText, textarea.value);
@@ -96,11 +106,17 @@ export default function Terminal(screenTextEngine: {
     switch (e.key) {
       case "ArrowUp":
         e.preventDefault();
-        screenTextEngine.scroll(-1, "lines", false);
+        screenTextEngine.scroll(-1, "lines", {
+          moveView: true,
+          updateMaxScroll: false,
+        });
         break;
       case "ArrowDown":
         e.preventDefault();
-        screenTextEngine.scroll(1, "lines", false);
+        screenTextEngine.scroll(1, "lines", {
+          moveView: true,
+          updateMaxScroll: false,
+        });
         break;
     }
   });

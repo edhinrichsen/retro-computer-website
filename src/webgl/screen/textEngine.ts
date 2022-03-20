@@ -64,7 +64,7 @@ const breakFont: FontInfo = (function () {
 
 export default function ScreenTextEngine(
   assists: Assists,
-  sceneRTT: THREE.Scene,
+  sceneRTT: THREE.Scene
 ) {
   h1Font.font = assists.publicPixelFont;
   h2Font.font = assists.chillFont;
@@ -641,15 +641,19 @@ export default function ScreenTextEngine(
   }
 
   let maxScroll = rootGroup.position.y;
-  function scroll(val: number, units: "lines" | "px", updateMaxScroll = true) {
+  function scroll(
+    val: number,
+    units: "lines" | "px",
+    options = {
+      updateMaxScroll: true,
+      moveView: true,
+    }
+  ) {
     let amount = val;
     if (units === "lines") amount *= h2Font.leading;
-    rootGroup.position.y += amount;
-    if (updateMaxScroll) {
-      maxScroll += amount;
-    }
-    // console.log('scroll', amount);
-    
+    if (options.moveView) rootGroup.position.y += amount;
+    if (options.updateMaxScroll) maxScroll += amount;
+
 
     if (rootGroup.position.y < 0) rootGroup.position.y = 0;
     if (rootGroup.position.y > maxScroll) rootGroup.position.y = maxScroll;
@@ -669,7 +673,7 @@ export default function ScreenTextEngine(
 
     caretTimeSinceUpdate += deltaTime;
   }
-  
+
   return {
     tick,
     userInput,
