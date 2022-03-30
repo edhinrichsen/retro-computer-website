@@ -95,24 +95,24 @@ export default function Bash(print: (s: string, md?: boolean) => void) {
 
       print(file.data, true);
     },
-    nano: (args: string[]) => {
-      if (args.length === 0) {
-        print(`\nMissing filename`);
-        return;
-      }
-      const file = fileSystem.goto(path, args[0])?.at(-1);
-      if (!file) {
-        print(`\nNo such file or directory`);
-        return;
-      }
+    // nano: (args: string[]) => {
+    //   if (args.length === 0) {
+    //     print(`\nMissing filename`);
+    //     return;
+    //   }
+    //   const file = fileSystem.goto(path, args[0])?.at(-1);
+    //   if (!file) {
+    //     print(`\nNo such file or directory`);
+    //     return;
+    //   }
 
-      if (!("data" in file)) {
-        print(`\n${file.name}:not a file`);
-        return;
-      }
+    //   if (!("data" in file)) {
+    //     print(`\n${file.name}:not a file`);
+    //     return;
+    //   }
 
-      print(file.data);
-    },
+    //   print(file.data);
+    // },
   };
 
   function cmdNotFound(cmdName: string) {
