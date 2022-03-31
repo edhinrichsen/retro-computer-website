@@ -46,7 +46,11 @@ const disk: FolderBash = {
               name: "projects",
               children: [
                 { name: "writing-buddy.md", data: writingBuddyMD },
-                { name: "my-own-programming-language.md", data: myOwnProgrammingLanguageMD },
+
+                {
+                  name: "my-own-programming-language.md",
+                  data: myOwnProgrammingLanguageMD,
+                },
                 { name: "glowbal.md", data: glowbalMD },
                 { name: "cyber-heist.md", data: cyberHeist },
                 { name: "pavilion.md", data: pavilionMD },
@@ -73,26 +77,15 @@ const disk: FolderBash = {
 };
 
 export default function FileSystemBash() {
-  function getChildren(path: FolderBash[]) {
-    return (path[path.length - 1] as any).children;
-  }
-
-  function goHome() {
-    const home = disk.children.find((m) => m.name === "home") as FolderBash;
-    const user = home.children.find((m) => m.name === "user") as FolderBash;
-    return [disk, home, user];
-  }
-
-  function goto(path: (FolderBash | FileBash)[], newPath: string) {
-    path = [...path];
-
-    const newPathArray = newPath.split("/");
+  function _pathStrToArr(p: string) {
+    const pathArray = p.split("/");
     // remove trailling slash
-    if (newPathArray.length > 0 && newPathArray.at(-1) === "")
-      newPathArray.pop();
+    if (pathArray.length > 0 && pathArray.at(-1) === "") pathArray.pop();
 
-    console.log("path", newPathArray);
+    return pathArray;
+  }
 
+  function _buildPath(path: (FolderBash | FileBash)[], newPathArray: string[]) {
     for (const p of newPathArray) {
       switch (p) {
         case "":
@@ -122,5 +115,43 @@ export default function FileSystemBash() {
     return path;
   }
 
-  return { getChildren, goHome, goto };
+  function getChildren(path: FolderBash[]) {
+    return (path[path.length - 1] as any).children;
+  }
+
+  function goHome() {
+    const home = disk.children.find((m) => m.name === "home") as FolderBash;
+    const user = home.children.find((m) => m.name === "user") as FolderBash;
+    return [disk, home, user];
+  }
+
+  function goto(path: (FolderBash | FileBash)[], newPath: string) {
+    return _buildPath([...path], _pathStrToArr(newPath));
+  }
+  function make(
+    path: (FolderBash | FileBash)[],
+    newPath: string,
+    type: "file" | "folder"
+  ) {
+    const newPathArray = _pathStrToArr(newPath);
+    const name = newPathArray.pop();
+
+    if (name === undefined) return "bad_args";
+
+    const currentPath = _buildPath([...path], newPathArray);
+    const currentFolder = currentPath?.at(-1);
+
+    if (!currentFolder || !("children" in currentFolder)) return "bad_path";
+
+    // Check if folder allready exisits
+    if (currentFolder.children.find((m) => m.name === name))
+      return "file_exists";
+
+    currentFolder.children.push(
+      type === "folder" ? { name, children: [] } : { name, data: "" }
+    );
+    return "ok";
+  }
+
+  return { getChildren, goHome, goto, make };
 }
