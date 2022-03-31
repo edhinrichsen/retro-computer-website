@@ -321,7 +321,7 @@ a:active {
 .portrait {
   position: relative;
   /* width: 100vw; */
-  width: clamp(0px, 95vw, 680px);
+  width: clamp(0px, 95vw, 780px);
   padding: 0;
   height: 400px;
   margin: auto;
