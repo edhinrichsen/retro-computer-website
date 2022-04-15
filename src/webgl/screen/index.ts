@@ -3,7 +3,6 @@ import ScreenRenderEngine from "./renderEngine";
 import ScreenTextEngine from "./textEngine";
 import { Assists } from "../loader";
 import Terminal from "../../terminal";
-// console.log(titleText);
 
 export default function Screen(
   assists: Assists,

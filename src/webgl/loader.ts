@@ -11,7 +11,6 @@ type Assists = {
   shadowPlaneMesh: THREE.Mesh;
   bakeTexture: THREE.Texture;
   bakeFloorTexture: THREE.Texture;
-  // glossMap: THREE.Texture;
   publicPixelFont: Font;
   chillFont: Font;
   environmentMapTexture: THREE.CubeTexture;
@@ -94,24 +93,10 @@ function loadAssists(callback: (assists: Assists) => any) {
     assists.bakeFloorTexture = tex;
   });
 
-  // textureLoader.load("/textures/HandleRubberSmooth001_GLOSS_3K.jpg", (tex) => {
-  //   tex.
-  //   assists.glossMap = tex;
-
-  // })
-
   const cubeTextureLoader = new THREE.CubeTextureLoader(manager);
 
   const num = 7;
   cubeTextureLoader.load(
-    // [
-    //   "/textures/environmentMaps/2/px.jpg",
-    //   "/textures/environmentMaps/2/nx.jpg",
-    //   "/textures/environmentMaps/2/py.jpg",
-    //   "/textures/environmentMaps/2/ny.jpg",
-    //   "/textures/environmentMaps/2/pz.jpg",
-    //   "/textures/environmentMaps/2/nz.jpg",
-    // ],
     [
       `/textures/environmentMaps/${num}/px.png`,
       `/textures/environmentMaps/${num}/nx.png`,
@@ -127,7 +112,6 @@ function loadAssists(callback: (assists: Assists) => any) {
 
   // Mesh
   const gltfLoader = new GLTFLoader(manager);
-  // gltfLoader.load("/models/Commodore710_34.glb", (gltf) => {
   gltfLoader.load("/models/Commodore710_33.5.glb", (gltf) => {
     const computer = new THREE.Group();
     assists.screenMesh = gltf.scene.children.find((m) => m.name === "Screen");
@@ -141,15 +125,6 @@ function loadAssists(callback: (assists: Assists) => any) {
     assists.shadowPlaneMesh = gltf.scene.children.find(
       (m) => m.name === "ShadowPlane"
     );
-    // assists.crtMesh.morphTargetInfluences[ 0 ] = 1;
-    // console.log(assists.crtMesh.geometry.morphAttributes);
-
-
-    // assists.computerMesh.geometry.translate(0.5,0.5,0.5)
-    // assists.keyboardMesh.geometry = mergeBufferGeometries([
-    //   assists.computerMesh.geometry,
-    //   assists.keyboardMesh.geometry,
-    // ]);
  
   });
 }

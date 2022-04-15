@@ -25,7 +25,6 @@ let viewHeight = document.documentElement.clientHeight
 let scroll = window.scrollY / document.documentElement.clientHeight;
 window.addEventListener("scroll", (ev) => {
   scroll = window.scrollY / viewHeight;
-  // console.log(window.scrollY / document.documentElement.clientHeight);
 },{passive: true});
 
 export default function WebGL() {
@@ -53,10 +52,8 @@ export default function WebGL() {
     /**
      * Sizes
      */
-    const widthOffset = 0.5;
     const sizes = {
       width: document.documentElement.clientWidth,
-      // width: window.innerWidth / (widthOffset + 1),
       height: window.innerHeight,
       portraitOffset: valMap(
         window.innerHeight / document.documentElement.clientWidth,
@@ -64,11 +61,6 @@ export default function WebGL() {
         [0, 2]
       ),
     };
-
-    // const sideBar = {
-    //   left: document.querySelector("div#left") as HTMLDivElement,
-    //   right: document.querySelector("div#right") as HTMLDivElement,
-    // };
 
     // Scene
     const scene = new THREE.Scene();
@@ -92,8 +84,6 @@ export default function WebGL() {
     scene.add(camera);
 
     // Controls
-    // const controls = new OrbitControls(camera, canvas);
-
     const controlProps = {
       computerHeight: 1.5,
       computerAngle: Math.PI * 0.2,
@@ -118,17 +108,12 @@ export default function WebGL() {
     canvas.addEventListener("pointermove", (event) => {
       checkIfTouch(event);
       if (mousedown) {
-        // computerParallax.x = ((event.clientX - mousedown.x) / window.innerWidth - 0.5) * 2;
-        // computerParallax.y = ((event.clientY - mousedown.y) / window.innerHeight - 0.5) * 2;
         computerParallax.x += (event.clientX - mousedown.x) / (window.innerWidth * 0.5);
         computerParallax.x = valMap(computerParallax.x, [-1, 1], [-1, 1])
 
-
         computerParallax.y += (event.clientY - mousedown.y) / (window.innerHeight * 0.5);
         computerParallax.y = valMap(computerParallax.y, [-1, 1], [-1, 1])
-
-        // console.log(computerParallax);
-
+        
         mousedown = { x: event.clientX, y: event.clientY };
 
       }
@@ -163,8 +148,6 @@ export default function WebGL() {
 
       // Update renderer
       renderer.setSize(width, height);
-      // renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      // renderer.setPixelRatio(2);
     }
     window.addEventListener("resize", () => {
       // Update sizes
@@ -189,12 +172,8 @@ export default function WebGL() {
       new THREE.MeshBasicMaterial({ color: "blue" })
     );
     plane.scale.x = 1.33;
-    // scene.add(plane);
 
     // Materials
-    // const computerMaterial = new THREE.MeshStandardMaterial({ map: assists.bakeTexture});
-    // computerMaterial.envMap = assists.environmentMapTexture
-    // computerMaterial.roughnessMap = assists.glossMap
     const computerMaterial = new THREE.MeshBasicMaterial({
       map: assists.bakeTexture,
     });
@@ -260,7 +239,6 @@ export default function WebGL() {
       camera.position.y =
         computerParallax.y * valMap(scroll, [0, 1], [0.2, 1.5]) * 0.1 + camera.position.y * 0.9;
 
-      // -Math.PI, 0, Math.PI
       camera.lookAt(new Vector3(0, 0, 0));
 
       canvas.style.opacity = `${valMap(scroll, [1.25, 1.75], [1, 0])}`;
