@@ -95,15 +95,14 @@ function loadAssists(callback: (assists: Assists) => any) {
 
   const cubeTextureLoader = new THREE.CubeTextureLoader(manager);
 
-  const num = 7;
   cubeTextureLoader.load(
     [
-      `/textures/environmentMaps/${num}/px.png`,
-      `/textures/environmentMaps/${num}/nx.png`,
-      `/textures/environmentMaps/${num}/py.png`,
-      `/textures/environmentMaps/${num}/ny.png`,
-      `/textures/environmentMaps/${num}/pz.png`,
-      `/textures/environmentMaps/${num}/nz.png`,
+      `/textures/environmentMap/px.jpg`,
+      `/textures/environmentMap/nx.jpg`,
+      `/textures/environmentMap/py.jpg`,
+      `/textures/environmentMap/ny.jpg`,
+      `/textures/environmentMap/pz.jpg`,
+      `/textures/environmentMap/nz.jpg`,
     ],
     (tex) => {
       assists.environmentMapTexture = tex;
