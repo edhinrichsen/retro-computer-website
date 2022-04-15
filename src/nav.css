@@ -16,7 +16,7 @@ nav button {
   pointer-events: none;
 }
 
-html[data-scroll='true'] nav button  {
+html[data-scroll="true"] nav button {
   opacity: 1;
   pointer-events: all;
 }
@@ -32,11 +32,9 @@ html[data-scroll='true'] nav button  {
   pointer-events: all !important;
 }
 
-
 .active button:hover {
   box-shadow: 8px 8px 6px rgba(246, 212, 177, 0.5);
 }
-
 
 .active button:active {
   box-shadow: 4px 4px 0px rgba(246, 212, 177, 0.7);
@@ -79,7 +77,7 @@ html[data-scroll='true'] nav button  {
   opacity: 1;
 }
 
-#tip-scroll{
+#tip-scroll {
   position: fixed;
   bottom: 16px;
   left: 50%;
@@ -97,17 +95,16 @@ html[data-scroll='true'] nav button  {
   opacity: 1;
 }
 
-html[data-scroll='true'] #tip-scroll {
+html[data-scroll="true"] #tip-scroll {
   opacity: 0;
 }
 
-.active #tip-scroll{
+.active #tip-scroll {
   opacity: 0 !important;
 }
 
 @media (orientation: portrait) {
-  #tip-scroll{
+  #tip-scroll {
     display: block;
   }
-  
 }
