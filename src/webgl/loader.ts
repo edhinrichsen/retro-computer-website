@@ -81,13 +81,13 @@ function loadAssists(callback: (assists: Assists) => any) {
 
   // Texture
   const textureLoader = new THREE.TextureLoader(manager);
-  textureLoader.load("/textures/bake.jpg", (tex) => {
+  textureLoader.load("/textures/bake-quality-5.jpg", (tex) => {
     tex.flipY = false;
     tex.encoding = THREE.sRGBEncoding;
     assists.bakeTexture = tex;
   });
 
-  textureLoader.load("/textures/bake_floor.jpg", (tex) => {
+  textureLoader.load("/textures/bake_floor-quality-3.jpg", (tex) => {
     tex.flipY = false;
     tex.encoding = THREE.sRGBEncoding;
     assists.bakeFloorTexture = tex;
