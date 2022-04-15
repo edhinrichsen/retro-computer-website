@@ -148,7 +148,6 @@ export default function ScreenTextEngine(
         charUnderCaret = inputBuffer[pos];
       }
     }
-    // console.log(charPos);
 
     let x = charPos.x + h2Font.size / 2;
     let y = charPos.y - h2Font.size / 1.9;
@@ -159,7 +158,6 @@ export default function ScreenTextEngine(
     }
     caret.position.x = x;
     caret.position.y = y;
-    // caret.position.set(x, y, 0);
     caretTimeSinceUpdate = 0;
   }
 
@@ -247,9 +245,6 @@ export default function ScreenTextEngine(
     }
 
     return returnObj;
-    // return textGeometry;
-
-    // return [width + tracking + x, y, charObj];
   }
 
   function mergeGeometriesWithMesh(
@@ -341,7 +336,6 @@ export default function ScreenTextEngine(
     if (currentToken !== undefined) {
       tokens.push(currentToken);
     }
-    // console.log(tokens);
 
     const textColorGeometry: TextGeometry[] = [];
     const textBlackGeometry: TextGeometry[] = [];
@@ -469,8 +463,6 @@ export default function ScreenTextEngine(
         placeLinebreak(h2Font);
       }
 
-      // numOfLines += Math.floor(overFlow);
-
       if (i < strWithNewline.length - 1) {
         placeLinebreak(h2Font);
         numOfLines += 1;
@@ -547,8 +539,6 @@ export default function ScreenTextEngine(
           );
         }
       } else if (typeof change.loc === "number") {
-        // charNextLoc.x = inputBuffer[change.loc].position.x;
-        // charNextLoc.y = inputBuffer[change.loc].position.y;
 
         const newChars: THREE.Mesh[] = [];
         for (const char of change.str) {
@@ -592,15 +582,12 @@ export default function ScreenTextEngine(
         );
         delChar(charsTODel);
       } else if (typeof change.loc === "number") {
-        // charNextLoc.x = inputBuffer[change.loc].position.x;
-        // charNextLoc.y = inputBuffer[change.loc].position.y;
 
         const charsTODel = inputBuffer.slice(
           change.loc,
           change.loc + change.str.length
         );
         delChar(charsTODel);
-        // console.log(charsTODel);
 
         inputBuffer = [
           ...inputBuffer.slice(0, change.loc),
@@ -637,7 +624,6 @@ export default function ScreenTextEngine(
       (inputBuffer.length + terminalPromptOffset) / charsPerLine
     );
     charNextLoc.y += h2Font.leading * newNumberOfInputLines;
-    // inputBuffer = [];
   }
 
   let maxScroll = rootGroup.position.y;

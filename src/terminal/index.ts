@@ -23,13 +23,11 @@ export default function Terminal(screenTextEngine: {
   freezeInput: () => void;
 }) {
   const canvas = document.querySelector("canvas.webgl") as HTMLCanvasElement;
-  // const input = Input()
   const textarea = document.getElementById("textarea") as HTMLTextAreaElement;
   textarea.value = "";
   textarea.readOnly = true;
   textarea.blur();
 
-  // screenTextEngine.placeText("Welcome to ED-Linux 1.0 LTS");
   screenTextEngine.placeMarkdown("## Welcome to ED-Linux 1.0 LTS");
   screenTextEngine.placeMarkdown(titleText);
   screenTextEngine.placeText("\nuser:~$");
@@ -47,7 +45,6 @@ export default function Terminal(screenTextEngine: {
       });
     } else {
       const numOfLines = screenTextEngine.placeText(s);
-      // console.log("numOfLines", numOfLines);
       screenTextEngine.scroll(numOfLines, "lines");
     }
   });
@@ -93,7 +90,6 @@ export default function Terminal(screenTextEngine: {
     if (e.key === "Enter") {
       screenTextEngine.freezeInput();
       bash.input(textarea.value);
-      // screenTextEngine.scrollToEnd();
 
       textarea.value = "";
       const change = stringEditDistance(oldText, textarea.value);
@@ -144,16 +140,13 @@ export default function Terminal(screenTextEngine: {
     let np = 0;
 
     if (lenDiff === 0) {
-      // console.log("same");
     } else if (lenDiff > 0) {
-      // console.log("del");
       change.type = "del";
       while (op < oldStr.length || np < newStr.length) {
         if (op >= oldStr.length) {
           console.error("add and del");
           return;
         }
-        // console.log()
         if (oldStr.charAt(op) !== newStr.charAt(np)) {
           if (change.loc === "none")
             change.loc = np === newStr.length ? "end" : np;
@@ -165,14 +158,12 @@ export default function Terminal(screenTextEngine: {
         }
       }
     } else if (lenDiff < 0) {
-      // console.log("add");
       change.type = "add";
       while (op < oldStr.length || np < newStr.length) {
         if (np >= newStr.length) {
           console.error("add and del");
           return;
         }
-        // console.log()
         if (oldStr.charAt(op) !== newStr.charAt(np)) {
           if (change.loc === "none")
             change.loc = op === oldStr.length ? "end" : op;
@@ -184,7 +175,6 @@ export default function Terminal(screenTextEngine: {
         }
       }
     }
-    // console.log("change: ", change);
     return change;
   }
 }

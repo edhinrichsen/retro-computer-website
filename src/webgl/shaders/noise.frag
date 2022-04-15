@@ -36,17 +36,7 @@ void main()
         {
             vec4 color = texture2D(uDiffuse, vUv);
             float r = rand(vUv*uTime);
-            // color.rgb + uTint;
-            // gl_FragColor = color;
 
-            
             vec4 p = progress();
-            gl_FragColor = color  +  (vec4(r,r,r,0) * (p.a + NOISE_STRENGTH)) + squareWave(vUv.y);
-
-            // gl_FragColor = texture2D(uDiffuse, vUv);
-
-            // if (vUv.y > sin(uTime) && vUv.y < sin(uTime) + 0.1 ) {
-            //     gl_FragColor += vec4(0.1,0.1,0.1,0);
-            // }
-            
+            gl_FragColor = color  +  (vec4(r,r,r,0) * (p.a + NOISE_STRENGTH)) + squareWave(vUv.y);            
         }

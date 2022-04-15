@@ -4,11 +4,11 @@
 
 @font-face {
   font-family: public-pixel;
-  src: url("../static/fonts/public-pixel.ttf");
+  src: url("../static/fonts/public-pixel.woff");
 }
 @font-face {
   font-family: chill;
-  src: url("../static/fonts/chill.otf");
+  src: url("../static/fonts/chill.woff");
 }
 
 @import url("./collapse.css");
@@ -212,14 +212,6 @@ p {
   box-shadow: 1px 1px 0px #f6d4b1, 4px 4px 0px rgba(82, 82, 82, 0.25);
 }
 
-.skills li::before {
-  /* content: '['; */
-}
-
-.skills li::after {
-  /* content: ']'; */
-}
-
 .image {
   display: flex;
   /* flex-direction: column; */
@@ -233,7 +225,7 @@ p {
 .image * {
   box-sizing: border-box;
   width: clamp(0px, 95vw, 1200px);
- 
+
   box-shadow: 1px 1px 0px #f6d4b1, 6px 6px 0px rgba(82, 82, 82, 0.25);
 }
 
@@ -331,10 +323,9 @@ a:active {
   justify-content: center;
 
   box-shadow: 1px 1px 0px #f6d4b1, 6px 6px 0px rgba(82, 82, 82, 0.25);
-
 }
 
-.portrait-tag{
+.portrait-tag {
   position: absolute;
   color: white;
   left: calc(50% + 120px);

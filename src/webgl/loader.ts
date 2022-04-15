@@ -11,7 +11,6 @@ type Assists = {
   shadowPlaneMesh: THREE.Mesh;
   bakeTexture: THREE.Texture;
   bakeFloorTexture: THREE.Texture;
-  // glossMap: THREE.Texture;
   publicPixelFont: Font;
   chillFont: Font;
   environmentMapTexture: THREE.CubeTexture;
@@ -82,43 +81,28 @@ function loadAssists(callback: (assists: Assists) => any) {
 
   // Texture
   const textureLoader = new THREE.TextureLoader(manager);
-  textureLoader.load("/textures/bake.jpg", (tex) => {
+  textureLoader.load("/textures/bake-quality-5.jpg", (tex) => {
     tex.flipY = false;
     tex.encoding = THREE.sRGBEncoding;
     assists.bakeTexture = tex;
   });
 
-  textureLoader.load("/textures/bake_floor.jpg", (tex) => {
+  textureLoader.load("/textures/bake_floor-quality-3.jpg", (tex) => {
     tex.flipY = false;
     tex.encoding = THREE.sRGBEncoding;
     assists.bakeFloorTexture = tex;
   });
 
-  // textureLoader.load("/textures/HandleRubberSmooth001_GLOSS_3K.jpg", (tex) => {
-  //   tex.
-  //   assists.glossMap = tex;
-
-  // })
-
   const cubeTextureLoader = new THREE.CubeTextureLoader(manager);
 
-  const num = 7;
   cubeTextureLoader.load(
-    // [
-    //   "/textures/environmentMaps/2/px.jpg",
-    //   "/textures/environmentMaps/2/nx.jpg",
-    //   "/textures/environmentMaps/2/py.jpg",
-    //   "/textures/environmentMaps/2/ny.jpg",
-    //   "/textures/environmentMaps/2/pz.jpg",
-    //   "/textures/environmentMaps/2/nz.jpg",
-    // ],
     [
-      `/textures/environmentMaps/${num}/px.png`,
-      `/textures/environmentMaps/${num}/nx.png`,
-      `/textures/environmentMaps/${num}/py.png`,
-      `/textures/environmentMaps/${num}/ny.png`,
-      `/textures/environmentMaps/${num}/pz.png`,
-      `/textures/environmentMaps/${num}/nz.png`,
+      `/textures/environmentMap/px.jpg`,
+      `/textures/environmentMap/nx.jpg`,
+      `/textures/environmentMap/py.jpg`,
+      `/textures/environmentMap/ny.jpg`,
+      `/textures/environmentMap/pz.jpg`,
+      `/textures/environmentMap/nz.jpg`,
     ],
     (tex) => {
       assists.environmentMapTexture = tex;
@@ -127,9 +111,7 @@ function loadAssists(callback: (assists: Assists) => any) {
 
   // Mesh
   const gltfLoader = new GLTFLoader(manager);
-  // gltfLoader.load("/models/Commodore710_34.glb", (gltf) => {
   gltfLoader.load("/models/Commodore710_33.5.glb", (gltf) => {
-    const computer = new THREE.Group();
     assists.screenMesh = gltf.scene.children.find((m) => m.name === "Screen");
     assists.computerMesh = gltf.scene.children.find(
       (m) => m.name === "Computer"
@@ -141,15 +123,6 @@ function loadAssists(callback: (assists: Assists) => any) {
     assists.shadowPlaneMesh = gltf.scene.children.find(
       (m) => m.name === "ShadowPlane"
     );
-    // assists.crtMesh.morphTargetInfluences[ 0 ] = 1;
-    // console.log(assists.crtMesh.geometry.morphAttributes);
-
-
-    // assists.computerMesh.geometry.translate(0.5,0.5,0.5)
-    // assists.keyboardMesh.geometry = mergeBufferGeometries([
-    //   assists.computerMesh.geometry,
-    //   assists.keyboardMesh.geometry,
-    // ]);
  
   });
 }

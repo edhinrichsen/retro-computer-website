@@ -17,8 +17,6 @@ export default function ScreenRenderEngine(
   sceneRTT: THREE.Scene
 ) {
   const resolution = 512 + 64;
-  // const resolution = 768
-  // const resolution = 512
 
   const cameraRTT = new THREE.OrthographicCamera(-0.1, 1.496, 0.1, -1.1, 1, 3);
   sceneRTT.add(cameraRTT);
@@ -93,8 +91,6 @@ export default function ScreenRenderEngine(
   material.envMap = environmentMapTexture;
   material.envMapIntensity = 0.7
   material.map = shaderToScreen.outputTexture.texture;
-  // material.color.set("#fff");
 
-  // return [render, noiseMat];
   return { tick, material };
 }
