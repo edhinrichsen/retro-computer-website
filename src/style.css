@@ -4,11 +4,11 @@
 
 @font-face {
   font-family: public-pixel;
-  src: url("../static/fonts/public-pixel.ttf");
+  src: url("../static/fonts/public-pixel.woff");
 }
 @font-face {
   font-family: chill;
-  src: url("../static/fonts/chill.otf");
+  src: url("../static/fonts/chill.woff");
 }
 
 @import url("./collapse.css");
