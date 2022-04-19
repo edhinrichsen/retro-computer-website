@@ -264,7 +264,8 @@ footer {
   flex-direction: column;
   /* border-top: dashed 1px  var(--color); */
   font-size: 12px;
-  margin: 0px 32px 0 32px;
+  width: clamp(0px, 95vw, 680px);
+  margin: auto;
   padding: 32px 0px;
   text-align: center;
   color: var(--color);
