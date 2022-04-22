@@ -4,7 +4,7 @@
 
 #  Hi there,
 #  *I'm Edward*
-#  -Frontend Developer
+#  -Creative Developer
 ##     — Computer Science graduate of
 ##        the University of Melbourne
 ##
