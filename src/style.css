@@ -25,6 +25,7 @@ body {
   background-color: #f6d4b1;
   font-family: "chill", sans-serif;
   font-size: 18px;
+  -webkit-text-size-adjust: 100%;
 }
 
 .webgl {
@@ -272,9 +273,10 @@ footer {
 }
 
 button {
+  position: relative;
   font-family: "chill", sans-serif;
   font-size: 18px;
-  display: inline-block;
+  display: inline-flex;
   box-shadow: 6px 6px 0px rgba(82, 82, 82, 0.25);
   background-color: var(--color);
   color: #f6d4b1;
@@ -287,6 +289,7 @@ button {
 button:hover {
   transform: scale(1.1);
   box-shadow: 8px 8px 6px rgba(82, 82, 82, 0.25);
+  z-index: 2;
 }
 
 button:active {

@@ -7,13 +7,30 @@ nav {
   z-index: 5;
 }
 
-nav button {
+.menu-btn {
   position: fixed;
   top: 20px;
   left: 20px;
+  display: flex;
+  gap: 0px;
+  transition: all 0.7s;
   z-index: 1;
+}
+
+nav button {
   opacity: 0;
   pointer-events: none;
+  padding: 8px 16px;
+  fill: #f6d4b1;
+}
+
+.menu-btn > button:first-of-type {
+  padding: 8px 24px;
+  margin-right: 16px;
+}
+
+nav svg {
+  transition: all 0.2s;
 }
 
 html[data-scroll="true"] nav button {
@@ -21,12 +38,15 @@ html[data-scroll="true"] nav button {
   pointer-events: all;
 }
 
-.active button {
+.active .menu-btn {
   left: 40px;
-  /* opacity: 0; */
+}
+
+.active button {
+
   box-shadow: 6px 6px 0px rgba(246, 212, 177, 0.7);
   background-color: #f6d4b1;
-  color: #525252;
+  fill: #525252;
   border-color: #525252;
   opacity: 1 !important;
   pointer-events: all !important;
