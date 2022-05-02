@@ -1,5 +1,6 @@
 export type FileBash = { name: string; data: string };
 export type FolderBash = { name: string; children: (FolderBash | FileBash)[] };
+export type FileSystemType = {p: (FolderBash | FileBash)[];}
 // @ts-ignore
 import titleMD from "../text/title.md";
 // @ts-ignore
@@ -96,6 +97,10 @@ export default function FileSystemBash() {
           // go up a folder
           if (path.length > 1) path.pop();
           break;
+        case "~":
+          // go home
+          path = goHome();
+          break;
         case ".":
           // current folder
           break;
@@ -115,7 +120,7 @@ export default function FileSystemBash() {
     return path;
   }
 
-  function getChildren(path: FolderBash[]) {
+  function getChildren(path: (FolderBash | FileBash)[]) {
     return (path[path.length - 1] as any).children;
   }
 
