@@ -7,7 +7,7 @@ export default function pwd(
   const fileSystem = FileSystemBash();
   const docs = {
     name: "pwd",
-    short: "print name of current/working directory",
+    short: "print name of current directory",
     long: "",
   };
 

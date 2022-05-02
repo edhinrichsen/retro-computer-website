@@ -10,18 +10,28 @@ import touch from "./touch";
 // @ts-ignore
 import helpMD from "../../text/help.md";
 
-export default function Applications(print: (s: string, md?: boolean) => void, path: FileSystemType) {
+export default function Applications(
+  print: (s: string, md?: boolean) => void,
+  path: FileSystemType
+) {
   const help = (args: string[], options: string[]) => {
-    print(helpMD, true);
+    let helpStr: string = helpMD;
+    Object.entries(apps).forEach((entry) => {
+      const [key, value] = entry;
+      helpStr += `## ${value.docs.name} - ${value.docs.short}\n`;
+    });
+    console.log(helpStr);
+    print(helpStr, true);
   };
   const apps = {
     ls: ls(print, path),
     cd: cd(print, path),
+    show: show(print, path),
     echo: echo(print, path),
     pwd: pwd(print, path),
     mkdir: mkdir(print, path),
     touch: touch(print, path),
-    show: show(print, path),
+    
     // nano: (args: string[]) => {
     //   if (args.length === 0) {
     //     print(`\nMissing filename`);
