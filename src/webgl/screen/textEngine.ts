@@ -680,7 +680,7 @@ export default function ScreenTextEngine(
     );
     imageFrame.position.set(1.33 / 2, -height * 0.5 - charNextLoc.y, 0);
     charNextLoc.y += height;
-    scroll(height, "px", { updateMaxScroll: true, moveView: false });
+    // scroll(height, "px", { updateMaxScroll: true, moveView: false });
     rootGroup.add(imageFrame);
 
     const textureLoader = new THREE.TextureLoader();
