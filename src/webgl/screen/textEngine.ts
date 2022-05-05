@@ -35,6 +35,15 @@ const h2Font: FontInfo = (function () {
   return { font: undefined, size, height, width, leading, tracking };
 })();
 
+const paragraphFont: FontInfo = (function () {
+  const size = 0.0067;
+  const height = size * 1.35;
+  const width = size;
+  const leading = height * 2;
+  const tracking = width * 0;
+  return { font: undefined, size, height, width, leading, tracking };
+})();
+
 const h3Font: FontInfo = (function () {
   const size = 0.03;
   const height = size;
@@ -44,14 +53,14 @@ const h3Font: FontInfo = (function () {
   return { font: undefined, size, height, width, leading, tracking };
 })();
 
-const paragraphFont: FontInfo = (function () {
-  const size = 0.0275;
-  const height = size;
-  const width = size * 0.8;
-  const leading = height * 2.5;
-  const tracking = width * 0.22;
-  return { font: undefined, size, height, width, leading, tracking };
-})();
+// const paragraphFont: FontInfo = (function () {
+//   const size = 0.0275;
+//   const height = size;
+//   const width = size * 0.8;
+//   const leading = height * 2.5;
+//   const tracking = width * 0.22;
+//   return { font: undefined, size, height, width, leading, tracking };
+// })();
 
 const breakFont: FontInfo = (function () {
   const size = 0.025;
@@ -69,7 +78,8 @@ export default function ScreenTextEngine(
   h1Font.font = assists.publicPixelFont;
   h2Font.font = assists.chillFont;
   h3Font.font = assists.chillFont;
-  paragraphFont.font = assists.chillFont;
+  // paragraphFont.font = assists.chillFont;
+  paragraphFont.font = assists.publicPixelFont;
 
   const rootGroup = new THREE.Group();
   sceneRTT.add(rootGroup);
@@ -373,18 +383,25 @@ export default function ScreenTextEngine(
           );
           break;
         case "p":
-          const words = t.value.split(" ");
-          for (let word of words) {
-            geometry.push(
-              generateGeometry({
-                str: word + " ",
-                font: paragraphFont,
-                highlight: t.emphasis,
-                wrap: true,
-                isWord: true,
-              })
-            );
-          }
+          geometry.push(
+            generateGeometry({
+              str: t.value,
+              font: paragraphFont,
+              highlight: false,
+            })
+          );
+          // const words = t.value.split(" ");
+          // for (let word of words) {
+          //   geometry.push(
+          //     generateGeometry({
+          //       str: word + " ",
+          //       font: paragraphFont,
+          //       highlight: t.emphasis,
+          //       wrap: true,
+          //       isWord: true,
+          //     })
+          //   );
+          // }
           break;
         case "br":
           let font = breakFont;
