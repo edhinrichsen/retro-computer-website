@@ -263,7 +263,7 @@ export default function ScreenTextEngine(
   }
 
   type MDtoken = {
-    type: "h1" | "h2" | "h3" | "p" | "br";
+    type: "h1" | "h2" | "h3" | "p" | "br" | "img";
     emphasis: boolean;
     value: string;
   };
@@ -296,9 +296,9 @@ export default function ScreenTextEngine(
           emphasis: false,
           value: "",
         };
-
-        // br
-      } else if (md[i] === "\n") {
+      }
+      // br
+      else if (md[i] === "\n") {
         if (currentToken !== undefined) {
           tokens.push(currentToken);
           currentToken = undefined;
@@ -308,9 +308,17 @@ export default function ScreenTextEngine(
           emphasis: false,
           value: "",
         });
-
-        // p
-      } else if (currentToken === undefined) {
+      }
+      // img
+      else if (md[i] === "!") {
+        currentToken = {
+          type: "img",
+          emphasis: false,
+          value: "",
+        };
+      }
+      // p
+      else if (currentToken === undefined) {
         currentToken = {
           type: "p",
           emphasis: false,
@@ -371,6 +379,9 @@ export default function ScreenTextEngine(
               highlight: t.emphasis,
             })
           );
+          break;
+        case "img":
+          placeImage(t.value);
           break;
         case "p":
           const words = t.value.split(" ");
@@ -539,7 +550,6 @@ export default function ScreenTextEngine(
           );
         }
       } else if (typeof change.loc === "number") {
-
         const newChars: THREE.Mesh[] = [];
         for (const char of change.str) {
           newChars.push(
@@ -582,7 +592,6 @@ export default function ScreenTextEngine(
         );
         delChar(charsTODel);
       } else if (typeof change.loc === "number") {
-
         const charsTODel = inputBuffer.slice(
           change.loc,
           change.loc + change.str.length
@@ -640,12 +649,45 @@ export default function ScreenTextEngine(
     if (options.moveView) rootGroup.position.y += amount;
     if (options.updateMaxScroll) maxScroll += amount;
 
-
     if (rootGroup.position.y < 0) rootGroup.position.y = 0;
     if (rootGroup.position.y > maxScroll) rootGroup.position.y = maxScroll;
   }
   function scrollToEnd() {
     if (rootGroup.position.y !== maxScroll) rootGroup.position.y = maxScroll;
+  }
+
+  function placeImage(val: string) {
+    const urlMatch = val.match(/\(.+\)/);
+    const aspectRatioMatch = val.match(/\[.*\]/);
+    if (!urlMatch || !aspectRatioMatch || urlMatch.length === 0 || aspectRatioMatch.length === 0) return;
+    const url = urlMatch[0].slice(1,-1);
+    const aspectRatio = aspectRatioMatch[0].slice(1,-1);
+    console.log(url, aspectRatio)
+    const aspectRatioNum = parseFloat(aspectRatio);
+    if (aspectRatioNum == NaN) return;
+
+    const width = 1;
+    const height = width / aspectRatioNum;
+
+    const imageFrame = new THREE.Mesh(
+      new THREE.PlaneBufferGeometry(width, height, 1, 1),
+      textMaterial
+    );
+    imageFrame.position.set(
+      0.5 + width * 0.5,
+      -height * 0.5 - charNextLoc.y,
+      0
+    );
+    imageFrame.position.set(1.33 / 2, -height * 0.5 - charNextLoc.y, 0);
+    charNextLoc.y += height;
+    // scroll(height, "px", { updateMaxScroll: true, moveView: false });
+    rootGroup.add(imageFrame);
+
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.load(url, (tex) => {
+      tex.magFilter = THREE.NearestFilter;
+      imageFrame.material = new THREE.MeshBasicMaterial({ map: tex });
+    });
   }
 
   function tick(deltaTime: number, elapsedTime: number) {
