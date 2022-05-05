@@ -1,8 +1,21 @@
 
 
 
-## EDSH, version 0.2.1 
+
+# Help
 ### EDSH is just like BASH except much more limited.
 
-## *Tip:*  Use the ↑ and ↓ keys to scroll.
+## • Type*ls* to list directory contents
+
+## • Type*cd* to change directory
+
+## • Type*show* to render .md files
+
+## • Use ↑ and ↓ keys to scroll
+
+### Tip: try typing "show about/about.md"
+
+
+## All commands
+### EDSH, version 0.2.1 
 

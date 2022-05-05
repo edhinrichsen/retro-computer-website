@@ -18,7 +18,7 @@ export default function Applications(
     let helpStr: string = helpMD;
     Object.entries(apps).forEach((entry) => {
       const [key, value] = entry;
-      helpStr += `## ${value.docs.name} - ${value.docs.short}\n`;
+      helpStr += `### ${value.docs.name} - ${value.docs.short}\n`;
     });
     console.log(helpStr);
     print(helpStr, true);
