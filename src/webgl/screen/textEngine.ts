@@ -656,22 +656,35 @@ export default function ScreenTextEngine(
     if (rootGroup.position.y !== maxScroll) rootGroup.position.y = maxScroll;
   }
 
-  function placeImage(url: string) {
+  function placeImage(val: string) {
+    const urlMatch = val.match(/\(.+\)/);
+    const aspectRatioMatch = val.match(/\[.*\]/);
+    if (!urlMatch || !aspectRatioMatch || urlMatch.length === 0 || aspectRatioMatch.length === 0) return;
+    const url = urlMatch[0].slice(1,-1);
+    const aspectRatio = aspectRatioMatch[0].slice(1,-1);
+    console.log(url, aspectRatio)
+    const aspectRatioNum = parseFloat(aspectRatio);
+    if (aspectRatioNum == NaN) return;
+
     const width = 1;
-    const height = 0.6;
+    const height = width / aspectRatioNum;
 
     const imageFrame = new THREE.Mesh(
       new THREE.PlaneBufferGeometry(width, height, 1, 1),
       textMaterial
     );
-    imageFrame.position.set(0.5 + (width * 0.5), -height * 0.5 - charNextLoc.y, 0);
-    imageFrame.position.set(1.33/2, -height * 0.5 - charNextLoc.y, 0);
+    imageFrame.position.set(
+      0.5 + width * 0.5,
+      -height * 0.5 - charNextLoc.y,
+      0
+    );
+    imageFrame.position.set(1.33 / 2, -height * 0.5 - charNextLoc.y, 0);
     charNextLoc.y += height;
     scroll(height, "px", { updateMaxScroll: true, moveView: false });
     rootGroup.add(imageFrame);
 
     const textureLoader = new THREE.TextureLoader();
-    textureLoader.load("/images/pavilion2.png", (tex) => {
+    textureLoader.load(url, (tex) => {
       tex.magFilter = THREE.NearestFilter;
       imageFrame.material = new THREE.MeshBasicMaterial({ map: tex });
     });
