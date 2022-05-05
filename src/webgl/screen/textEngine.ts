@@ -657,14 +657,15 @@ export default function ScreenTextEngine(
   }
 
   function placeImage(url: string) {
-    const width = 1.33;
-    const height = 0.7;
-    console.log("placeImageCall");
+    const width = 1;
+    const height = 0.6;
+
     const imageFrame = new THREE.Mesh(
       new THREE.PlaneBufferGeometry(width, height, 1, 1),
       textMaterial
     );
-    imageFrame.position.set(width * 0.5, -height * 0.5 - charNextLoc.y, 0);
+    imageFrame.position.set(0.5 + (width * 0.5), -height * 0.5 - charNextLoc.y, 0);
+    imageFrame.position.set(1.33/2, -height * 0.5 - charNextLoc.y, 0);
     charNextLoc.y += height;
     scroll(height, "px", { updateMaxScroll: true, moveView: false });
     rootGroup.add(imageFrame);
