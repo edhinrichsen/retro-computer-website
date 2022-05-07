@@ -1,8 +1,10 @@
 export type FileBash = { name: string; data: string };
 export type FolderBash = { name: string; children: (FolderBash | FileBash)[] };
-export type FileSystemType = {p: (FolderBash | FileBash)[];}
+export type FileSystemType = { p: (FolderBash | FileBash)[] };
 // @ts-ignore
 import titleMD from "../text/title.md";
+// @ts-ignore
+import titleLegacyMD from "../text/title-legacy.md";
 // @ts-ignore
 import aboutMD from "../text/about.md";
 // @ts-ignore
@@ -41,11 +43,64 @@ const disk: FolderBash = {
         {
           name: "user",
           children: [
-            { name: "title", children: [{ name: "title.md", data: titleMD }] },
-            { name: "about", children: [{ name: "about.md", data: aboutMD }] },
+            {
+              name: "title",
+              children: [
+                { name: "title.md", data: titleMD },
+                { name: "title-legacy.md", data: titleLegacyMD },
+              ],
+            },
+            {
+              name: "about",
+              children: [
+                {
+                  name: "images",
+                  children: [
+                    {
+                      name: "ed.png",
+                      data: "\n\n!(./images/ed.png)[1.5]",
+                    },
+                  ],
+                },
+                { name: "about.md", data: aboutMD },
+              ],
+            },
             {
               name: "projects",
               children: [
+                {
+                  name: "images",
+                  children: [
+                    {
+                      name: "cyber-heist.png",
+                      data: "\n\n!(/images/cyber-heist.png)[1.8181]",
+                    },
+                    {
+                      name: "pavilion.png",
+                      data: "\n\n!(./images/pavilion.png)[1.7777]",
+                    },
+                    {
+                      name: "brick-breaker.png",
+                      data: "\n\n!(./images/brick-breaker.png)[1.3913]",
+                    },
+                    {
+                      name: "jackalope.png",
+                      data: "\n\n!(./images/jackalope.png)[1.7977]",
+                    },
+                    {
+                      name: "project-l.png",
+                      data: "\n\n!(./images/project-l.png)[1.77777]",
+                    },
+                    {
+                      name: "great-balls-of-fire.png",
+                      data: "\n\n!(./images/great-balls-of-fire.png)[1.77777]",
+                    },
+                    {
+                      name: "the-golden-pack.png",
+                      data: "\n\n!(./images/the-golden-pack.png)[1.3333]",
+                    },
+                  ],
+                },
                 { name: "writing-buddy.md", data: writingBuddyMD },
 
                 {

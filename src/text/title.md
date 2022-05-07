@@ -1,9 +1,9 @@
 !(./images/ed-title.png)[2]
 
 
-##   Hi there, I'm 
+##   Hi there, 
 
-#  *  Edward  *
+#  *I'm Edward*
 
 ##   • Creative Developer
 ##   • Software Engineer
