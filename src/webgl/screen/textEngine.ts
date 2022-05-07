@@ -671,21 +671,17 @@ export default function ScreenTextEngine(
     console.log(url, aspectRatio);
     const aspectRatioNum = parseFloat(aspectRatio);
     if (aspectRatioNum == NaN) return;
-
-    const width = url === "./images/ed-title.png" ? 1.33 : 1;
+    const isTitleImg = url === "./images/ed-title.png";
+    const width = isTitleImg ? 1.33 : 1;
     const height = width / aspectRatioNum;
 
     const imageFrame = new THREE.Mesh(
       new THREE.PlaneBufferGeometry(width, height, 1, 1),
       textMaterial
     );
-    imageFrame.position.set(
-      0.5 + width * 0.5,
-      -height * 0.5 - charNextLoc.y,
-      0
-    );
-    imageFrame.position.set(1.33 / 2, -height * 0.5 - charNextLoc.y, 0);
-    charNextLoc.y += height;
+ 
+    imageFrame.position.set(1.4 / 2, -height * 0.5 - charNextLoc.y, -0.02);
+    if (!isTitleImg) charNextLoc.y += height;
     // scroll(height, "px", { updateMaxScroll: true, moveView: false });
     rootGroup.add(imageFrame);
 
