@@ -659,14 +659,20 @@ export default function ScreenTextEngine(
   function placeImage(val: string) {
     const urlMatch = val.match(/\(.+\)/);
     const aspectRatioMatch = val.match(/\[.*\]/);
-    if (!urlMatch || !aspectRatioMatch || urlMatch.length === 0 || aspectRatioMatch.length === 0) return;
-    const url = urlMatch[0].slice(1,-1);
-    const aspectRatio = aspectRatioMatch[0].slice(1,-1);
-    console.log(url, aspectRatio)
+    if (
+      !urlMatch ||
+      !aspectRatioMatch ||
+      urlMatch.length === 0 ||
+      aspectRatioMatch.length === 0
+    )
+      return;
+    const url = urlMatch[0].slice(1, -1);
+    const aspectRatio = aspectRatioMatch[0].slice(1, -1);
+    console.log(url, aspectRatio);
     const aspectRatioNum = parseFloat(aspectRatio);
     if (aspectRatioNum == NaN) return;
 
-    const width = 1;
+    const width = url === "./images/ed-title.png" ? 1.33 : 1;
     const height = width / aspectRatioNum;
 
     const imageFrame = new THREE.Mesh(

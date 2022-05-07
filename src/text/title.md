@@ -2,6 +2,7 @@
 
 
 
+!(./images/ed-title.png)[2]
 #  Hi there,
 #  *I'm Edward*
 #  -Creative Developer
