@@ -310,7 +310,7 @@ export default function ScreenTextEngine(
         });
       }
       // img
-      else if (md[i] === "!") {
+      else if (currentToken === undefined && md[i] === "!") {
         currentToken = {
           type: "img",
           emphasis: false,
@@ -677,7 +677,7 @@ export default function ScreenTextEngine(
 
     const imageFrame = new THREE.Mesh(
       new THREE.PlaneBufferGeometry(width, height, 1, 1),
-      textMaterial
+      new THREE.MeshBasicMaterial({ color: 0x000000 })
     );
  
     imageFrame.position.set(1.4 / 2, -height * 0.5 - charNextLoc.y, -0.02);

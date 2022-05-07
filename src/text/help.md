@@ -13,7 +13,7 @@
 
 ## • Use ↑ and ↓ keys to scroll
 
-### Tip: try typing "show about/about.md"
+### Tip: try typing "show -all"
 
 
 ## All commands

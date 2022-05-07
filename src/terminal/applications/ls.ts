@@ -12,7 +12,7 @@ export default function ls(
   };
 
   const app = (args: string[], options: string[]) => {
-    if (options.find((o) => o === "-h")) {
+    if (options.find((o) => o === "-h" || o === '-help')) {
       print(`\n${docs.name} – ${docs.short}`);
       return;
     }

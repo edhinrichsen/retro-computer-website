@@ -1,4 +1,8 @@
-import FileSystemBash, { FileSystemType } from "../fileSystemBash";
+import FileSystemBash, {
+  FileBash,
+  FileSystemType,
+  FolderBash,
+} from "../fileSystemBash";
 
 export default function show(
   print: (s: string, md?: boolean) => void,
@@ -12,8 +16,36 @@ export default function show(
   };
 
   const app = (args: string[], options: string[]) => {
-    if (options.find((o) => o === "-h")) {
+    if (options.find((o) => o === "-h" || o === "-help")) {
       print(`\n${docs.name} – ${docs.short}`);
+      return;
+    }
+    if (options.find((o) => o === "-a" || o === "-all")) {
+      let allStr: string = "";
+      const files = fileSystem.goHome().at(-1);
+      if (!files) return;
+
+      const showAll = (p: (FolderBash | FileBash)[]) => {
+        p.forEach((e) => {
+          if (e.name === "title" || e.name === "images") return;
+
+          if (e.name === "projects") {
+            allStr += "\n\n\n\n# Projects";
+          }
+
+          if (e.name.match(".md")) {
+            allStr += (e as any as FileBash).data;
+            return;
+          }
+
+          showAll((e as any).children);
+        });
+      };
+
+      showAll(files.children);
+
+      print(allStr, true);
+
       return;
     }
 
