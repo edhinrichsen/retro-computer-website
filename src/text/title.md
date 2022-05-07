@@ -11,6 +11,6 @@
 
 
 
-### Welcome to ED-Linux 1.0 LTS
-### Scroll or type "help" to get started
 
+### Welcome to ED-Linux 1.0 LTS
+### →→ Scroll or type "help" to get started
