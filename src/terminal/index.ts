@@ -27,10 +27,9 @@ export default function Terminal(screenTextEngine: {
   textarea.value = "";
   textarea.readOnly = true;
   textarea.blur();
-
-  screenTextEngine.placeMarkdown("## Welcome to ED-Linux 1.0 LTS");
+  // screenTextEngine.placeMarkdown("###  Welcome to ED-Linux 1.0 LTS");
   screenTextEngine.placeMarkdown(titleText);
-  screenTextEngine.placeText("\nuser:~$");
+  screenTextEngine.placeText("user:~$");
 
   const bash = Bash((s, md = false) => {
     if (md) {
