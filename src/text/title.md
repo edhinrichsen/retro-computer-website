@@ -5,7 +5,7 @@
 
 #  *I'm Edward*
 
-##   • Creative Developer
+##   • Computer Scientist
 ##   • Software Engineer
 
 
