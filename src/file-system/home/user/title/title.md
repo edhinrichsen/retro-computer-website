@@ -3,9 +3,9 @@
 
 ##   Hi there, 
 
-#  *I'm Edward*
+#  *I'm Ed H*
 
-##   • Computer Scientist
+##   • Full Stack Web Dev
 ##   • Software Engineer
 
 
