@@ -9,14 +9,14 @@ This was a project I built for fun over one of my uni brakes, built in TypeScrip
 - markdown interrupteur and renderer
 - text layout engine
 
-![alt text](https://www.edwardh.io/icon/og-img1.png)
+![Image of website](https://www.edwardh.io/icon/og-img1.png)
 
 ## Build Instructions 
 ``` bash
 # Install dependencies (only the first time)
 npm install
 
-# Run the local server at localhost:8080
+# Run the local server at localhost:1234
 npm run dev
 
 # Build for production in the dist/ directory

@@ -658,31 +658,27 @@ export default function ScreenTextEngine(
 
   function placeImage(val: string) {
     const urlMatch = val.match(/\(.+\)/);
-    const aspectRatioMatch = val.match(/\[.*\]/);
-    if (
-      !urlMatch ||
-      !aspectRatioMatch ||
-      urlMatch.length === 0 ||
-      aspectRatioMatch.length === 0
-    )
-      return;
-    const url = urlMatch[0].slice(1, -1);
-    const aspectRatio = aspectRatioMatch[0].slice(1, -1);
-    console.log(url, aspectRatio);
-    const aspectRatioNum = parseFloat(aspectRatio);
-    if (aspectRatioNum == NaN) return;
-    const isTitleImg = url === "./images/ed-title.png";
-    const width = isTitleImg ? 1.33 : 1;
-    const height = width / aspectRatioNum;
+    if (!urlMatch || urlMatch.length === 0) return;
+    const [url, rawParams] = urlMatch[0].slice(1, -1).split("?");
+    const params = new URLSearchParams(rawParams);
+
+    const aspectRatio = parseFloat(params.get("aspect") ?? "");
+    if (Number.isNaN(aspectRatio))
+      throw new Error(
+        `Error for image at: '${url}'. Image must have aspect ratio like this: '/path/to/image?aspect=1.5'`
+      );
+    const widthParam = parseFloat(params.get("width") ?? "");
+    const width = (Number.isNaN(widthParam) ? 1 : widthParam)
+    
+    const height = width / aspectRatio;    
 
     const imageFrame = new THREE.Mesh(
       new THREE.PlaneBufferGeometry(width, height, 1, 1),
       new THREE.MeshBasicMaterial({ color: 0x000000 })
     );
- 
+
     imageFrame.position.set(1.4 / 2, -height * 0.5 - charNextLoc.y, -0.02);
-    if (!isTitleImg) charNextLoc.y += height;
-    // scroll(height, "px", { updateMaxScroll: true, moveView: false });
+    if (!params.get("noflow")) charNextLoc.y += height;
     rootGroup.add(imageFrame);
 
     const textureLoader = new THREE.TextureLoader();
