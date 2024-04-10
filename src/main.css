@@ -259,6 +259,8 @@ footer {
   padding: 32px 0px;
   text-align: center;
   color: var(--color);
+  z-index: 2;
+  position: relative;
 }
 
 button {
