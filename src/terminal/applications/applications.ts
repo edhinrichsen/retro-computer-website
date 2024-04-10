@@ -8,7 +8,7 @@ import pwd from "./pwd";
 import show from "./show";
 import touch from "./touch";
 // @ts-ignore
-import helpMD from "../../text/help.md?raw";
+import helpMD from "./assets/help.md?raw";
 
 export default function Applications(
   print: (s: string, md?: boolean) => void,

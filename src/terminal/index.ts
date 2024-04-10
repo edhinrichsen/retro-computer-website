@@ -1,5 +1,5 @@
 // @ts-ignore
-import titleText from "../text/title.md?raw";
+import titleText from "../file-system/home/user/title/title.md?raw";
 import Bash from "./bash";
 export type Change = {
   type: "add" | "del" | "none";
