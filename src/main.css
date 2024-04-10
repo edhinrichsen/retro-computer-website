@@ -286,6 +286,7 @@ a:active {
   font-family: "chill", sans-serif;
   font-size: 18px;
   display: inline-flex;
+  gap: 0.25rem;
   box-shadow: 6px 6px 0px rgba(82, 82, 82, 0.25);
   background-color: var(--color);
   color: #f6d4b1;

@@ -9,12 +9,17 @@ nav {
 
 .menu-btn {
   position: fixed;
-  top: 20px;
-  left: 20px;
+  padding: 20px;
+  top: 0;
+  left: 0;
+  right: 0;
   display: flex;
   gap: 0px;
   transition: all 0.7s;
   z-index: 1;
+  justify-content: space-between;
+
+  pointer-events: none;
 }
 
 nav .btn {
@@ -38,14 +43,10 @@ html[data-scroll="true"] nav .btn {
   pointer-events: all;
 }
 
-.active .menu-btn {
-  left: 40px;
-}
-
 .active .btn {
-
   box-shadow: 6px 6px 0px rgba(246, 212, 177, 0.7);
   background-color: #f6d4b1;
+  color: #525252;
   fill: #525252;
   border-color: #525252;
   opacity: 1 !important;
@@ -77,7 +78,7 @@ html[data-scroll="true"] nav .btn {
   gap: 16px;
   flex-direction: column;
   padding-top: 70px;
-  padding-left: 50px;
+  padding-left: 20px;
   overflow: hidden;
   box-sizing: border-box;
   opacity: 0;
@@ -121,6 +122,20 @@ html[data-scroll="true"] #tip-scroll {
 
 .active #tip-scroll {
   opacity: 0 !important;
+}
+
+@media (min-width: 540px) {
+  .menu-btn {
+    justify-content: left;
+  }
+
+  .active .menu-btn {
+    translate: 28px;
+  }
+
+  .menu-body {
+    padding-left: 50px;
+  }
 }
 
 @media (orientation: portrait) {
