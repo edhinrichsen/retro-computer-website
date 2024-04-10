@@ -1,5 +1,5 @@
 // @ts-ignore
-import titleText from "../text/title.md";
+import titleText from "../text/title.md?raw";
 import Bash from "./bash";
 export type Change = {
   type: "add" | "del" | "none";
@@ -27,7 +27,6 @@ export default function Terminal(screenTextEngine: {
   textarea.value = "";
   textarea.readOnly = true;
   textarea.blur();
-  // screenTextEngine.placeMarkdown("###  Welcome to ED-Linux 1.0 LTS");
   screenTextEngine.placeMarkdown(titleText);
   screenTextEngine.placeText("user:~$");
 

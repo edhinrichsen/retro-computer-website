@@ -670,7 +670,7 @@ export default function ScreenTextEngine(
     const aspectRatio = aspectRatioMatch[0].slice(1, -1);
     console.log(url, aspectRatio);
     const aspectRatioNum = parseFloat(aspectRatio);
-    if (aspectRatioNum == NaN) return;
+    if (Number.isNaN(aspectRatioNum)) return;
     const isTitleImg = url === "./images/ed-title.png";
     const width = isTitleImg ? 1.33 : 1;
     const height = width / aspectRatioNum;
@@ -679,7 +679,7 @@ export default function ScreenTextEngine(
       new THREE.PlaneBufferGeometry(width, height, 1, 1),
       new THREE.MeshBasicMaterial({ color: 0x000000 })
     );
- 
+
     imageFrame.position.set(1.4 / 2, -height * 0.5 - charNextLoc.y, -0.02);
     if (!isTitleImg) charNextLoc.y += height;
     // scroll(height, "px", { updateMaxScroll: true, moveView: false });

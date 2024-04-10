@@ -1,21 +1,18 @@
-
 import FileSystemBash from "./fileSystemBash";
-// @ts-ignore
-import aboutMD from "../text/about.md";
 import Applications from "./applications";
 
 type Cmd = {
   docs: {
-      name: string;
-      short: string;
-      long: string;
+    name: string;
+    short: string;
+    long: string;
   };
   cmd: (self: Cmd, args: string[], options: string[]) => void;
-}
+};
 
 export default function Bash(print: (s: string, md?: boolean) => void) {
   const fileSystem = FileSystemBash();
-  let path = {p: fileSystem.goHome()};
+  let path = { p: fileSystem.goHome() };
 
   const getApp = Applications(print, path);
 

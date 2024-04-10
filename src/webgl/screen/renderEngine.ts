@@ -3,9 +3,9 @@ import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 // @ts-ignore
-import vertexShader from "../shaders/vertex.vert";
+import vertexShader from "../shaders/vertex.vert?raw";
 // @ts-ignore
-import noiseFragmentShader from "../shaders/noise.frag";
+import noiseFragmentShader from "../shaders/noise.frag?raw";
 import { Lag } from "./lag";
 import DeltaTime from "../../DeltaTime";
 import { ShaderToScreen } from "./shaderToScreen";
@@ -42,7 +42,12 @@ export default function ScreenRenderEngine(
     fragmentShader: noiseFragmentShader,
   });
 
-  const bloomPass = new UnrealBloomPass(new THREE.Vector2(128, 128), 1.1, 0.4, 0);
+  const bloomPass = new UnrealBloomPass(
+    new THREE.Vector2(128, 128),
+    1.1,
+    0.4,
+    0
+  );
   composer.addPass(bloomPass);
 
   const lag = new Lag(composer.readBuffer, resolution * 1.33, resolution);
@@ -68,7 +73,7 @@ export default function ScreenRenderEngine(
   // **********************************
 
   const environmentMapTexture = assists.environmentMapTexture;
-  environmentMapTexture.encoding = THREE.sRGBEncoding
+  environmentMapTexture.encoding = THREE.sRGBEncoding;
 
   const shaderToScreen = new ShaderToScreen(
     {
@@ -84,12 +89,12 @@ export default function ScreenRenderEngine(
     resolution
   );
 
-  shaderToScreen.outputTexture.texture.encoding = THREE.sRGBEncoding
+  shaderToScreen.outputTexture.texture.encoding = THREE.sRGBEncoding;
   const material = new THREE.MeshStandardMaterial();
   material.metalness = 0;
   material.roughness = 0.125;
   material.envMap = environmentMapTexture;
-  material.envMapIntensity = 0.7
+  material.envMapIntensity = 0.7;
   material.map = shaderToScreen.outputTexture.texture;
 
   return { tick, material };

@@ -8,7 +8,7 @@ import pwd from "./pwd";
 import show from "./show";
 import touch from "./touch";
 // @ts-ignore
-import helpMD from "../../text/help.md";
+import helpMD from "../../text/help.md?raw";
 
 export default function Applications(
   print: (s: string, md?: boolean) => void,
@@ -31,25 +31,6 @@ export default function Applications(
     pwd: pwd(print, path),
     mkdir: mkdir(print, path),
     touch: touch(print, path),
-    
-    // nano: (args: string[]) => {
-    //   if (args.length === 0) {
-    //     print(`\nMissing filename`);
-    //     return;
-    //   }
-    //   const file = fileSystem.goto(path, args[0])?.at(-1);
-    //   if (!file) {
-    //     print(`\nNo such file or directory`);
-    //     return;
-    //   }
-
-    //   if (!("data" in file)) {
-    //     print(`\n${file.name}:not a file`);
-    //     return;
-    //   }
-
-    //   print(file.data);
-    // },
     hello: hello(print, path),
   };
   const getApp = (
