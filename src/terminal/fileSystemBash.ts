@@ -1,136 +1,61 @@
 export type FileBash = { name: string; data: string };
 export type FolderBash = { name: string; children: (FolderBash | FileBash)[] };
 export type FileSystemType = { p: (FolderBash | FileBash)[] };
-// @ts-ignore
-import titleMD from "../text/title.md";
-// @ts-ignore
-import titleLegacyMD from "../text/title-legacy.md";
-// @ts-ignore
-import aboutMD from "../text/about.md";
-// @ts-ignore
-import writingBuddyMD from "../text/writing-buddy.md";
-// @ts-ignore
-import myOwnProgrammingLanguageMD from "../text/my-own-programming-language.md";
-// @ts-ignore
-import glowbalMD from "../text/glowbal.md";
-// @ts-ignore
-import cyberHeist from "../text/cyber-heist.md";
-// @ts-ignore
-import pavilionMD from "../text/pavilion.md";
-// @ts-ignore
-import brickBreakerMD from "../text/brick-breaker.md";
-// @ts-ignore
-import jackalopeMD from "../text/jackalope.md";
-// @ts-ignore
-import projectLMD from "../text/project-l.md";
-// @ts-ignore
-import greatBallsOfFireMD from "../text/great-balls-of-fire.md";
-// @ts-ignore
-import theGoldenPackMD from "../text/the-golden-pack.md";
-// @ts-ignore
-import edsitesMD from "../text/edsites.md";
-// @ts-ignore
-import contactMD from "../text/contact.md";
 
 const disk: FolderBash = {
   name: "/",
   children: [
     { name: "bin", children: [] },
     { name: "dev", children: [] },
-    {
-      name: "home",
-      children: [
-        {
-          name: "user",
-          children: [
-            {
-              name: "title",
-              children: [
-                { name: "title.md", data: titleMD },
-                { name: "title-legacy.md", data: titleLegacyMD },
-              ],
-            },
-            {
-              name: "about",
-              children: [
-                {
-                  name: "images",
-                  children: [
-                    {
-                      name: "ed.png",
-                      data: "\n\n!(./images/ed.png)[1.5]",
-                    },
-                  ],
-                },
-                { name: "about.md", data: aboutMD },
-              ],
-            },
-            {
-              name: "projects",
-              children: [
-                {
-                  name: "images",
-                  children: [
-                    {
-                      name: "cyber-heist.png",
-                      data: "\n\n!(/images/cyber-heist.png)[1.8181]",
-                    },
-                    {
-                      name: "pavilion.png",
-                      data: "\n\n!(./images/pavilion.png)[1.7777]",
-                    },
-                    {
-                      name: "brick-breaker.png",
-                      data: "\n\n!(./images/brick-breaker.png)[1.3913]",
-                    },
-                    {
-                      name: "jackalope.png",
-                      data: "\n\n!(./images/jackalope.png)[1.7977]",
-                    },
-                    {
-                      name: "project-l.png",
-                      data: "\n\n!(./images/project-l.png)[1.77777]",
-                    },
-                    {
-                      name: "great-balls-of-fire.png",
-                      data: "\n\n!(./images/great-balls-of-fire.png)[1.77777]",
-                    },
-                    {
-                      name: "the-golden-pack.png",
-                      data: "\n\n!(./images/the-golden-pack.png)[1.3333]",
-                    },
-                  ],
-                },
-                { name: "writing-buddy.md", data: writingBuddyMD },
-
-                {
-                  name: "my-own-programming-language.md",
-                  data: myOwnProgrammingLanguageMD,
-                },
-                { name: "glowbal.md", data: glowbalMD },
-                { name: "cyber-heist.md", data: cyberHeist },
-                { name: "pavilion.md", data: pavilionMD },
-                { name: "brick-breaker.md", data: brickBreakerMD },
-                { name: "jackalope.md", data: jackalopeMD },
-                { name: "project-l.md", data: projectLMD },
-                { name: "great-balls-of-fire.md", data: greatBallsOfFireMD },
-                { name: "the-golden-pack.md", data: theGoldenPackMD },
-                { name: "edsites.md", data: edsitesMD },
-              ],
-            },
-            {
-              name: "contact",
-              children: [{ name: "contact.md", data: contactMD }],
-            },
-          ],
-        },
-      ],
-    },
     { name: "lib64", children: [] },
     { name: "media", children: [] },
-    { name: "home", children: [] },
   ],
 };
+
+/*
+Generate virtual file system based of "../file-system" folder.
+*/
+function generateFS(fileMap: Record<string, string>) {
+  for (const path in fileMap) {
+    const virtualFsPath = path.split("/").slice(2);
+    let currentFolder = disk;
+    virtualFsPath.forEach((name, i, arr) => {
+      const isFile = i === arr.length - 1; // last item of virtualFsPath will always be a file.
+      if (isFile) {
+        currentFolder.children.push({ name, data: fileMap[path] });
+      } else {
+        let next = currentFolder.children.find((f) => f.name === name) as
+          | FolderBash
+          | undefined;
+        if (!next) {
+          next = { name, children: [] };
+          currentFolder.children.push(next);
+        }
+
+        currentFolder = next;
+      }
+    });
+  }
+}
+
+generateFS(
+  import.meta.glob("../file-system/**/*.md", {
+    query: "?raw",
+    import: "default",
+    eager: true,
+  })
+);
+
+generateFS(
+  import.meta.glob("../file-system/**/*.png", {
+    query: "?url",
+    import: "default",
+    eager: true,
+  })
+);
+
+console.log(disk);
+
 
 export default function FileSystemBash() {
   function _pathStrToArr(p: string) {
@@ -165,7 +90,7 @@ export default function FileSystemBash() {
           if (!currentFolder || !("children" in currentFolder))
             return undefined;
 
-          const next = currentFolder.children.find((m) => m.name === p);
+          const next = currentFolder.children.find((f) => f.name === p);
           if (!next) return undefined;
 
           path.push(next);
