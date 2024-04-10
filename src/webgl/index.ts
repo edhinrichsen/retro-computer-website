@@ -1,7 +1,5 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import DeltaTime from "../DeltaTime";
-import { ExternalsPlugin } from "webpack";
 import Screen from "./screen/";
 import Stats from "stats.js";
 import { loadAssists } from "./loader";
@@ -21,19 +19,22 @@ function valMap(x: number, from: [number, number], to: [number, number]) {
   return y;
 }
 
-let viewHeight = document.documentElement.clientHeight
+let viewHeight = document.documentElement.clientHeight;
 let scroll = window.scrollY / document.documentElement.clientHeight;
-window.addEventListener("scroll", (ev) => {
-  scroll = window.scrollY / viewHeight;
-},{passive: true});
+window.addEventListener(
+  "scroll",
+  (ev) => {
+    scroll = window.scrollY / viewHeight;
+  },
+  { passive: true }
+);
 
 export default function WebGL() {
   loadAssists((assists) => {
     const stats = new Stats();
     const hash = window.location.hash;
     if (hash) {
-      if (hash.toLowerCase() === '#debug') {
-
+      if (hash.toLowerCase() === "#debug") {
         stats.showPanel(0);
         document.body.appendChild(stats.dom);
 
@@ -42,7 +43,6 @@ export default function WebGL() {
         ) as HTMLTextAreaElement;
         textarea.style.zIndex = "3";
         textarea.style.opacity = "1";
-
       }
     }
 
@@ -96,38 +96,51 @@ export default function WebGL() {
       maxPolarAngleOffest: 0,
     };
 
-    let mousedown: { x: number, y: number } | null = null;
+    let mousedown: { x: number; y: number } | null = null;
     function checkIfTouch(event: PointerEvent) {
-      if (event.pointerType !== 'mouse') {
+      if (event.pointerType !== "mouse") {
         mousedown = null;
         computerParallax.x = 0;
         computerParallax.y = 0;
       }
     }
     const computerParallax = { x: 0, y: 0 };
-    canvas.addEventListener("pointermove", (event) => {
-      checkIfTouch(event);
-      if (mousedown) {
-        computerParallax.x += (event.clientX - mousedown.x) / (window.innerWidth * 0.5);
-        computerParallax.x = valMap(computerParallax.x, [-1, 1], [-1, 1])
+    canvas.addEventListener(
+      "pointermove",
+      (event) => {
+        checkIfTouch(event);
+        if (mousedown) {
+          computerParallax.x +=
+            (event.clientX - mousedown.x) / (window.innerWidth * 0.5);
+          computerParallax.x = valMap(computerParallax.x, [-1, 1], [-1, 1]);
 
-        computerParallax.y += (event.clientY - mousedown.y) / (window.innerHeight * 0.5);
-        computerParallax.y = valMap(computerParallax.y, [-1, 1], [-1, 1])
-        
+          computerParallax.y +=
+            (event.clientY - mousedown.y) / (window.innerHeight * 0.5);
+          computerParallax.y = valMap(computerParallax.y, [-1, 1], [-1, 1]);
+
+          mousedown = { x: event.clientX, y: event.clientY };
+        }
+      },
+      { passive: true }
+    );
+
+    canvas.addEventListener(
+      "pointerdown",
+      (event) => {
+        checkIfTouch(event);
         mousedown = { x: event.clientX, y: event.clientY };
+      },
+      { passive: true }
+    );
 
-      }
-    },{passive: true});
-
-    canvas.addEventListener('pointerdown', (event) => {
-      checkIfTouch(event);
-      mousedown = { x: event.clientX, y: event.clientY };
-    },{passive: true});
-
-    document.addEventListener("pointerup", (event) => {
-      checkIfTouch(event);
-      mousedown = null;
-    },{passive: true});
+    document.addEventListener(
+      "pointerup",
+      (event) => {
+        checkIfTouch(event);
+        mousedown = null;
+      },
+      { passive: true }
+    );
 
     /**
      * Renderer
@@ -139,7 +152,6 @@ export default function WebGL() {
     renderer.setSize(sizes.width, sizes.height);
     renderer.setPixelRatio(2);
     renderer.outputEncoding = THREE.sRGBEncoding;
-    // renderer.render(sceneRTT, cameraRTT);
 
     function updateCanvasSize(width: number, height: number) {
       // Update camera
@@ -149,19 +161,23 @@ export default function WebGL() {
       // Update renderer
       renderer.setSize(width, height);
     }
-    window.addEventListener("resize", () => {
-      // Update sizes
+    window.addEventListener(
+      "resize",
+      () => {
+        // Update sizes
 
-      viewHeight = document.documentElement.clientHeight
-      sizes.width = document.documentElement.clientWidth;
-      sizes.height = window.innerHeight;
-      updateCanvasSize(sizes.width, sizes.height);
-      sizes.portraitOffset = valMap(
-        sizes.height / sizes.width,
-        [0.8, 1.8],
-        [0, 2.5]
-      );
-    },{passive: true});
+        viewHeight = document.documentElement.clientHeight;
+        sizes.width = document.documentElement.clientWidth;
+        sizes.height = window.innerHeight;
+        updateCanvasSize(sizes.width, sizes.height);
+        sizes.portraitOffset = valMap(
+          sizes.height / sizes.width,
+          [0.8, 1.8],
+          [0, 2.5]
+        );
+      },
+      { passive: true }
+    );
 
     const screen = Screen(assists, renderer);
 
@@ -208,13 +224,13 @@ export default function WebGL() {
     /**
      * Animate
      */
- 
+
     const clock = new THREE.Clock();
     const tick = () => {
       stats.begin();
 
       const deltaTime = DeltaTime();
-      
+
       const elapsedTime = clock.getElapsedTime();
 
       const zoomFac = valMap(scroll, [0, 1], [0, 1]);
@@ -235,9 +251,11 @@ export default function WebGL() {
       computerGroup.rotation.y = controlProps.computerAngle * zoomFac;
 
       camera.position.x =
-        computerParallax.x * valMap(scroll, [0, 1], [0.2, 5]) * 0.1 + camera.position.x * 0.9;
+        computerParallax.x * valMap(scroll, [0, 1], [0.2, 5]) * 0.1 +
+        camera.position.x * 0.9;
       camera.position.y =
-        computerParallax.y * valMap(scroll, [0, 1], [0.2, 1.5]) * 0.1 + camera.position.y * 0.9;
+        computerParallax.y * valMap(scroll, [0, 1], [0.2, 1.5]) * 0.1 +
+        camera.position.y * 0.9;
 
       camera.lookAt(new Vector3(0, 0, 0));
 
@@ -265,6 +283,6 @@ export default function WebGL() {
       window.requestAnimationFrame(tick);
     };
 
-    tick();
+    window.requestAnimationFrame(tick);
   });
 }

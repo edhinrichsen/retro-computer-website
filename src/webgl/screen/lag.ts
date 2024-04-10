@@ -1,8 +1,8 @@
 import * as THREE from "three";
 // @ts-ignore
-import vertexShader from "../shaders/vertex.vert";
+import vertexShader from "../shaders/vertex.vert?raw";
 // @ts-ignore
-import lagFragmentShader from "../shaders/lag.frag";
+import lagFragmentShader from "../shaders/lag.frag?raw";
 import { ShaderToScreen } from "./shaderToScreen";
 
 class Lag {
