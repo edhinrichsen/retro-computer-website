@@ -26,8 +26,10 @@ export default function show(
       if (!files) return;
 
       const showAll = (p: (FolderBash | FileBash)[]) => {
+        if (!p) return;
+        
         p.forEach((e) => {
-          if (e.name === "title" || e.name === "images") return;
+          if (e.name === "title") return;
 
           if (e.name === "projects") {
             allStr += "\n\n\n\n# Projects";

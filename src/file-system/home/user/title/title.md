@@ -1,4 +1,4 @@
-!(./images/ed-title.png)[2]
+!(/images/ed-title.png?aspect=2&noflow=true&width=1.33)
 
 
 ##   Hi there, 
