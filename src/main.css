@@ -7,11 +7,11 @@
 
 @font-face {
   font-family: public-pixel;
-  src: url("../static/fonts/public-pixel.woff");
+  src: url("/fonts/public-pixel.woff");
 }
 @font-face {
   font-family: chill;
-  src: url("../static/fonts/chill.woff");
+  src: url("/fonts/chill.woff");
 }
 
 * {
@@ -180,7 +180,8 @@ hr {
 .skills,
 p {
   padding: 16px;
-  text-align: justify;
+  text-align: left;
+  line-height: 1.5;
   width: clamp(0px, 95vw, 680px);
   margin: auto;
   box-sizing: border-box;
