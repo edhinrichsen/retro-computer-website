@@ -264,31 +264,6 @@ footer {
   position: relative;
 }
 
-button {
-  position: relative;
-  font-family: "chill", sans-serif;
-  font-size: 18px;
-  display: inline-flex;
-  box-shadow: 6px 6px 0px rgba(82, 82, 82, 0.25);
-  background-color: var(--color);
-  color: #f6d4b1;
-  cursor: pointer;
-  transition: all 0.3s;
-  padding: 4px 24px;
-  border: #f6d4b1 solid 1px;
-}
-
-button:hover {
-  transform: scale(1.1);
-  box-shadow: 8px 8px 6px rgba(82, 82, 82, 0.25);
-  z-index: 2;
-}
-
-button:active {
-  transform: scale(0.95);
-  box-shadow: 4px 4px 0px rgba(82, 82, 82, 0.4);
-}
-
 a {
   display: inline-block;
   color: inherit;
@@ -304,6 +279,32 @@ a:hover {
 a:active {
   transform: scale(1);
   box-shadow: 1px 1px 0px #f6d4b1, 3px 3px 0px rgba(82, 82, 82, 0.4);
+}
+
+.btn {
+  position: relative;
+  font-family: "chill", sans-serif;
+  font-size: 18px;
+  display: inline-flex;
+  box-shadow: 6px 6px 0px rgba(82, 82, 82, 0.25);
+  background-color: var(--color);
+  color: #f6d4b1;
+  cursor: pointer;
+  transition: all 0.3s;
+  padding: 4px 24px;
+  border: #f6d4b1 solid 1px;
+  text-decoration: none;
+}
+
+.btn:hover {
+  transform: scale(1.1);
+  box-shadow: 8px 8px 6px rgba(82, 82, 82, 0.25);
+  z-index: 2;
+}
+
+.btn:active {
+  transform: scale(0.95);
+  box-shadow: 4px 4px 0px rgba(82, 82, 82, 0.4);
 }
 
 .portrait {
