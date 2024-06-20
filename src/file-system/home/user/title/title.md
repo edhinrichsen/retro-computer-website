@@ -5,8 +5,8 @@
 
 #  *I'm Ed H*
 
-##   • Full Stack Web Dev
 ##   • Software Engineer
+##   • Digital Designer
 
 
 
