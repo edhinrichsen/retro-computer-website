@@ -9,7 +9,7 @@ This was a project I built for fun over one of my uni breaks, built in TypeScrip
 - markdown interpreter and renderer
 - text layout engine
 
-![Image of website](https://www.edwardh.io/icon/og-img1.png)
+![Image of website](https://edh.dev/icon/og-img1.png)
 
 ## Build Instructions 
 ``` bash
