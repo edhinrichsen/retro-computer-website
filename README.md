@@ -1,6 +1,6 @@
 # Retro Computer Personal Website
 
-https://www.edwardh.io/
+https://edh.dev/ (formerly edwardh.io)
 
 This was a project I built for fun over one of my uni breaks, built in TypeScript and THREE.js, it contains a number of nifty features such as:
 - 3D retro computer that you can interact with
@@ -9,7 +9,7 @@ This was a project I built for fun over one of my uni breaks, built in TypeScrip
 - markdown interpreter and renderer
 - text layout engine
 
-![Image of website](https://www.edwardh.io/icon/og-img1.png)
+![Image of website](https://edh.dev/icon/og-img1.png)
 
 ## Build Instructions 
 ``` bash
