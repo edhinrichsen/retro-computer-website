@@ -673,19 +673,32 @@ export default function ScreenTextEngine(
 
     const height = width / aspectRatio;
 
+    const xParam = parseFloat(params.get("x") ?? "");
+    const xPos = Number.isNaN(xParam) ? 1.4 / 2 : xParam;
+
+    const yOffsetParam = parseFloat(params.get("yoffset") ?? "");
+    const yOffset = Number.isNaN(yOffsetParam) ? 0 : yOffsetParam;
+
     const imageFrame = new THREE.Mesh(
       new THREE.PlaneBufferGeometry(width, height, 1, 1),
       new THREE.MeshBasicMaterial({ color: 0x000000 })
     );
 
-    imageFrame.position.set(1.4 / 2, -height * 0.5 - charNextLoc.y, -0.02);
+    imageFrame.position.set(xPos, -height * 0.5 - charNextLoc.y - yOffset, -0.02);
     if (!params.get("noflow")) charNextLoc.y += height;
     rootGroup.add(imageFrame);
 
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load(url, (tex) => {
       tex.magFilter = THREE.NearestFilter;
-      imageFrame.material = new THREE.MeshBasicMaterial({ map: tex });
+      
+      const brightnessParam = parseFloat(params.get("brightness") ?? "1");
+      const brightness = Number.isNaN(brightnessParam) ? 1 : brightnessParam;
+      
+      imageFrame.material = new THREE.MeshBasicMaterial({ 
+        map: tex,
+        color: new THREE.Color(brightness, brightness, brightness)
+      });
     });
   }
 

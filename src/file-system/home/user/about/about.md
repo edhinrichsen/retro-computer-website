@@ -4,8 +4,10 @@
 
 # Hi there
 
-My name is Ed Hinrichsen, I’m an award-winning web dev / digital designer and full stack software engineer. I have a passion for all things technology and design, from software engineering & machine learning to UI/UX & 3D graphics.
+My name is Eshwar Vijay. I work with AI and DevOps - basically I make systems intelligent and make sure they don't crash at 3 AM.
 
-In addition to my love of technology and design, I am also interested in education, history, economics and politics.
+I don't do machine learning, but I do teach machines how to behave in production.
 
-Type "cd ~/projects" then "ls" to see details of some of the projects I have developed over my fifteen plus years of coding experience.
+I travel when I can because changing time zones is easier than fixing bugs at midnight.
+
+Type "cd ~/projects" then "ls" to see some of the projects I've built.

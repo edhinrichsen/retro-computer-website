@@ -1,6 +1,7 @@
 // @ts-ignore
 import titleText from "../file-system/home/user/title/title.md?raw";
 import Bash from "./bash";
+import soundManager from "../soundManager";
 export type Change = {
   type: "add" | "del" | "none";
   loc: number | "end" | "none";
@@ -51,7 +52,13 @@ export default function Terminal(screenTextEngine: {
   function onInput() {
     const change = stringEditDistance(oldText, textarea.value);
     oldText = textarea.value;
-    if (change) screenTextEngine.userInput(change, textarea.selectionStart);
+    if (change) {
+      screenTextEngine.userInput(change, textarea.selectionStart);
+      // Play typing sound for each character
+      if (change.type === "add") {
+        soundManager.playKeyPress();
+      }
+    }
     screenTextEngine.scrollToEnd();
   }
   textarea.addEventListener("input", onInput, false);
@@ -86,6 +93,7 @@ export default function Terminal(screenTextEngine: {
     }
     // textarea
     if (e.key === "Enter") {
+      soundManager.playEnterKey();
       screenTextEngine.freezeInput();
       bash.input(textarea.value);
 

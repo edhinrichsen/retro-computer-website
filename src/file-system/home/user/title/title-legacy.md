@@ -2,14 +2,13 @@
 
 
 
-## Welcome to ED-Linux 1.0 LTS
+## Welcome to Esh-Linux 1.0 LTS
 
 
 
 #  Hi there,
-#  *I'm Edward*
+#  *I'm Eshwar*
 #  -Creative Developer
-##     — Computer Science graduate of
-##        the University of Melbourne
+##     — Information Science graduate
 ##
 ###   *Scroll* or type "help" to get started

@@ -26,7 +26,11 @@ nav .btn {
   opacity: 0;
   pointer-events: none;
   padding: 8px 16px;
-  fill: #f6d4b1;
+  background-color: rgba(82, 82, 82, 0.92);
+  color: #f6d4b1;
+  border-color: rgba(246, 212, 177, 0.9);
+  fill: currentColor;
+  box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.35);
 }
 
 .menu-btn > .btn:first-child {
@@ -36,6 +40,11 @@ nav .btn {
 
 nav svg {
   transition: all 0.2s;
+}
+
+nav .btn svg,
+nav .btn svg * {
+  fill: currentColor;
 }
 
 html[data-scroll="true"] nav .btn {

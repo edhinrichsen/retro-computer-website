@@ -66,7 +66,7 @@ export default function WebGL() {
     const scene = new THREE.Scene();
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.55);
     scene.add(ambientLight);
-    scene.background = new THREE.Color(0xf6d4b1);
+    scene.background = new THREE.Color(0x0a0a0a);
 
     /**
      * Camera

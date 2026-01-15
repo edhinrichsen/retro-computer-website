@@ -3,10 +3,8 @@ import cd from "./cd";
 import echo from "./echo";
 import hello from "./hello";
 import ls from "./ls";
-import mkdir from "./mkdir";
 import pwd from "./pwd";
 import show from "./show";
-import touch from "./touch";
 // @ts-ignore
 import helpMD from "./assets/help.md?raw";
 
@@ -29,8 +27,6 @@ export default function Applications(
     show: show(print, path),
     echo: echo(print, path),
     pwd: pwd(print, path),
-    mkdir: mkdir(print, path),
-    touch: touch(print, path),
     hello: hello(print, path),
   };
   const getApp = (

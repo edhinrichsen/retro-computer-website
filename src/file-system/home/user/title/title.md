@@ -1,16 +1,17 @@
-!(/images/ed-title.png?aspect=2&noflow=true&width=1.33)
+!(/images/ed.png?aspect=1.5&noflow=true&width=0.85&x=1.11&brightness=0.5&yoffset=0.1)
 
 
 ##   Hi there, 
 
-#  *I'm Ed H*
+#  *I'm Eshwar*
 
-##   • Software Engineer
-##   • Digital Designer
-
+##   • AI Engineer
 
 
 
 
-### Welcome to ED-Linux 1.0 LTS
+
+
+
+### Welcome to Esh-Linux 1.0 LTS
 ### →→ Scroll or type "help" to get started
