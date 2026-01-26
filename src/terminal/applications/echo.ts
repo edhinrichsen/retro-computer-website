@@ -16,7 +16,10 @@ export default function echo(
       return;
     }
 
-    const str = args.join(" ");
+    const str = args.length
+      ? args.join(" ")
+      : "Every step we take, every risk we embrace, brings us closer to greatness. Fear is just a whisper compared to the roar of our spirit.";
+
     print(`\n${str}`);
   };
   return { docs, app };
