@@ -3,14 +3,14 @@
 
 ##   Hi there, 
 
-#  *I'm Ed H*
+#  *I'm Taskeen*
 
-##   • Software Engineer
+##   • Web Developer
 ##   • Digital Designer
 
 
 
 
 
-### Welcome to ED-Linux 1.0 LTS
+### Welcome to Taskeen-Linux 1.0 LTS
 ### →→ Scroll or type "help" to get started

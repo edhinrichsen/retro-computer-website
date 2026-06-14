@@ -2,12 +2,12 @@
 
 
 
-## Welcome to ED-Linux 1.0 LTS
+## Welcome to Taskeen-Linux 1.0 LTS
 
 
 
 #  Hi there,
-#  *I'm Edward*
+#  *I'm Taskeen*
 #  -Creative Developer
 ##     — Computer Science graduate of
 ##        the University of Melbourne
